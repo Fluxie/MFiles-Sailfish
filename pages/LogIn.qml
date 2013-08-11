@@ -27,30 +27,43 @@ import "LogIn.js" as Logic
 Page {
 
     id: page
-
     property int textAlignment: Text.AlignLeft
+    property Column newVaultInfo: null
+
+    Component.onCompleted: {
+        Logic.initialize( listView.listModel, newVaultInfo, addNewVaultButton );
+    }
 
     // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
+    SilicaListView {
+        id: listView
+        property ListModel listModel: ListModel {}
+
+        model: listModel
         anchors.fill: parent
 
         PullDownMenu {
+            id: pullDownMenu
+
             MenuItem {
+                id: addNewVaultButton
                 text: "Add new Vault"
-                onClicked: pageStack.push(Qt.resolvedUrl("VaultConfig.qml"))
+                onClicked: {
+                    page.newVaultInfo.visible = true;
+                }
             }
         }
 
         // Tell SilicaFlickable the height of its content.
 		// TODO: Figure out the reason for this
-        contentHeight: childrenRect.height
+        // contentHeight: childrenRect.height
 
 		// Layout in a column
-        Column {
+        header: Column {
             width: page.width
             spacing: Theme.paddingSmall
             PageHeader {
-                title: "M-Files"
+                title: "Log in"
             }
 
 			// A second column to hold the login inputs so we can hide it
@@ -59,9 +72,14 @@ Page {
             Column {
                 id: newVaultInfo
                 width: page.width
+                visible: false
                 spacing: Theme.paddingSmall
 
-				function doLogIn() {
+                Component.onCompleted: {
+                    page.newVaultInfo = newVaultInfo;
+                }
+
+				function logInNewVault() {
 					Logic.selectVault( url.text, username.text, password.text, function( err, vault ) {
 						if( err ) {
 							error.visible = true;
@@ -71,7 +89,7 @@ Page {
 
 						if( vault ) {
 							Logic.saveVault( vault );
-							Logic.useVault( vault );
+							Logic.useVault( vault, true );
 						}
 					})
 				}
@@ -108,14 +126,19 @@ Page {
                     placeholderText: "Password"
                     horizontalAlignment: textAlignment
                     EnterKey.onClicked: {
-						newVaultInfo.doLogIn();
+						newVaultInfo.logInNewVault();
                     }
                 }
+                TextSwitch {
+                    id: rememberPasswordChoice
+                    text: "Remember password"
+                }
+
                 Button {
                     text: "Log in"
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
-						newVaultInfo.doLogIn();
+						newVaultInfo.logInNewVault();
                     }
                 }
 				TextField {
@@ -124,6 +147,26 @@ Page {
 					horizontalAlignment: Text.AlignCenter
 					visible: false
 				}
+            }
+        }
+
+        delegate: ListItem {
+            id: listItem
+
+            onClicked: {
+                Logic.useVault( model, false );
+            }
+
+            Column {
+                Label {
+                    text: model.name
+                    x: Theme.paddingLarge
+                }
+
+                Label {
+                    text: model.username
+                    x: Theme.paddingLarge * 2
+                }
             }
         }
     }

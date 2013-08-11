@@ -21,6 +21,21 @@
 .import '../common/http.js' as Http
 .import '../common/DBAO.js' as DBAO
 
+function initialize( model, newVaultInfo, addNewVaultButton ) {
+    DBAO.initialize();
+    var vaults = DBAO.getPreviousVaults();
+
+    if( vaults.length === 0 ) {
+        addNewVaultButton.visible = false;
+        newVaultInfo.visible = true;
+    } else {
+        for( var v in vaults ) {
+            var vault = vaults[v];
+            model.append(vault);
+        }
+    }
+}
+
 /**
  * Use the login details to select the vault.
  *
@@ -91,7 +106,7 @@ function performLogIn( url, username, password, done ) {
  * @param {function} done Callback for when the save completes
  */
 function saveVault( vault, done ) {
-	// DBAO.savePreviousVault( vault, done );
+	DBAO.savePreviousVault( vault, done );
 }
 
 /**
@@ -99,7 +114,7 @@ function saveVault( vault, done ) {
  *
  * @param {object} vault Vault information
  */
-function useVault( vault ) {
+function useVault( vault, replace ) {
 
 	// Make sure the authentication details are still valid.
 	var client = new Http.HttpClient();
@@ -115,7 +130,12 @@ function useVault( vault ) {
 		}
 
 		// Auth token was valid, proceed to display the vault home.
-		dialog = pageStack.replace( "VaultHome.qml" );
+        if( replace ) {
+            dialog = pageStack.replace( "VaultHome.qml" );
+        } else {
+            dialog = pageStack.push( "VaultHome.qml" );
+        }
+
 		dialog.vaultName = vault.name;
 		dialog.mfwaUrl = vault.url;
 		dialog.authentication = vault.authentication;

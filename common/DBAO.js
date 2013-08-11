@@ -6,7 +6,7 @@
  *  M-Files for Sailfish is free software: you can redistribute it
  *  and/or modify it under the terms of the GNU General Public
  *  License as published by the Free Software Foundation, either
- *  version 3 of the License, or (at your option) any later version.
+ *  version 3 of the License.
  *
  *  M-Files for Sailfish is distributed in the hope that it will be
  *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
@@ -19,6 +19,8 @@
  */
 
 .pragma library
+
+.import QtQuick.LocalStorage 2.0 as LS
 
 // Helper function for brief joins
 var _j = function( arr ) { return arr.join(' '); }
@@ -38,108 +40,100 @@ var upgradeFunctions = [
 				"id INTEGER PRIMARY KEY,",
 				"name TEXT,",
 				"guid TEXT,",
-				"url TEXT",
+				"url TEXT,",
 				"username TEXT,",
-				"authentication TEXT"
+				"authentication TEXT",
 			")" ]));
 	}
 ]
 
 /**
  * Open the database
- *
- * @param {function} done Callback function for the database connection
  */
-function _getDatabase( done ) {
-	return openDatabaseSync( "MFiles", "0.1", "MFilesDB", 100 * 1024, done );
+function _getDatabase() {
+	var db = LS.LocalStorage.openDatabaseSync( "MFiles", "1.0", "MFilesDB", 100 * 1024 );
+    return db;
 }
 
 
 /**
  * Initialize the database
- *
- * @param {function} done Callback for when the database is initailzied
  */
-function initialize( done ) {
+function initialize() {
 
 	// Retrieve the database
-	_getDatabase(function( db ) {
+	var db = _getDatabase();
 
-		// Read the DB version
-		var dbVersion = 0;
-		db.transaction( function( tx ) {
+    // Read the DB version
+    var dbVersion = 0;
+    db.transaction( function( tx ) {
 
-			tx.executeSql( "CREATE TABLE IF NOT EXISTS dbVersion( version INT )" );
-			var results = tx.executeSql( "SELECT version FROM dbVersion" );
+        tx.executeSql( "CREATE TABLE IF NOT EXISTS dbVersion( version INT )" );
+        var results = tx.executeSql( "SELECT version FROM dbVersion" );
 
-			if( results.length === 0 ) {
-				tx.executeSql( "INSERT INTO version VALUES(0)" );
-			} else {
-				dbVersion = results.item(0).version;
-			}
-		});
+        if( results.rows.length === 0 ) {
+            tx.executeSql( "INSERT INTO dbVersion VALUES(0)" );
+        } else {
+            dbVersion = results.rows.item(0).version;
+        }
+    });
 
-		// Perform updates as long as the version is less than the amount of
-		// upgrades available.
-		while( dbVersion < upgradeFunctions.length ) {
-			db.transaction( function( tx ) {
-				upgradeFunctions[ dbVersion ]( tx );
-				tx.executeSql( "UPDATE dbVersion SET version = ?", dbVersion + 1 );
-			});
+    // Perform updates as long as the version is less than the amount of
+    // upgrades available.
+    while( dbVersion < upgradeFunctions.length ) {
+        db.transaction( function( tx ) {
+            upgradeFunctions[ dbVersion ]( tx );
+            tx.executeSql( "UPDATE dbVersion SET version = ?", dbVersion + 1 );
+        });
 
-			dbVersion++;
-		}
-
-		done();
-	});
+        dbVersion++;
+    }
 };
 
 /**
  * Retrieves a list of previous vaults
  *
- * @param {function} done Callback for the vault list
+ * @returns {Vault[]} Array of vaults
  */
-function getPreviousVaults( done ) {
-	_getDatabase( function( db ) {
-		var results;
-		db.transaction( function( tx ) {
-			results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults" );
-		});
-		
-		// Copy the SQL result objects into an array of plain objects.
-		var arr = [];
-		for( var i = 0; i < results.length; i++ ) {
-			var result = results.item(i);
-			arr.push({
-				id: result.id,
-				name: result.name,
-				guid: result.guid,
-				url: result.url,
-				username: result.username,
-				authentication: result.authentication
-			});
-		}
-	});
+function getPreviousVaults() {
+	var db = _getDatabase();
+
+    var results;
+    db.transaction( function( tx ) {
+        results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults" );
+    });
+    
+    // Copy the SQL result objects into an array of plain objects.
+    var arr = [];
+    for( var i = 0; i < results.rows.length; i++ ) {
+        var result = results.rows.item(i);
+        arr.push({
+            id: result.id,
+            name: result.name,
+            guid: result.guid,
+            url: result.url,
+            username: result.username,
+            authentication: result.authentication
+        });
+    }
+
+    return arr;
 };
 
 /**
  * Saves a vault in the list of previous vaults
  *
  * @param {object} vault Vault information
- * @param {function} [done] Callback for when the save is finished
  */
-function savePreviousVault( vault, done ) {
-	_getDatabase( function( db ) {
+function savePreviousVault( vault ) {
+	var db = _getDatabase();
 
-		db.transaction( function( tx ) {
+    db.transaction( function( tx ) {
 
-			tx.executeSql(
-				"INSERT INTO previousVaults( name, guid, url, username, authentication ) " +
-				"VALUES ( ?, ?, ?, ?, ? )",
-				vault.name, vault.guid, vault.url, vault.username, vault.authentication );
-		});
-
-		if( done ) { done(); }
-	});
+        tx.executeSql(
+            "INSERT INTO previousVaults( name, guid, url, username, authentication ) " +
+            "VALUES ( ?, ?, ?, ?, ? )",
+            [ vault.name, vault.guid, vault.url, vault.username, vault.authentication ]);
+    });
 };
 
