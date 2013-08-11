@@ -28,10 +28,10 @@
  */
 function Promise() {
 
-    // Set up the waiting queues
-    this.queue = [];
-    this.events = {};
-    this.cbArgs = null;
+	// Set up the waiting queues
+	this.queue = [];
+	this.events = {};
+	this.cbArgs = null;
 };
 
 /**
@@ -41,8 +41,8 @@ function Promise() {
  * @returns {Promise} this
  */
 Promise.prototype.done = function( cb ) {
-    this._registerCallback( 'done', cb );
-    return this;
+	this._registerCallback( 'done', cb );
+	return this;
 };
 
 /**
@@ -52,8 +52,8 @@ Promise.prototype.done = function( cb ) {
  * @returns {Promise} this
  */
 Promise.prototype.fail = function( cb ) {
-    this._registerCallback( 'fail', cb );
-    return this;
+	this._registerCallback( 'fail', cb );
+	return this;
 };
 
 /**
@@ -64,8 +64,8 @@ Promise.prototype.fail = function( cb ) {
  * @returns {Promise} this
  */
 Promise.prototype.always = function( cb ) {
-    this._registerCallback( 'always', cb );
-    return this;
+	this._registerCallback( 'always', cb );
+	return this;
 };
 
 /**
@@ -76,24 +76,24 @@ Promise.prototype.always = function( cb ) {
  */
 Promise.prototype._registerCallback = function( status, cb ) {
 
-    // Check if the promise has happened.
-    if( this.queue ) {
+	// Check if the promise has happened.
+	if( this.queue ) {
 
-        // We still have a queue so the promise hasn't happened.
-        // Add the callback to the queue.
-        this.queue.push( { on: status, callback: cb } );
-        return;
+		// We still have a queue so the promise hasn't happened.
+		// Add the callback to the queue.
+		this.queue.push( { on: status, callback: cb } );
+		return;
 
-    }
+	}
 
-    // Promise has happened. If the status matches one of the events,
-    // call it immediately.
+	// Promise has happened. If the status matches one of the events,
+	// call it immediately.
 
-    if( this.events[ status ] ) {
+	if( this.events[ status ] ) {
 
-        // If the status equals done
-        cb.apply( null, this.cbArgs );
-    }
+		// If the status equals done
+		cb.apply( null, this.cbArgs );
+	}
 }
 
 /**
@@ -104,7 +104,7 @@ Promise.prototype._registerCallback = function( status, cb ) {
  * @param {...object} var_args Parameters passed to the callback
  */
 Promise.prototype.signalDone = function() {
-    this._signalHandlers( arguments, [ 'done', 'always' ] );
+	this._signalHandlers( arguments, [ 'done', 'always' ] );
 };
 
 /**
@@ -115,7 +115,7 @@ Promise.prototype.signalDone = function() {
  * @param {...object} var_args Parameters passed to the callback
  */
 Promise.prototype.signalFail = function() {
-    this._signalHandlers( arguments, [ 'fail', 'always' ] );
+	this._signalHandlers( arguments, [ 'fail', 'always' ] );
 };
 
 /**
@@ -125,23 +125,23 @@ Promise.prototype.signalFail = function() {
  * @param {string[]} events Events that should be signaled
  */
 Promise.prototype._signalHandlers = function( args, events ) {
-    if( !this.queue ) { throw 'Promise cannot happen twice'; }
+	if( !this.queue ) { throw 'Promise cannot happen twice'; }
 
-    // Store the callback args and set up the events so we can refer to
-    // them later.
-    this.cbArgs = args;
-    this.events = {};
-    for( var e in events ) { this.events[ events[e] ] = true; }
+	// Store the callback args and set up the events so we can refer to
+	// them later.
+	this.cbArgs = args;
+	this.events = {};
+	for( var e in events ) { this.events[ events[e] ] = true; }
 
-    // Call all the handlers in the queue.
-    for( var i in this.queue ) {
-        var handler = this.queue[i];
-        if( this.events[ handler.on ] ) {
-            handler.callback.apply( null, args );
-        }
-    }
+	// Call all the handlers in the queue.
+	for( var i in this.queue ) {
+		var handler = this.queue[i];
+		if( this.events[ handler.on ] ) {
+			handler.callback.apply( null, args );
+		}
+	}
 
-    // Remove the queue so promise callbacks are invoked immediately.
-    this.queue = null;
+	// Remove the queue so promise callbacks are invoked immediately.
+	this.queue = null;
 };
 

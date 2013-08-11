@@ -33,18 +33,18 @@ function HttpClient( options ) {
 
 	this.baseUrl = "";
 
-    // Headers are not stored as normal default options.
-    this.headers = options && options.headers || {};
+	// Headers are not stored as normal default options.
+	this.headers = options && options.headers || {};
 	if( options ) { delete options.headers; }
 
-    this.defaultOptions = {
-        contentType: 'application/json',
-        serialize: 'json',
-    }
+	this.defaultOptions = {
+		contentType: 'application/json',
+		serialize: 'json',
+	}
 
-    for( var o in options ) {
-        this.defaultOptions[ o ] = options[ o ];
-    }
+	for( var o in options ) {
+		this.defaultOptions[ o ] = options[ o ];
+	}
 };
 
 /**
@@ -54,7 +54,7 @@ function HttpClient( options ) {
  * @param {string} value Header value
  */
 HttpClient.prototype.setHeader = function( name, value ) {
-    this.headers[ name ] = value;
+	this.headers[ name ] = value;
 }
 
 /**
@@ -66,7 +66,7 @@ HttpClient.prototype.setHeader = function( name, value ) {
  * @returns {Promise} Promise for queueing return handlers
  */
 HttpClient.prototype.get = function( url, options, done ) {
-    return this._performRequest( 'GET', url, null, options, done );
+	return this._performRequest( 'GET', url, null, options, done );
 }
 
 /**
@@ -78,7 +78,7 @@ HttpClient.prototype.get = function( url, options, done ) {
  * @returns {Promise} Promise for queueing return handlers
  */
 HttpClient.prototype.delete = function( url, options, done ) {
-    return this._performRequest( 'DELETE', url, null, options, done );
+	return this._performRequest( 'DELETE', url, null, options, done );
 }
 
 /**
@@ -91,7 +91,7 @@ HttpClient.prototype.delete = function( url, options, done ) {
  * @returns {Promise} Promise for queueing return handlers
  */
 HttpClient.prototype.post = function( url, data, options, done ) {
-    return this._performRequest( 'POST', url, data, options, done );
+	return this._performRequest( 'POST', url, data, options, done );
 }
 
 /**
@@ -104,7 +104,7 @@ HttpClient.prototype.post = function( url, data, options, done ) {
  * @returns {Promise} Promise for queueing return handlers
  */
 HttpClient.prototype.put = function( url, data, options, done ) {
-    return this._performRequest( 'PUT', url, data, options, done );
+	return this._performRequest( 'PUT', url, data, options, done );
 }
 
 /**
@@ -118,42 +118,41 @@ HttpClient.prototype.put = function( url, data, options, done ) {
  * @returns {Promise} Promise for the finished request
  */
 HttpClient.prototype._performRequest = function( verb, url, data, options, done ) {
-    // Handle (verb, url, data, done) args
-    if( options instanceof Function ) { done = options; options = {}; }
+	// Handle (verb, url, data, done) args
+	if( options instanceof Function ) { done = options; options = {}; }
 
-    // Merge options with default ones
-    options = Utils.merge( options || {}, this.defaultOptions );
+	// Merge options with default ones
+	options = Utils.merge( options || {}, this.defaultOptions );
 
-    // Construct the XHR
-    var promise = new Promise.Promise();
-    var xhr = getXHR( promise );
+	// Construct the XHR
+	var promise = new Promise.Promise();
+	var xhr = getXHR( promise );
 
-    // Open and prepare the request
-    xhr.open( verb, this.baseUrl + url );
-    this._setHeaders( xhr, options.headers );
+	// Open and prepare the request
+	xhr.open( verb, this.baseUrl + url );
+	this._setHeaders( xhr, options.headers );
 
-    // Handle data formats
-    if( data ) {
-        if( options.serialize === 'json' ) {
-            data = JSON.stringify( data );
-        }
+	// Handle data formats
+	if( data ) {
+		if( options.serialize === 'json' ) {
+			data = JSON.stringify( data );
+		}
 
-        xhr.setRequestHeader( 'Content-Type', options.contentType );
-    }
+		xhr.setRequestHeader( 'Content-Type', options.contentType );
+	}
 
-    // Send the request
-    xhr.send( data );
+	// Send the request
+	xhr.send( data );
 
-    // If we got done callback, register it for the promise.
-    // We need to mangle the parameters from the promise-style callback to
-    // node-style callback here.
-    if( done ) {
-		console.log( "Registering Node callbacks" );
-        promise.done( function( value, xhr ) { console.log( "Node OK" ); done( null, value, xhr ); } );
-        promise.fail( function( err, xhr ) { console.log( "Node fail" );done( err, null, xhr ); } );
-    }
+	// If we got done callback, register it for the promise.
+	// We need to mangle the parameters from the promise-style callback to
+	// node-style callback here.
+	if( done ) {
+		promise.done( function( value, xhr ) { done( null, value, xhr ); } );
+		promise.fail( function( err, xhr ) { done( err, null, xhr ); } );
+	}
 
-    return promise;
+	return promise;
 };
 
 /**
@@ -164,36 +163,32 @@ HttpClient.prototype._performRequest = function( verb, url, data, options, done 
  */
 function getXHR( promise ) {
 
-    // Create the XHR and register ready state change handler
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
+	// Create the XHR and register ready state change handler
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
 
-        // The request is completely finished on readyState 4
-        if( xhr.readyState === 4 ) {
+		// The request is completely finished on readyState 4
+		if( xhr.readyState === 4 ) {
 
-            // Unserialize the response content
-            var responseType = xhr.getResponseHeader('Content-Type');
-            var response = null;
-            if( responseType.indexOf('/json') !== -1 ) {
-                response = JSON.parse( xhr.responseText );
-            }
+			// Unserialize the response content
+			var responseType = xhr.getResponseHeader('Content-Type');
+			var response = null;
+			if( responseType.indexOf('/json') !== -1 ) {
+				response = JSON.parse( xhr.responseText );
+			}
 
-            // Signal success on status 200, otherwise raise error.
-            // Technically status <400 is success, but we don't support
-            // redirects, etc. for now.
-			console.log( "HTTP response, status: " + xhr.status );
-			console.log( JSON.stringify( response, undefined, 2 ) );
-            if( xhr.status === 200 ) {
-                promise.signalDone( response, xhr );
-            } else {
-                console.log( "Error: " );
-                console.log( JSON.stringify( response, undefined, 2 ) );
-                promise.signalFail( response, xhr );
-            }
-        }
-    };
+			// Signal success on status 200, otherwise raise error.
+			// Technically status <400 is success, but we don't support
+			// redirects, etc. for now.
+			if( xhr.status === 200 ) {
+				promise.signalDone( response, xhr );
+			} else {
+				promise.signalFail( response, xhr );
+			}
+		}
+	};
 
-    return xhr;
+	return xhr;
 };
 
 /**
@@ -204,20 +199,20 @@ function getXHR( promise ) {
  */
 HttpClient.prototype._setHeaders = function( xhr, additionalHeaders ) {
 
-    var headerName, headerValue;
+	var headerName, headerValue;
 
-    // Set the default headers
-    for( headerName in this.headers ) {
-        var headerValue = this.headers[ headerName ];
-        xhr.setRequestHeader( headerName, headerValue );
-    }
+	// Set the default headers
+	for( headerName in this.headers ) {
+		var headerValue = this.headers[ headerName ];
+		xhr.setRequestHeader( headerName, headerValue );
+	}
 
-    // If no additional headers were specified, we're done here.
-    if( !additionalHeaders ) { return; }
+	// If no additional headers were specified, we're done here.
+	if( !additionalHeaders ) { return; }
 
-    // Set additional headers
-    for( headerName in additionalHeaders ) {
-        var headerValue = additionalHeaders[ headerName ];
-        xhr.setRequestHeader( headerName, headerValue );
-    }
+	// Set additional headers
+	for( headerName in additionalHeaders ) {
+		var headerValue = additionalHeaders[ headerName ];
+		xhr.setRequestHeader( headerName, headerValue );
+	}
 };

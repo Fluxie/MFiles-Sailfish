@@ -29,18 +29,18 @@
  * @param {Button} addNewVaultButton New vault button in the pull down menu
  */
 function initialize( model, newVaultInfo, addNewVaultButton ) {
-    DBAO.initialize();
-    var vaults = DBAO.getPreviousVaults();
+	DBAO.initialize();
+	var vaults = DBAO.getPreviousVaults();
 
-    if( vaults.length === 0 ) {
-        addNewVaultButton.visible = false;
-        newVaultInfo.visible = true;
-    } else {
-        for( var v in vaults ) {
-            var vault = vaults[v];
-            model.append(vault);
-        }
-    }
+	if( vaults.length === 0 ) {
+		addNewVaultButton.visible = false;
+		newVaultInfo.visible = true;
+	} else {
+		for( var v in vaults ) {
+			var vault = vaults[v];
+			model.append(vault);
+		}
+	}
 }
 
 /**
@@ -54,28 +54,28 @@ function initialize( model, newVaultInfo, addNewVaultButton ) {
  */
 function logInToNewVault( url, username, password, rememberPassword, done ) {
 
-    // Log in to application and get list of vaults.
-    _getVaults( url, username, password, function( err, vaults ) {
-        if( err ) { return done( err ); }
+	// Log in to application and get list of vaults.
+	_getVaults( url, username, password, function( err, vaults ) {
+			if( err ) { return done( err ); }
 
-        // Display the vault selection list
-        _selectVault( vaults, function( err, vault ) {
-            if( err ) { return done( err ); }
+			// Display the vault selection list
+			_selectVault( vaults, function( err, vault ) {
+				if( err ) { return done( err ); }
 
-            // Fill the application level properties.
-            vault.url = url;
-            vault.username = username;
+				// Fill the application level properties.
+				vault.url = url;
+				vault.username = username;
 
-            // Make sure the selected vault is valid before navigating away
-            _testVault( vault, function( err ) {
-                if( err ) { return done( err ); }
+				// Make sure the selected vault is valid before navigating away
+				_testVault( vault, function( err ) {
+					if( err ) { return done( err ); }
 
-                // Save the vault and proceed.
-                _saveVault( vault, rememberPassword );
-                _useVault( vault, true );
-            });
-        });
-    });
+					// Save the vault and proceed.
+					_saveVault( vault, rememberPassword );
+					_useVault( vault, true );
+					});
+				});
+			});
 }
 
 /**
@@ -89,39 +89,39 @@ function logInToNewVault( url, username, password, rememberPassword, done ) {
 function logInToVault( vault, password, rememberPassword, done ) {
 
 
-    console.log("FFFFUUUUUUUUUUUUUUUUUUUUUU: " + vault.authentication);
-    console.log( typeof( vault.authentication ) );
-    console.log( rememberPassword );
+	console.log("FFFFUUUUUUUUUUUUUUUUUUUUUU: " + vault.authentication);
+	console.log( typeof( vault.authentication ) );
+	console.log( rememberPassword );
 
-    // If password shouldn't be remembered, clear it from the vault.
-    // This is done in case it was remembered previously.
-    if( !rememberPassword ) { vault.authentication = null; }
+	// If password shouldn't be remembered, clear it from the vault.
+	// This is done in case it was remembered previously.
+	if( !rememberPassword ) { vault.authentication = null; }
 
-    // If there are no saved authentication details,
-    // attempt to log in with password.
-    if( !vault.authentication ) {
-        _getToken( vault.url, vault.username, password, vault.guid, function( err, token ) {
-            if( err ) { return done( err ); }
+	// If there are no saved authentication details,
+	// attempt to log in with password.
+	if( !vault.authentication ) {
+		_getToken( vault.url, vault.username, password, vault.guid, function( err, token ) {
+				if( err ) { return done( err ); }
 
-            // Store the authenticationt oken so the main screen can use it.
-            vault.authentication = token;
-            console.log( "Token: " + token );
-            console.log( "vault.auth: " + vault.authentication );
-            
-            // Login succeeded, save possible changes and proceed.
-            console.log("Saving vault info. Remembering password? " + rememberPassword );
-            _saveVault( vault, rememberPassword );
-            console.log( "Displaying vault home ");
-            _useVault( vault, false );
-        });
-    } else {
-        
-        // If the vault has saved authentication details use those.
-        // Just make sure they are valid first.
-        _testVault( vault, function( err ) {
-            _useVault( vault, false );
-        });
-    }
+				// Store the authenticationt oken so the main screen can use it.
+				vault.authentication = token;
+				console.log( "Token: " + token );
+				console.log( "vault.auth: " + vault.authentication );
+
+				// Login succeeded, save possible changes and proceed.
+				console.log("Saving vault info. Remembering password? " + rememberPassword );
+				_saveVault( vault, rememberPassword );
+				console.log( "Displaying vault home ");
+				_useVault( vault, false );
+				});
+	} else {
+
+		// If the vault has saved authentication details use those.
+		// Just make sure they are valid first.
+		_testVault( vault, function( err ) {
+				_useVault( vault, false );
+				});
+	}
 }
 
 /**
@@ -132,32 +132,32 @@ function logInToVault( vault, password, rememberPassword, done ) {
  */
 function _selectVault( vaults, done ) {
 
-    // Display the vault selection dialog
-    var page = pageStack.push( "SelectVaultDialog.qml" );
-    for( var v in vaults ) {
-        page.listModel.append({
-            name: vaults[v].Name,
-            guid: vaults[v].GUID,
-            authentication: vaults[v].Authentication
-        });
-    }
+	// Display the vault selection dialog
+	var page = pageStack.push( "SelectVaultDialog.qml" );
+	for( var v in vaults ) {
+		page.listModel.append({
+name: vaults[v].Name,
+guid: vaults[v].GUID,
+authentication: vaults[v].Authentication
+});
+}
 
-    // Once the vault is selected, signal the caller.
-    // In this case the caller is responsible for popping
-    // or replacing the dialog.
-    page.accepted.connect( function() {
-        done( null, {
-            name: page.vaultName,
-            guid: page.vaultGuid,
-            authentication: page.vaultAuthentication
-        });
-    });
+// Once the vault is selected, signal the caller.
+// In this case the caller is responsible for popping
+// or replacing the dialog.
+page.accepted.connect( function() {
+		done( null, {
+name: page.vaultName,
+guid: page.vaultGuid,
+authentication: page.vaultAuthentication
+});
+		});
 
-    // Pop the vault select dialog away on reject.
-    page.rejected.connect( function() {
-        pageStack.pop();
-        done();
-    });
+// Pop the vault select dialog away on reject.
+page.rejected.connect( function() {
+		pageStack.pop();
+		done();
+		});
 };
 
 /**
@@ -169,11 +169,11 @@ function _selectVault( vaults, done ) {
  * @param {function} done Receives the list of vaults
  */
 function _getVaults( url, username, password, done ) {
-    var client = new Http.HttpClient();
-    client.headers[ 'X-Username' ] = username;
-    client.headers[ 'X-Password' ] = password;
+	var client = new Http.HttpClient();
+	client.headers[ 'X-Username' ] = username;
+	client.headers[ 'X-Password' ] = password;
 
-    client.get( url + '/REST/server/vaults', done );
+	client.get( url + '/REST/server/vaults', done );
 }
 
 /**
@@ -188,23 +188,23 @@ function _saveVault( vault, rememberPassword ) {
 
 function _getToken( url, username, password, guid, done ) {
 	var client = new Http.HttpClient();
-    client.headers[ 'X-Username' ] = username;
-    client.headers[ 'X-Password' ] = password;
-    client.headers[ 'X-Vault' ] = guid;
-    client.get( url + '/REST/session/vault', function( err, vault ) {
-        if( err ) { return done(err); }
-        done( null, vault.Authentication );
-    });
+	client.headers[ 'X-Username' ] = username;
+	client.headers[ 'X-Password' ] = password;
+	client.headers[ 'X-Vault' ] = guid;
+	client.get( url + '/REST/session/vault', function( err, vault ) {
+			if( err ) { return done(err); }
+			done( null, vault.Authentication );
+			});
 
-    // "Real" way of getting the token is to post to authentiontokens.
-    // However this doesn't validate the token by performing login.
-    // /session/vault should login.
-    //
-    // client.post( url + '/REST/server/authenticationtokens', {
-    //     Username: username,
-    //     Password: password,
-    //     VaultGuid: guid
-    // }, done );
+	// "Real" way of getting the token is to post to authentiontokens.
+	// However this doesn't validate the token by performing login.
+	// /session/vault should login.
+	//
+	// client.post( url + '/REST/server/authenticationtokens', {
+	//     Username: username,
+	//     Password: password,
+	//     VaultGuid: guid
+	// }, done );
 }
 
 /**
@@ -218,9 +218,9 @@ function _testVault( vault, done ) {
 	var client = new Http.HttpClient();
 	client.headers[ 'X-Authentication' ] = vault.authentication;
 	client.get( vault.url + '/REST/session', function( err, sessionInfo ) {
-        if( err ) { return done(err); }
-        return done();
-    });
+			if( err ) { return done(err); }
+			return done();
+			});
 };
 
 /**
@@ -230,15 +230,15 @@ function _testVault( vault, done ) {
  */
 function _useVault( vault, replace ) {
 
-    var dialog;
-    if( replace ) {
-        dialog = pageStack.replace( "VaultHome.qml" );
-    } else {
-        dialog = pageStack.push( "VaultHome.qml" );
-    }
+	var dialog;
+	if( replace ) {
+		dialog = pageStack.replace( "VaultHome.qml" );
+	} else {
+		dialog = pageStack.push( "VaultHome.qml" );
+	}
 
-    dialog.vaultName = vault.name;
-    dialog.mfwaUrl = vault.url;
-    dialog.authentication = vault.authentication;
-    dialog.initialize();
+	dialog.vaultName = vault.name;
+	dialog.mfwaUrl = vault.url;
+	dialog.authentication = vault.authentication;
+	dialog.initialize();
 }

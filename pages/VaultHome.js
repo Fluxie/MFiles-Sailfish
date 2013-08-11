@@ -42,19 +42,19 @@ function _getClient( page ) {
  */
 function initialize( page, favorites ) {
 
-	
+
 	// Get the favorites listing from M-Files
 	var client = _getClient( page );
 	client.get( '/favorites', function( err, favoriteObjects ) {
-		
-		// Append the individual results to the list model
-		for( var f in favoriteObjects ) {
+
+			// Append the individual results to the list model
+			for( var f in favoriteObjects ) {
 			var ov = favoriteObjects[f];
 
 			favorites.favoritesList.append({
-				title: ov.Title,
-				className: ov.Class
+title: ov.Title,
+className: ov.Class
+});
+			}
 			});
-		}
-	});
 }

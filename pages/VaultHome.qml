@@ -18,7 +18,6 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
@@ -27,10 +26,10 @@ import "VaultHome.js" as Logic
 
 Page {
 
-    id: page
+	id: page
 
 	property string mfwaUrl: ''
-    property string authentication: ''
+	property string authentication: ''
 	property string vaultName: ''
 
 	function initialize() {

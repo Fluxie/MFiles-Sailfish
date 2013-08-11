@@ -27,25 +27,25 @@
  * @returns {object} Copy
  */
 function deepCopy( obj ) {
-    // Check the trivial cases.
-    if( obj === null ) { return null; }
-    if( obj === undefined ) { return undefined; }
+	// Check the trivial cases.
+	if( obj === null ) { return null; }
+	if( obj === undefined ) { return undefined; }
 
-    var c;
+	var c;
 
-    // If this is a complex type, construct it properly.
-    if( obj instanceof Array ) { c = []; }
-    else if( obj instanceof Object ) { c = {}; }
+	// If this is a complex type, construct it properly.
+	if( obj instanceof Array ) { c = []; }
+	else if( obj instanceof Object ) { c = {}; }
 
-    // c is initialized now only if it should be a complex type.
-    // Both of these are constructed in the same way through a for-loop.
-    if( c !== undefined ) {
-        for( var i in obj ) { c[i] = deepCopy( obj[i] ); }
-        return c;
-    }
+	// c is initialized now only if it should be a complex type.
+	// Both of these are constructed in the same way through a for-loop.
+	if( c !== undefined ) {
+		for( var i in obj ) { c[i] = deepCopy( obj[i] ); }
+		return c;
+	}
 
-    // Object isn't a complex type. No need for a copy.
-    return obj;
+	// Object isn't a complex type. No need for a copy.
+	return obj;
 };
 
 /**
@@ -55,11 +55,11 @@ function deepCopy( obj ) {
  * @param {objec} defaults Options to merge from
  */
 function merge( options, defaults ) {
-    for( var d in defaults ) {
-        if( options[d] === undefined ) {
-            options[d] = defaults[d];
-        }
-    }
+	for( var d in defaults ) {
+		if( options[d] === undefined ) {
+			options[d] = defaults[d];
+		}
+	}
 
 	return options;
 };
