@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=MFiles-Sailfish
+Icon=icon-launcher-gallery
+Exec=invoker --type=silica-qt5 -s /usr/bin/MFiles-Sailfish
+Comment=Sailfish UI application
+
+
