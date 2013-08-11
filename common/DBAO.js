@@ -100,7 +100,7 @@ function getPreviousVaults() {
 
     var results;
     db.transaction( function( tx ) {
-        results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults" );
+        results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults ORDER BY name" );
     });
     
     // Copy the SQL result objects into an array of plain objects.
@@ -125,15 +125,29 @@ function getPreviousVaults() {
  *
  * @param {object} vault Vault information
  */
-function savePreviousVault( vault ) {
+function savePreviousVault( vault, rememberPassword ) {
 	var db = _getDatabase();
+
+    // If we shouldn't remember password, store authentication as null.
+    var auth = rememberPassword ? vault.authentication : null;
+    console.log( "DBAO, auth: " + auth );
+    console.log( "DBAO, authentication: " + vault.authentication );
 
     db.transaction( function( tx ) {
 
-        tx.executeSql(
-            "INSERT INTO previousVaults( name, guid, url, username, authentication ) " +
-            "VALUES ( ?, ?, ?, ?, ? )",
-            [ vault.name, vault.guid, vault.url, vault.username, vault.authentication ]);
+        if( vault.id === null || vault.id === undefined ) {
+            console.log( "New vault. Creating new" );
+            tx.executeSql(
+                "INSERT INTO previousVaults( name, guid, url, username, authentication ) " +
+                "VALUES ( ?, ?, ?, ?, ? )",
+                [ vault.name, vault.guid, vault.url, vault.username, auth ]);
+        } else {
+            console.log( "Saving over old one. Authentication:" + auth );
+            tx.executeSql(
+                "UPDATE previousVaults SET name=?, username=?, authentication=? WHERE id=?",
+                [ vault.name, vault.username, auth, vault.id ]);
+        }
     });
+    console.log( "Done saving ");
 };
 

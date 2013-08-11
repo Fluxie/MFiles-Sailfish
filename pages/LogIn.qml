@@ -79,19 +79,18 @@ Page {
                     page.newVaultInfo = newVaultInfo;
                 }
 
-				function logInNewVault() {
-					Logic.selectVault( url.text, username.text, password.text, function( err, vault ) {
-						if( err ) {
-							error.visible = true;
-							error.text = err.message;
-							return;
-						}
-
-						if( vault ) {
-							Logic.saveVault( vault );
-							Logic.useVault( vault, true );
-						}
-					})
+				function logInToNewVault() {
+                    Logic.logInToNewVault(
+                        url.text,
+                        username.text,
+                        password.text,
+                        rememberPasswordChoice.checked,
+                        function( err ) {
+                            if( err ) {
+                                error.visible = true;
+                                error.text = err.message;
+                            }
+                        });
 				}
 
                 TextField {
@@ -126,19 +125,18 @@ Page {
                     placeholderText: "Password"
                     horizontalAlignment: textAlignment
                     EnterKey.onClicked: {
-						newVaultInfo.logInNewVault();
+						newVaultInfo.logInToNewVault();
                     }
                 }
                 TextSwitch {
                     id: rememberPasswordChoice
                     text: "Remember password"
                 }
-
                 Button {
                     text: "Log in"
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
-						newVaultInfo.logInNewVault();
+						newVaultInfo.logInToNewVault();
                     }
                 }
 				TextField {
@@ -152,21 +150,109 @@ Page {
 
         delegate: ListItem {
             id: listItem
+            width: ListView.view.width
+            clip: true
+
+            function logInToVault() {
+
+                Logic.logInToVault(
+                    {
+                        id: model.id,
+                        name: model.name,
+                        url: model.url,
+                        guid: model.guid,
+                        username: username.text,
+                        authentication: model.authentication
+                    },
+                    password.text,
+                    rememberPasswordChoice.checked,
+                    function( err ) {
+                        if( err ) {
+                            details.visible = true;
+                            errorMsg.visible = true;
+                            errorMsg.text = err.Message;
+                        }
+                    });
+            }
 
             onClicked: {
-                Logic.useVault( model, false );
+                if( !model.authentication ) {
+                    console.log( "FFFFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUUUUU" );
+                    console.log( page.width );
+                    console.log( listItem.width );
+                    console.log( details.width );
+                    expandItem.start();
+                } else {
+                    logInToVault();
+                }
+            }
+
+            PropertyAnimation {
+                id: expandItem
+                target: listItem
+                properties: "contentHeight"
+                to: 450
+                duration: 100
+            }
+
+            Label {
+                id: vaultNameLabel
+                text: model.name
+                x: Theme.paddingLarge
+            }
+
+            Label {
+                id: usernameLabel
+                text: model.username
+                x: Theme.paddingLarge * 2
+                anchors.top: vaultNameLabel.bottom
             }
 
             Column {
-                Label {
-                    text: model.name
-                    x: Theme.paddingLarge
+                id: details
+                anchors.top: usernameLabel.bottom
+                x: Theme.paddingLarge * 3
+                width: parent.width - x
+                visible: true
+
+                TextField {
+                    id: username
+                    text: model.username;
+                    width: parent.width
+                    label: "Username"
+                    placeholderText: "Username"
+                    horizontalAlignment: textAlignment
+                    EnterKey.onClicked: {
+                        password.focus = true;
+                    }
+                }
+                TextField {
+                    id: password
+                    echoMode: TextInput.Password
+                    width: parent.width
+                    label: "Password"
+                    placeholderText: "Password"
+                    horizontalAlignment: textAlignment
+                    EnterKey.onClicked: {
+                        listItem.logInToVault();
+                    }
+                }
+                TextSwitch {
+                    id: rememberPasswordChoice
+                    checked: model.authentication
+                    width: parent.width
+                    text: "Remember password"
+                }
+                Button {
+                    text: "Log in"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    onClicked: {
+                        console.log( "STAB" );
+                        listItem.logInToVault();
+                    }
                 }
 
-                Label {
-                    text: model.username
-                    x: Theme.paddingLarge * 2
-                }
+                Label { id: errorMsg }
             }
         }
     }
