@@ -20,6 +20,7 @@
 
 .import '../common/http.js' as Http
 .import '../common/DBAO.js' as DBAO
+.import '../common/structs.js' as Structs
 
 /**
  * Initialize the login screen
@@ -30,12 +31,15 @@
  */
 function initialize( model, newVaultInfo, addNewVaultButton ) {
 	DBAO.initialize();
+	model.clear();
 	var vaults = DBAO.getPreviousVaults();
 
 	if( vaults.length === 0 ) {
 		addNewVaultButton.visible = false;
 		newVaultInfo.visible = true;
 	} else {
+		addNewVaultButton.visible = true;
+		newVaultInfo.visible = false;
 		for( var v in vaults ) {
 			var vault = vaults[v];
 			model.append(vault);
@@ -56,26 +60,56 @@ function logInToNewVault( url, username, password, rememberPassword, done ) {
 
 	// Log in to application and get list of vaults.
 	_getVaults( url, username, password, function( err, vaults ) {
-			if( err ) { return done( err ); }
+		if( err ) { return done( err ); }
 
-			// Display the vault selection list
-			_selectVault( vaults, function( err, vault ) {
-				if( err ) { return done( err ); }
+		// Display the vault selection list
+		_selectVault( vaults, function( err, vault ) {
+			if( err ) {
+				// Pop the select vault dialog away
+				pageStack.pop();
+				return done( err );
+			}
 
-				// Fill the application level properties.
-				vault.url = url;
-				vault.username = username;
+			// Fill the application level properties.
+			vault.url = url;
+			vault.username = username;
 
-				// Make sure the selected vault is valid before navigating away
-				_testVault( vault, function( err ) {
-					if( err ) { return done( err ); }
+			// Make sure the selected vault is valid before navigating away
+			_testVault( vault, function( err ) {
+				if( err ) {
+					// Pop the select vault dialog away
+					pageStack.pop();
+					return done( err );
+				}
 
-					// Save the vault and proceed.
-					_saveVault( vault, rememberPassword );
-					_useVault( vault, true );
-					});
-				});
+				// Create the representation for the saved vault.
+				// If password is remembered, this is the full vault.
+				// Otherwise we need to make a copy and save the vault
+				// without auth info.
+				var savedVault = vault;
+				if( !rememberPassword ) {
+					savedVault = new Structs.Vault( vault );
+					savedVault.authentication = '';
+				}
+
+				// Save the vault
+				DBAO.saveVault( savedVault );
+
+				// In case the savedVault was a copy of the vault,
+				// copy the id back to the original vault.
+				vault.id = savedVault.id;
+
+				// Navigate to the vault screen.
+				// The topmost page is the vault selection so replace it
+				// instead of pushing on top of it.
+				_useVault( vault, true );
+
+				// Signal the done handler to update the list in case we
+				// come back to the log in view.
+				done( null, savedVault );
 			});
+		});
+	});
 }
 
 /**
@@ -84,14 +118,9 @@ function logInToNewVault( url, username, password, rememberPassword, done ) {
  * @param {Vault} vault Vault record
  * @param {string} password Password typed by the user
  * @param {bool} rememberPassword true if password should be saved
- * @param {function} done Callback
+ * @param {function} done Callback receiving error or saved data
  */
 function logInToVault( vault, password, rememberPassword, done ) {
-
-
-	console.log("FFFFUUUUUUUUUUUUUUUUUUUUUU: " + vault.authentication);
-	console.log( typeof( vault.authentication ) );
-	console.log( rememberPassword );
 
 	// If password shouldn't be remembered, clear it from the vault.
 	// This is done in case it was remembered previously.
@@ -100,34 +129,39 @@ function logInToVault( vault, password, rememberPassword, done ) {
 	// If there are no saved authentication details,
 	// attempt to log in with password.
 	if( !vault.authentication ) {
-		_getToken( vault.url, vault.username, password, vault.guid, function( err, token ) {
-				if( err ) { return done( err ); }
+		_getToken( vault, password, function( err, token ) {
+			if( err ) { return done( err ); }
 
-				// Store the authenticationt oken so the main screen can use it.
-				vault.authentication = token;
-				console.log( "Token: " + token );
-				console.log( "vault.auth: " + vault.authentication );
+			// Store the authentication token so the main screen can use it.
+			vault.authentication = token;
 
-				// Login succeeded, save possible changes and proceed.
-				console.log("Saving vault info. Remembering password? " + rememberPassword );
-				_saveVault( vault, rememberPassword );
-				console.log( "Displaying vault home ");
-				_useVault( vault, false );
-				});
+			// Login succeeded, save possible changes and proceed.
+			DBAO.saveVault( vault, rememberPassword );
+			_useVault( vault, false );
+
+			done( null, vault );
+		});
+
 	} else {
 
 		// If the vault has saved authentication details use those.
 		// Just make sure they are valid first.
 		_testVault( vault, function( err ) {
-				_useVault( vault, false );
-				});
+			_useVault( vault, false );
+			done( null, vault );
+		});
 	}
+}
+
+function resetDatabase() {
+	DBAO.dropDatabase();
+	DBAO.initialize();
 }
 
 /**
  * Display the vault select dialog and retrieve the selected vault
  *
- * @param {Vault[]} vaults Collection of vaults to select from
+ * @param {MFWS.Vault[]} vaults Collection of vaults to select from
  * @param {function} done Callback to receive the vault
  */
 function _selectVault( vaults, done ) {
@@ -136,28 +170,28 @@ function _selectVault( vaults, done ) {
 	var page = pageStack.push( "SelectVaultDialog.qml" );
 	for( var v in vaults ) {
 		page.listModel.append({
-name: vaults[v].Name,
-guid: vaults[v].GUID,
-authentication: vaults[v].Authentication
-});
-}
-
-// Once the vault is selected, signal the caller.
-// In this case the caller is responsible for popping
-// or replacing the dialog.
-page.accepted.connect( function() {
-		done( null, {
-name: page.vaultName,
-guid: page.vaultGuid,
-authentication: page.vaultAuthentication
-});
+			name: vaults[v].Name,
+			guid: vaults[v].GUID,
+			authentication: vaults[v].Authentication
 		});
+	}
 
-// Pop the vault select dialog away on reject.
-page.rejected.connect( function() {
+	// Once the vault is selected, signal the caller.
+	// In this case the caller is responsible for popping
+	// or replacing the dialog.
+	page.accepted.connect( function() {
+		done( null, {
+			name: page.vaultName,
+			guid: page.vaultGuid,
+			authentication: page.vaultAuthentication
+		});
+	});
+
+	// Pop the vault select dialog away on reject.
+	page.rejected.connect( function() {
 		pageStack.pop();
 		done();
-		});
+	});
 };
 
 /**
@@ -176,25 +210,15 @@ function _getVaults( url, username, password, done ) {
 	client.get( url + '/REST/server/vaults', done );
 }
 
-/**
- * Saves the vault to the list of previous vaults
- *
- * @param {object} vault Vault information
- * @param {function} done Callback for when the save completes
- */
-function _saveVault( vault, rememberPassword ) {
-	DBAO.savePreviousVault( vault, rememberPassword );
-}
-
-function _getToken( url, username, password, guid, done ) {
+function _getToken( vault, password, done ) {
 	var client = new Http.HttpClient();
-	client.headers[ 'X-Username' ] = username;
+	client.headers[ 'X-Username' ] = vault.username;
 	client.headers[ 'X-Password' ] = password;
-	client.headers[ 'X-Vault' ] = guid;
-	client.get( url + '/REST/session/vault', function( err, vault ) {
-			if( err ) { return done(err); }
-			done( null, vault.Authentication );
-			});
+	client.headers[ 'X-Vault' ] = vault.guid;
+	client.get( vault.url + '/REST/session/vault', function( err, vault ) {
+		if( err ) { return done(err); }
+		done( null, vault.Authentication );
+	});
 
 	// "Real" way of getting the token is to post to authentiontokens.
 	// However this doesn't validate the token by performing login.
@@ -218,9 +242,9 @@ function _testVault( vault, done ) {
 	var client = new Http.HttpClient();
 	client.headers[ 'X-Authentication' ] = vault.authentication;
 	client.get( vault.url + '/REST/session', function( err, sessionInfo ) {
-			if( err ) { return done(err); }
-			return done();
-			});
+		if( err ) { return done(err); }
+		return done();
+	});
 };
 
 /**

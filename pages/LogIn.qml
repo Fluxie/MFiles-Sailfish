@@ -22,7 +22,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
 import "LogIn.js" as Logic
-
+import "../common/structs.js" as Structs
 
 Page {
 
@@ -52,6 +52,14 @@ Page {
 					page.newVaultInfo.visible = true;
 				}
 			}
+
+			MenuItem {
+				text: "Reset database"
+				onClicked: {
+					Logic.resetDatabase();
+					Logic.initialize( listView.listModel, newVaultInfo, addNewVaultButton );
+				}
+			}
 		}
 
 		// Tell SilicaFlickable the height of its content.
@@ -69,193 +77,64 @@ Page {
 			// A second column to hold the login inputs so we can hide it
 			// in the case we have previous vaults to show by default
 			// The "new vault" pull down menu action should show this in that case
-			Column {
+			LogInNewVaultDetails {
 				id: newVaultInfo
-				width: page.width
-				visible: false
-				spacing: Theme.paddingSmall
 
 				Component.onCompleted: {
 					page.newVaultInfo = newVaultInfo;
 				}
 
-				function logInToNewVault() {
+				onLogInRequested: {
 					Logic.logInToNewVault(
-						url.text,
-						username.text,
-						password.text,
-						rememberPasswordChoice.checked,
-						function( err ) {
+						url, username, password, rememberPassword,
+						function( err, vault ) {
 							if( err ) {
-								error.visible = true;
-								error.text = err.message;
+								return newVaultInfo.showError( err );
 							}
+
+							// Append the vault to the vault list.
+							// TODO: Keep list sorted by inserting vault to
+							//       the correct spot.
+							listView.listModel.append( vault );
+							page.newVaultInfo.visible = false;
+							page.newVaultInfo.clear();
 						});
-					}
-
-					TextField {
-						id: url
-						text: "http://192.168.0.103/m-files"
-						width: parent.width
-						label: "Web Access URL"
-						placeholderText: "M-Files Web Access URL"
-						focus: true
-						horizontalAlignment: textAlignment
-						EnterKey.onClicked: {
-							username.focus = true;
-						}
-					}
-					TextField {
-						id: username
-						text: "test"
-						width: parent.width
-						label: "Username"
-						placeholderText: "Username"
-						horizontalAlignment: textAlignment
-						EnterKey.onClicked: {
-							password.focus = true;
-						}
-					}
-					TextField {
-						id: password
-						echoMode: TextInput.Password
-						text: "test"
-						width: parent.width
-						label: "Password"
-						placeholderText: "Password"
-						horizontalAlignment: textAlignment
-						EnterKey.onClicked: {
-							newVaultInfo.logInToNewVault();
-						}
-					}
-					TextSwitch {
-						id: rememberPasswordChoice
-						text: "Remember password"
-					}
-					Button {
-						text: "Log in"
-						anchors.horizontalCenter: parent.horizontalCenter
-						onClicked: {
-							newVaultInfo.logInToNewVault();
-						}
-					}
-					TextField {
-						id: error
-						width: parent.width
-						horizontalAlignment: Text.AlignCenter
-						visible: false
-					}
-				}
-			}
-
-			delegate: ListItem {
-				id: listItem
-				width: ListView.view.width
-				clip: true
-
-				function logInToVault() {
-
-					Logic.logInToVault(
-						{
-							id: model.id,
-							name: model.name,
-							url: model.url,
-							guid: model.guid,
-							username: username.text,
-							authentication: model.authentication
-						},
-						password.text,
-						rememberPasswordChoice.checked,
-						function( err ) {
-							if( err ) {
-								details.visible = true;
-								errorMsg.visible = true;
-								errorMsg.text = err.Message;
-							}
-						});
-					}
-
-					onClicked: {
-						if( !model.authentication ) {
-							console.log( "FFFFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUUUUU" );
-							console.log( page.width );
-							console.log( listItem.width );
-							console.log( details.width );
-							expandItem.start();
-						} else {
-							logInToVault();
-						}
-					}
-
-					PropertyAnimation {
-						id: expandItem
-						target: listItem
-						properties: "contentHeight"
-						to: 450
-						duration: 100
-					}
-
-					Label {
-						id: vaultNameLabel
-						text: model.name
-						x: Theme.paddingLarge
-					}
-
-					Label {
-						id: usernameLabel
-						text: model.username
-						x: Theme.paddingLarge * 2
-						anchors.top: vaultNameLabel.bottom
-					}
-
-					Column {
-						id: details
-						anchors.top: usernameLabel.bottom
-						x: Theme.paddingLarge * 3
-						width: parent.width - x
-						visible: true
-
-						TextField {
-							id: username
-							text: model.username;
-							width: parent.width
-							label: "Username"
-							placeholderText: "Username"
-							horizontalAlignment: textAlignment
-							EnterKey.onClicked: {
-								password.focus = true;
-							}
-						}
-						TextField {
-							id: password
-							echoMode: TextInput.Password
-							width: parent.width
-							label: "Password"
-							placeholderText: "Password"
-							horizontalAlignment: textAlignment
-							EnterKey.onClicked: {
-								listItem.logInToVault();
-							}
-						}
-						TextSwitch {
-							id: rememberPasswordChoice
-							checked: model.authentication
-							width: parent.width
-							text: "Remember password"
-						}
-						Button {
-							text: "Log in"
-							anchors.horizontalCenter: parent.horizontalCenter
-							onClicked: {
-								console.log( "STAB" );
-								listItem.logInToVault();
-							}
-						}
-
-						Label { id: errorMsg }
-					}
 				}
 			}
 		}
+
+		property LogInVaultDetails expandedItem: null
+		delegate: LogInVaultDetails {
+			id: listItem
+
+			onExpanded: {
+				if( listView.expandedItem !== null ) {
+					listView.expandedItem.collapse();
+				}
+				listView.expandedItem = listItem;
+			}
+
+			onCollapsed: {
+				listView.expandedItem = null;
+			}
+
+			onLogInRequested: {
+				// Turn the model into a JS object and replace
+				// the username with the one from the textbox
+				var vault = new Structs.Vault( model );
+				vault.username = username;
+
+				Logic.logInToVault( vault, password, rememberPassword, function( err, vault ) {
+					if( err ) {
+						var msg = err.Message || err.message || 'Unknown error during log in';
+						return listItem.showError( msg );
+					} else {
+						listView.listModel.set( index, vault );
+					}
+				});
+			}
+		}
+	}
+}
 
 

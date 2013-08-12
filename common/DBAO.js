@@ -21,6 +21,7 @@
 .pragma library
 
 .import QtQuick.LocalStorage 2.0 as LS
+.import 'structs.js' as Structs
 
 // Helper function for brief joins
 var _j = function( arr ) { return arr.join(' '); }
@@ -30,13 +31,13 @@ var _j = function( arr ) { return arr.join(' '); }
 // amount of upgrade functions executed.
 // Just add more upgrade functions at the end to upgrade the DB.
 var upgradeFunctions = [
-function( tx ) {
+	function( tx ) {
 
-	tx.executeSql(
+		tx.executeSql(
 			"CREATE TABLE settings( name TEXT, value TEXT )" );
 
-	tx.executeSql( _j([
-				"CREATE TABLE previousVaults(",
+		tx.executeSql( _j([
+			"CREATE TABLE previousVaults(",
 				"id INTEGER PRIMARY KEY,",
 				"name TEXT,",
 				"guid TEXT,",
@@ -44,8 +45,11 @@ function( tx ) {
 				"username TEXT,",
 				"authentication TEXT",
 				")" ]));
-}
+	}
 ]
+
+// List of all possible tables so we can reset the DB easily
+var _tables = [ 'dbVersion', 'settings', 'previousVaults' ];
 
 /**
  * Open the database
@@ -68,27 +72,41 @@ function initialize() {
 	var dbVersion = 0;
 	db.transaction( function( tx ) {
 
-			tx.executeSql( "CREATE TABLE IF NOT EXISTS dbVersion( version INT )" );
-			var results = tx.executeSql( "SELECT version FROM dbVersion" );
+		tx.executeSql( "CREATE TABLE IF NOT EXISTS dbVersion( version INT )" );
+		var results = tx.executeSql( "SELECT version FROM dbVersion" );
 
-			if( results.rows.length === 0 ) {
+		if( results.rows.length === 0 ) {
 			tx.executeSql( "INSERT INTO dbVersion VALUES(0)" );
-			} else {
+		} else {
 			dbVersion = results.rows.item(0).version;
-			}
-			});
+		}
+	});
 
 	// Perform updates as long as the version is less than the amount of
 	// upgrades available.
 	while( dbVersion < upgradeFunctions.length ) {
 		db.transaction( function( tx ) {
-				upgradeFunctions[ dbVersion ]( tx );
-				tx.executeSql( "UPDATE dbVersion SET version = ?", dbVersion + 1 );
-				});
+			upgradeFunctions[ dbVersion ]( tx );
+			tx.executeSql( "UPDATE dbVersion SET version = ?", dbVersion + 1 );
+		});
 
 		dbVersion++;
 	}
 };
+
+function dropDatabase() {
+	var db = _getDatabase();
+
+	db.transaction( function( tx ) {
+		// Note: Not using SQL parameters here.
+		// _tables should be safe from injection attacks.
+		// Not sure if DROP TABLE even eccepts them.
+		for( var t in _tables ) {
+			var table = _tables[t];
+			tx.executeSql( "DROP TABLE IF EXISTS " + table );
+		}
+	});
+}
 
 /**
  * Retrieves a list of previous vaults
@@ -100,24 +118,17 @@ function getPreviousVaults() {
 
 	var results;
 	db.transaction( function( tx ) {
-			results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults ORDER BY name" );
-			});
+		results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults ORDER BY name" );
+	});
 
 	// Copy the SQL result objects into an array of plain objects.
 	var arr = [];
 	for( var i = 0; i < results.rows.length; i++ ) {
 		var result = results.rows.item(i);
-		arr.push({
-id: result.id,
-name: result.name,
-guid: result.guid,
-url: result.url,
-username: result.username,
-authentication: result.authentication
-});
-}
+		arr.push( new Structs.Vault( result ) );
+	}
 
-return arr;
+	return arr;
 };
 
 /**
@@ -125,29 +136,23 @@ return arr;
  *
  * @param {object} vault Vault information
  */
-function savePreviousVault( vault, rememberPassword ) {
+function saveVault( vault ) {
 	var db = _getDatabase();
-
-	// If we shouldn't remember password, store authentication as null.
-	var auth = rememberPassword ? vault.authentication : null;
-	console.log( "DBAO, auth: " + auth );
-	console.log( "DBAO, authentication: " + vault.authentication );
 
 	db.transaction( function( tx ) {
 
-			if( vault.id === null || vault.id === undefined ) {
-			console.log( "New vault. Creating new" );
-			tx.executeSql(
+		if( vault.id === null || vault.id === undefined ) {
+			var insertResult = tx.executeSql(
 				"INSERT INTO previousVaults( name, guid, url, username, authentication ) " +
 				"VALUES ( ?, ?, ?, ?, ? )",
-				[ vault.name, vault.guid, vault.url, vault.username, auth ]);
-			} else {
-			console.log( "Saving over old one. Authentication:" + auth );
+				[ vault.name, vault.guid, vault.url, vault.username, vault.authentication ]);
+
+			vault.id = Number( insertResult.insertId );
+		} else {
 			tx.executeSql(
 				"UPDATE previousVaults SET name=?, username=?, authentication=? WHERE id=?",
-				[ vault.name, vault.username, auth, vault.id ]);
-			}
-			});
-	console.log( "Done saving ");
+				[ vault.name, vault.username, vault.authentication, vault.id ]);
+		}
+	});
 };
 
