@@ -42,19 +42,36 @@ function _getClient( page ) {
  */
 function initialize( page, favorites ) {
 
+	// Initialize the vault cache.
+	page.vault.initialize( page.mfwaUrl, page.authentication );
 
 	// Get the favorites listing from M-Files
 	var client = _getClient( page );
 	client.get( '/favorites', function( err, favoriteObjects ) {
 
-			// Append the individual results to the list model
-			for( var f in favoriteObjects ) {
+		// Append the individual results to the list model
+		for( var f in favoriteObjects )
+		{
 			var ov = favoriteObjects[f];
+			var mfclass = vault.get( 0, ov.Class );
+			var cn = 'Loading...';
+			if( mfclass )
+				cn = mfclass.Name;
+			var mfot = vault.get( 1, ov.ObjVer.Type );
+			var otn = '';
+			if( mfot )
+				otn = mfot.Name;
 
 			favorites.favoritesList.append({
-title: ov.Title,
-className: ov.Class
-});
-			}
+				data: ov,
+				title: ov.Title,
+				className: cn,
+				objectTypeName: otn
+
 			});
+
+		}  // end for
+
+	});  // end get
+
 }

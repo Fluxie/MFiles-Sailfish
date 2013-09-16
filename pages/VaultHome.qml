@@ -21,6 +21,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
+import mohari.sailfish 1.0
 import "VaultHome.js" as Logic
 
 
@@ -28,12 +29,29 @@ Page {
 
 	id: page
 
+	property VaultCache vault : VaultCache {}
 	property string mfwaUrl: ''
 	property string authentication: ''
 	property string vaultName: ''
 
 	function initialize() {
 		Logic.initialize( page, listView );
+	}
+
+	Connections {
+		target : vault
+		onAllCachesPopulated : {
+
+			// Update the names
+			var lvm = listView.model;
+			for(var i=0; i < lvm.count; i++) {
+				var item = lvm.get(i);
+				var mfclass = vault.get( VaultCache.Class, item.data.Class );
+				var mfot = vault.get( VaultCache.ObjectType, item.data.ObjVer.Type );
+				item.className = mfclass.Name;
+				item.objectTypeName = mfot.Name;
+			}
+		}
 	}
 
 
@@ -75,7 +93,7 @@ Page {
 				}
 
 				Label {
-					text: model.className
+					text: model.objectTypeName + ':' + model.className
 					x: Theme.paddingLarge * 2
 				}
 			}

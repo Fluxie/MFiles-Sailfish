@@ -20,17 +20,36 @@
 
 #include <QGuiApplication>
 #include <QQuickView>
+#include <QQmlContext>
+#include <QtQml>
 
 #include "sailfishapplication.h"
+#include "hostcore.h"
+#include "vaultcache.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
-{
+{	
+	// Register C++ classes as QML types.	
+	qmlRegisterType< VaultCache >("mohari.sailfish", 1, 0, "VaultCache");
+
+
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
-    QScopedPointer<QQuickView> view(Sailfish::createView("main.qml"));
+	QScopedPointer<QQuickView> view( Sailfish::createView("main.qml") );
+
+    // Create host core.
+	QScopedPointer< HostCore > host( new HostCore() );
+	host->start();
     
     Sailfish::showView(view.data());
     
-    return app->exec();
+	int result = app->exec();;	
+
+	// Shutdown the host core thread.
+	// Though it is highly likely that Sailfish OS will kill us soon...
+	host->quit();
+	host->wait();
+
+	return result;
 }
 
 
