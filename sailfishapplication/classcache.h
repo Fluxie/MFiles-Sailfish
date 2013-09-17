@@ -22,65 +22,28 @@
 #define CLASSCACHE_H
 
 #include <QObject>
-#include <QMutex>
-#include <QHash>
-#include <QJsonObject>
 
+#include "structurecachebase.h"
 
 // Forward declarations.
-class QNetworkReply;
 class VaultCore;
-class MfwsRest;
 
 //! Cache for classes.
-class ClassCache : public QObject
+class ClassCache : public StructureCacheBase
 {
-	typedef QHash< int, QJsonObject >  CLASS_CONTAINER;
-
 	Q_OBJECT
 public:
 
 	//! Constructor
-	explicit ClassCache( VaultCore *parent = 0);
+	explicit ClassCache( VaultCore* parent = 0);
 
-	//! Gets class from the cache.
-	Q_INVOKABLE QJsonValue get( int id ) const;
-
-	//! Is this cache populated?
-	bool populated() const { return m_populated; }
+	//! Destructor.
+	virtual ~ClassCache() {}
 	
 signals:
-
-	//! Signaled when cache is unable to server a request from the cache.
-	void missing( int id ) const;
-
-	//! Signaled when the previously missing class becomes available.
-	void available( int id, QJsonObject* mfilesClass ) const;
-
-	//! Signaled when cache has been refreshed.
-	void refreshed();
 	
 public slots:
 
-	//! Attempts to cache the specified class.
-	void tryFetch( int id );
-
-	//! Requests the cache refresh.
-	void requestRefresh();
-
-	//! Sets the cache content from the given network reply.
-	void setContentFrom( QNetworkReply* reply );
-
-// Private data.
-private:
-
-	// Static data that does not need protecion.
-	VaultCore *m_vault;
-	MfwsRest *m_rest;  //!< Access to M-Files REST API.
-
-	mutable QMutex m_lock;  //!< Protects access to members.
-	bool m_populated;  //!< Set to true when the cache has been populated.
-	CLASS_CONTAINER m_classes;  //!> A collection of available classes.
 };
 
 #endif // CLASSCACHE_H

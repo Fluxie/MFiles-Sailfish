@@ -22,6 +22,7 @@
 
 #include "classcache.h"
 #include "objecttypecache.h"
+#include "propertydefcache.h"
 
 VaultCore::VaultCore(
 	const QString& url,
@@ -35,12 +36,15 @@ VaultCore::VaultCore(
 	// Metadata caches.
 	m_classes = new ClassCache( this );
 	m_objectTypes = new ObjectTypeCache( this );
+	m_propertyDefinitions = new PropertyDefCache( this );
 
 	// Connect authentication info change to refresh events of caches.
 	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( this, &VaultCore::authenticationChanged, m_objectTypes, &ObjectTypeCache::requestRefresh, Qt::QueuedConnection );
+	QObject::connect( this, &VaultCore::authenticationChanged, m_propertyDefinitions, &PropertyDefCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_classes, &ClassCache::refreshed, this, &VaultCore::cacheRefreshed );
 	QObject::connect( m_objectTypes, &ObjectTypeCache::refreshed, this, &VaultCore::cacheRefreshed );
+	QObject::connect( m_propertyDefinitions, &PropertyDefCache::refreshed, this, &VaultCore::cacheRefreshed );
 
 	qDebug( "VaultCore instantiated." );
 }
@@ -90,7 +94,9 @@ void VaultCore::cacheRefreshed()
 	if( ! m_cachesPopulated )
 	{
 		// Check if all the caches have been populated.
-		if( m_classes->populated() && m_objectTypes->populated() )
+		if( m_classes->populated() &&
+				m_objectTypes->populated() &&
+				m_propertyDefinitions->populated() )
 		{
 			// All caches have been populated.
 			m_cachesPopulated = true;

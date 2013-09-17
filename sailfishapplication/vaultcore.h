@@ -29,6 +29,7 @@
 // Forward declarations.
 class ClassCache;
 class ObjectTypeCache;
+class PropertyDefCache;
 
 /**
  * @brief The VaultCore class
@@ -85,6 +86,7 @@ private:
 	// Static variables that do not need protection.
 	ClassCache* m_classes;
 	ObjectTypeCache* m_objectTypes;
+	PropertyDefCache*  m_propertyDefinitions;
 	QString m_url;
 
 	// Authentication information.

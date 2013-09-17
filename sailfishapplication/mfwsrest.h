@@ -43,7 +43,9 @@ public:
 	virtual ~MfwsRest();
 	
 	//! Gets resources. The response if submitted to the given slot.
-	QNetworkReply* getJson( const char* resource ) const;
+	QNetworkReply* getJson(
+		QString& resource  //!< The name of the resource.
+	) const;
 
 signals:
 

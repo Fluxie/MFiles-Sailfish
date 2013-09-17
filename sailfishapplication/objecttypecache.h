@@ -22,61 +22,36 @@
 #define OBJECTTYPECACHE_H
 
 #include <QObject>
-#include <QHash>
-#include <QJsonObject>
-#include <QMutex>
+
+#include "structurecachebase.h"
 
 // Forward declarations.
-class QNetworkReply;
 class VaultCore;
-class MfwsRest;
 
 /*!
  * \brief The ObjectTypeCache class
  *
  * Container for object types.
  */
-class ObjectTypeCache : public QObject
+class ObjectTypeCache : public StructureCacheBase
 {
-	typedef QHash< int, QJsonObject >  ITEM_CONTAINER;
-
 	Q_OBJECT
 public:
 
 	//! Constructor.
 	explicit ObjectTypeCache( VaultCore *parent = 0 );
 
-	//! Gets an item from the cache.
-	Q_INVOKABLE QJsonValue get(
-		int id  //!< Id of the item.
-	) const;
-
-	//! Is this cache populated?
-	bool populated() const { return m_populated; }
+	//! Destructor.
+	~ObjectTypeCache() {}
 
 signals:
 
-	//! Signaled when cache has been refreshed.
-	void refreshed();
 
 public slots:
-
-	//! Requests the cache refresh.
-	void requestRefresh();
-
-	//! Sets the cache content from the given network reply.
-	void setContentFrom( QNetworkReply* reply );
 
 // Private data.
 private:
 
-	// Static data that does not need protecion.
-	VaultCore *m_vault;
-	MfwsRest *m_rest;  //!< Access to M-Files REST API.
-
-	mutable QMutex m_lock;  //!< Protects access to members.
-	bool m_populated;  //!< Set to true when the cache has been populated.
-	ITEM_CONTAINER m_cache;  //!> A collection of cached items.
 };
 
 #endif // OBJECTTYPECACHE_H

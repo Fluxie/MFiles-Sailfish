@@ -42,7 +42,9 @@ MfwsRest::~MfwsRest()
 }
 
 //! Gets resources
-QNetworkReply* MfwsRest::getJson( const char* resource ) const
+QNetworkReply* MfwsRest::getJson(
+	QString& resource  //!< The name of the resource.
+) const
 {
 // 	QSslConfiguration config(QSslConfiguration::defaultConfiguration());
 
