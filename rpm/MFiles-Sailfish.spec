@@ -46,7 +46,7 @@ Short description of my SailfishOS Application
 
 %qtc_qmake5 
 
-%qtc_make %{?jobs:-j%jobs}
+%qtc_make %{?_smp_mflags}
 
 # >> build post
 # << build post
