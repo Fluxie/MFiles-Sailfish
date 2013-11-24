@@ -35,6 +35,7 @@ function HttpClient( options ) {
 
 	// Headers are not stored as normal default options.
 	this.headers = options && options.headers || {};
+    this.headers[ "X-AuthType" ] = "automatic";
 	if( options ) { delete options.headers; }
 
 	this.defaultOptions = {
