@@ -6,18 +6,32 @@ SOURCES += $$PWD/sailfishapplication.cpp \
     sailfishapplication/vaultcore.cpp \
     sailfishapplication/classcache.cpp \
     sailfishapplication/mfwsrest.cpp \
-    sailfishapplication/vaultcache.cpp \
     sailfishapplication/structurecachebase.cpp \
-    sailfishapplication/propertydefcache.cpp
+    sailfishapplication/propertydefcache.cpp \
+    sailfishapplication/objectfront.cpp \
+    sailfishapplication/objectcore.cpp \
+    sailfishapplication/vaultfront.cpp \
+    sailfishapplication/objver.cpp \
+    sailfishapplication/objectcache.cpp \
+    sailfishapplication/objid.cpp \
+    sailfishapplication/objectversioncore.cpp \
+    sailfishapplication/objectversionfront.cpp
 HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/objecttypecache.h \
     sailfishapplication/hostcore.h \
     sailfishapplication/vaultcore.h \
     sailfishapplication/classcache.h \
     sailfishapplication/mfwsrest.h \
-    sailfishapplication/vaultcache.h \
     sailfishapplication/structurecachebase.h \
-    sailfishapplication/propertydefcache.h
+    sailfishapplication/propertydefcache.h \
+    sailfishapplication/objectfront.h \
+    sailfishapplication/objectcore.h \
+    sailfishapplication/vaultfront.h \
+    sailfishapplication/objver.h \
+    sailfishapplication/objectcache.h \
+    sailfishapplication/objid.h \
+    sailfishapplication/objectversioncore.h \
+    sailfishapplication/objectversionfront.h
 INCLUDEPATH += $$PWD
 
 TARGETPATH = /usr/bin

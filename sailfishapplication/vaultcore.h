@@ -30,6 +30,7 @@
 class ClassCache;
 class ObjectTypeCache;
 class PropertyDefCache;
+class ObjectCache;
 
 /**
  * @brief The VaultCore class
@@ -61,6 +62,12 @@ public:
 
 	//! Object types.
 	ObjectTypeCache* objectTypes() const { return m_objectTypes; }
+
+	//! Property definitions.
+	PropertyDefCache* propertyDefinitions() const { return m_propertyDefinitions; }
+
+	//! Objects.
+	ObjectCache* objects() const { return m_objectCache; }
 	
 signals:
 
@@ -87,6 +94,7 @@ private:
 	ClassCache* m_classes;
 	ObjectTypeCache* m_objectTypes;
 	PropertyDefCache*  m_propertyDefinitions;
+	ObjectCache* m_objectCache;
 	QString m_url;
 
 	// Authentication information.

@@ -26,6 +26,8 @@
 #include <QMetaType>
 
 // Forward declarations.
+class ObjID;
+class ObjectFront;
 class VaultCore;
 
 /*!
@@ -35,7 +37,7 @@ class VaultCore;
  * This object is owned by the UI thread so the signals and slots can be
  * associated with QML signals and slots.
  */
-class VaultCache : public QObject
+class VaultFront : public QObject
 {
 	Q_OBJECT
 	Q_ENUMS( CacheType )
@@ -44,16 +46,17 @@ public:
 	enum CacheType
 	{
 		Class,
-		ObjectType
+		ObjectType,
+		PropertyDefinition
 	};
 
 	//! Constructor.
-	explicit VaultCache(
+	explicit VaultFront(
 		QObject *parent = 0
 	);
 
 	//! Destructor.
-	virtual ~VaultCache();
+	virtual ~VaultFront();
 
 	//! Initializes the vault cache.
 	Q_INVOKABLE void initialize(
@@ -66,6 +69,11 @@ public:
 		CacheType type,  //!< The type of the requested item.
 		int id  //!< The id of the requested item.
 	) const;
+
+	//! Gets a reference to an object.
+	Q_INVOKABLE ObjectFront* object(
+		const QJsonValue& id  //!< Json object that identifies the object. This can be ObjVer or ObjectVersion.
+	);
 	
 signals:
 
@@ -77,8 +85,20 @@ signals:
 
 	//! Signaled when object types are refreshed.
 	void objectTypesRefreshed();
+
+	//! Signaled when property definitions are refreshed.
+	void propertyDefinitionsRefreshed();
 	
 public slots:
+
+	//! Call when a new object has been changed.
+	void objectChanged(	const QJsonValue& objectInfo );
+
+// Private interface.
+private:
+
+	//! Gets new object front for the given object id.
+	ObjectFront* newFront( const ObjID& objid );
 	
 // Private data
 private:

@@ -29,7 +29,7 @@ Page {
 
 	id: page
 
-	property VaultCache vault : VaultCache {}
+	property VaultFront vault : VaultFront {}
 	property string mfwaUrl: ''
 	property string authentication: ''
 	property string vaultName: ''
@@ -46,8 +46,8 @@ Page {
 			var lvm = listView.model;
 			for(var i=0; i < lvm.count; i++) {
 				var item = lvm.get(i);
-				var mfclass = vault.get( VaultCache.Class, item.data.Class );
-				var mfot = vault.get( VaultCache.ObjectType, item.data.ObjVer.Type );
+				var mfclass = vault.get( VaultFront.Class, item.data.Class );
+				var mfot = vault.get( VaultFront.ObjectType, item.data.ObjVer.Type );
 				item.className = mfclass.Name;
 				item.objectTypeName = mfot.Name;
 			}
@@ -85,6 +85,11 @@ Page {
 
 		delegate: ListItem {
 			id: listItem
+
+			onClicked: {
+				var properties = pageStack.push(
+							'PropertyValues.qml', { objectVersion: model.data, vault: page.vault } );
+			}
 
 			Column {
 				Label {

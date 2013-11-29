@@ -18,26 +18,46 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTYDEFCACHE_H
-#define PROPERTYDEFCACHE_H
+#ifndef OBJECTCACHE_H
+#define OBJECTCACHE_H
 
-#include "structurecachebase.h"
+#include <QObject>
+#include <QMutex>
+#include <QCache>
+#include <QSharedPointer>
+
+#include "objid.h"
+#include "objectcore.h"
 
 // Forward declarations.
 class VaultCore;
 
-class PropertyDefCache : public StructureCacheBase
+//! Cache for ObjectCores
+class ObjectCache : public QObject
 {
 	Q_OBJECT
 public:
-	explicit PropertyDefCache(
-		VaultCore* parent  //!< Parent vault.
-	);
+
+	//! Initializes new object cache.
+	explicit ObjectCache( VaultCore* parent );
 	
 signals:
 	
 public slots:
+
+	//! Establishes new object core for the given object version.
+	QSharedPointer< ObjectCore > object(
+		const ObjID& id
+	);
 	
+// Private data.
+private:
+
+	//! Constant data.
+	VaultCore* m_vault;
+
+	mutable QMutex m_lock;
+	QCache< ObjID, QSharedPointer< ObjectCore > > m_cache;  //!< Cache of objects.
 };
 
-#endif // PROPERTYDEFCACHE_H
+#endif // OBJECTCACHE_H

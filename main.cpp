@@ -25,12 +25,16 @@
 
 #include "sailfishapplication.h"
 #include "hostcore.h"
-#include "vaultcache.h"
+#include "objectfront.h"
+#include "objectversionfront.h"
+#include "vaultfront.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {	
 	// Register C++ classes as QML types.	
-	qmlRegisterType< VaultCache >("mohari.sailfish", 1, 0, "VaultCache");
+	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
+	qmlRegisterType< ObjectFront >();
+	qmlRegisterType< ObjectVersionFront >();
 
 
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));

@@ -21,6 +21,7 @@
 #include "vaultcore.h"
 
 #include "classcache.h"
+#include "objectcache.h"
 #include "objecttypecache.h"
 #include "propertydefcache.h"
 
@@ -37,6 +38,7 @@ VaultCore::VaultCore(
 	m_classes = new ClassCache( this );
 	m_objectTypes = new ObjectTypeCache( this );
 	m_propertyDefinitions = new PropertyDefCache( this );
+	m_objectCache = new ObjectCache( this );
 
 	// Connect authentication info change to refresh events of caches.
 	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
