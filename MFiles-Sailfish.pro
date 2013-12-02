@@ -8,7 +8,7 @@ SOURCES += main.cpp
 HEADERS +=
 
 # QML files and folders
-qml.files = *.qml common pages cover main.qml
+qml.files = *.qml common controls dialogs pages cover main.qml
 
 # The .desktop file
 desktop.files = MFiles-Sailfish.desktop
@@ -19,5 +19,9 @@ include(sailfishapplication/sailfishapplication.pri)
 OTHER_FILES = \
     rpm/MFiles-Sailfish.yaml \
     rpm/MFiles-Sailfish.spec \
-    pages/LogIn.qml
+    pages/LogIn.qml \
+    controls/TypedValue.js \
+    controls/Lookups.qml \
+    dialogs/AccurateTimePickerDialog.qml \
+    dialogs/AccurateTimePicker.js
 

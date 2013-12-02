@@ -22,6 +22,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import Sailfish.Silica.theme 1.0
 import mohari.sailfish 1.0
+import "../controls"
 import "VaultHome.js" as Logic
 
 Page {
@@ -92,29 +93,7 @@ Page {
 	}
 
 	// Define a component that represents individual property value.
-	Component {
-		id: propertyValueDelegate
 
-		Column {
-			Label {
-				property variant propertyDefinition : vault.get( VaultFront.PropertyDefinition, propertiesForDisplay[ index ].PropertyDef )
-				text: propertyDefinition.Name
-				x: Theme.paddingLarge
-			}
-
-			Label {
-				text: propertiesForDisplay[ index ].TypedValue.DisplayValue
-				x: Theme.paddingLarge * 2
-			}
-		}
-	}
-
-	// Header for the page.
-	PageHeader {
-
-		id: header
-		title: 'Properties'
-	}
 
 	// Declare list view that displays the property values.
 	SilicaListView {
@@ -128,10 +107,16 @@ Page {
 			propertyValueList.model = propertyValueCount;
 		}
 
-		anchors.top: header.bottom
-		anchors.left: parent.left
-		anchors.right: parent.right
-		anchors.bottom: parent.bottom
+		// Position
+		anchors.fill: parent
+		anchors.leftMargin: Theme.paddingLarge
+
+		// Header for the page.
+		header: PageHeader {
+
+			 id: header
+			 title: 'Properties'
+		 }
 
 		// Placeholder for empty list view.
 		ViewPlaceholder {
@@ -140,6 +125,50 @@ Page {
 		}
 
 		// Delegate function that generates the list items.
-		delegate: propertyValueDelegate
+		delegate: Item	{
+
+			id: propertyValueDelegate
+
+			property variant propertyValue: propertiesForDisplay[ index ]
+			property variant propertyDefinition: vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef )
+
+			// Position.
+			anchors.left: parent.left
+			anchors.right: parent.right
+			height: label.height + ( typedValue.dynamicHeight ? Math.max( typedValue.minimumHeight, typedValue.height ) : typedValue.minimumHeight )
+			// contentHeight: label.height + typedValue.minimumHeight
+
+
+			// Label.
+			Label {
+
+				id: label
+
+				// Position
+				anchors.top: parent.top
+				anchors.left: parent.left
+				anchors.right: parent.right
+
+				// Content
+				text: propertyDefinition.Name
+				color: Theme.secondaryColor
+			}
+
+			TypedValue {
+
+				id: typedValue
+
+				// Position
+				anchors.top: label.bottom
+				//anchors.bottom: parent.bottom
+				anchors.left: parent.left
+				anchors.leftMargin: Theme.paddingMedium
+				anchors.right: parent.right
+
+				// Content
+				propertyDefinitionName: propertyDefinition.Name
+				propertyValue: propertyValueDelegate.propertyValue
+			}
+		}
 	}
 }

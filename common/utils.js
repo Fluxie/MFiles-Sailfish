@@ -63,3 +63,9 @@ function merge( options, defaults ) {
 
 	return options;
 };
+
+
+function inspect( inspected )
+{
+	return inspected;
+}
