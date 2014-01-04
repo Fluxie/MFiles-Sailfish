@@ -93,7 +93,7 @@ void StructureCacheBase::setContentFrom( QNetworkReply* reply )
 	QByteArray replyContent = reply->readAll();
 	QJsonDocument result = QJsonDocument::fromJson( replyContent );
 	if( reply->error() != QNetworkReply::NoError )
-		qCritical( QString( "Error while fetching data: %1" ).arg( reply->errorString() ).toLatin1() );
+		return;  // We are using the automatic reporting of MfwsRest object.
 
 	// Populate the cache.
 	bool populatedStatusChanged = false;

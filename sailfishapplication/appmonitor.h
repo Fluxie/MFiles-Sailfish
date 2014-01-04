@@ -10,12 +10,22 @@
 class AppMonitor : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY( QString lastError READ lastError NOTIFY lastErrorChanged )
 public:
 
 	//! Initializes the AppMonitor.
 	explicit AppMonitor( QObject *parent = 0 );
 
+	//! The last error messagge.
+	QString lastError();
+
+	//! Hides all current errors from the user.
+	Q_INVOKABLE void hideErrors();
+
 signals:
+
+	//! Signaled when the last error changes.
+	void lastErrorChanged();
 
 public slots:
 
@@ -25,6 +35,7 @@ public slots:
 // Private data.
 private:
 
+	int m_unseenError;  //!< Index of the last error that the user has not acknowledged.
 	QVector< ErrorInfo > m_errors;  //!< A collection errors that have recently occurred.
 
 };

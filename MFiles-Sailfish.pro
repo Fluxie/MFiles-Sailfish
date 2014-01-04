@@ -23,5 +23,6 @@ OTHER_FILES = \
     controls/TypedValue.js \
     controls/Lookups.qml \
     dialogs/AccurateTimePickerDialog.qml \
-    dialogs/AccurateTimePicker.js
+    dialogs/AccurateTimePicker.js \
+    controls/ErrorDisplay.qml
 
