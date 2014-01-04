@@ -17,7 +17,13 @@ SOURCES += $$PWD/sailfishapplication.cpp \
     sailfishapplication/objectversioncore.cpp \
     sailfishapplication/objectversionfront.cpp \
     sailfishapplication/realvalidator.cpp \
-    sailfishapplication/integervalidator.cpp
+    sailfishapplication/integervalidator.cpp \
+    sailfishapplication/valuelistcache.cpp \
+    sailfishapplication/valuelistcore.cpp \
+    sailfishapplication/valuelistfront.cpp \
+    sailfishapplication/valuelistmodel.cpp \
+    sailfishapplication/frontbase.cpp \
+    sailfishapplication/corebase.cpp
 HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/objecttypecache.h \
     sailfishapplication/hostcore.h \
@@ -35,7 +41,14 @@ HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/objectversioncore.h \
     sailfishapplication/objectversionfront.h \
     sailfishapplication/realvalidator.h \
-    sailfishapplication/integervalidator.h
+    sailfishapplication/integervalidator.h \
+    sailfishapplication/valuelistcache.h \
+    sailfishapplication/valuelistcore.h \
+    sailfishapplication/valuelistfront.h \
+    sailfishapplication/valuelistmodel.h \
+    sailfishapplication/valuelistkey.h \
+    sailfishapplication/frontbase.h \
+    sailfishapplication/corebase.h
 INCLUDEPATH += $$PWD
 
 TARGETPATH = /usr/bin

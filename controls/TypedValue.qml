@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import mohari.sailfish 1.0
 
-import "Components.js" as Components
 import "TypedValue.js" as Logic
 
 // Typed value is represented by a loader as we will dynamically select the control we use to display the value.
@@ -12,6 +12,7 @@ Loader {
 	// Properties
 	property string propertyDefinitionName
 	property variant propertyValue
+    property VaultFront vault
 	property real minimumHeight: Theme.itemSizeMedium
 	property bool dynamicHeight: false
 
@@ -25,7 +26,8 @@ Loader {
 
 	// Set the value after loading has been completed.
 	onLoaded: {
-		item.value = propertyValue.TypedValue;
+        item.container = typedValue;
+		item.value = propertyValue.TypedValue;        
 		if( item.dynamicHeight )
 			dynamicHeight = item.dynamicHeight;
 	}

@@ -7,6 +7,7 @@ TextField {
 	id: field	
 	color: Theme.primaryColor
 
+    property Loader container
 	property variant value
 
 	text: value ? value.DisplayValue : ''

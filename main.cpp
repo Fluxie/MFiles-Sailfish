@@ -23,6 +23,10 @@
 #include <QQmlContext>
 #include <QtQml>
 
+#ifdef QT_QML_DEBUG
+#include <QtQuick>
+#endif
+
 #include "sailfishapplication.h"
 #include "hostcore.h"
 #include "integervalidator.h"
@@ -30,15 +34,19 @@
 #include "objectversionfront.h"
 #include "realvalidator.h"
 #include "vaultfront.h"
+#include "valuelistmodel.h"
+#include "valuelistfront.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {	
 	// Register C++ classes as QML types.	
+	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");
 	qmlRegisterType< RealValidator >("mohari.sailfish", 1, 0, "RealValidator");
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
+	qmlRegisterType< ValueListFront >();
 
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
 	QScopedPointer<QQuickView> view( Sailfish::createView("main.qml") );

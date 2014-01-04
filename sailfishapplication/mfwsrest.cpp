@@ -58,6 +58,8 @@ QNetworkReply* MfwsRest::getJson(
 
 	// Prepare the request.
 	QNetworkRequest request;
+	if( m_authentication.size() == 0 )
+		qCritical( "Authentication information is not available." );
 	request.setRawHeader( "X-Authentication", m_authentication.toLatin1() );
 	request.setRawHeader("Accept", "application/json");
 	request.setRawHeader("Content-Type", "application/json");

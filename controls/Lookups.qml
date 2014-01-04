@@ -8,6 +8,7 @@ Column{
 
 	id: lookups
 
+    property Loader container
 	property variant value
 	property variant lookupValues: {}
 

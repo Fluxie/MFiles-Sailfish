@@ -49,6 +49,10 @@ function selectControl( typedValue ) {
 	case 8:
 		return "Boolean.qml";
 
+	// Single-select lookup
+	case 9:
+		return "Lookup.qml";
+
 	// Multi-select lookup
 	case 10:
 		return "Lookups.qml";

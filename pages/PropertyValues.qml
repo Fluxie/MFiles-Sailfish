@@ -20,7 +20,6 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 import mohari.sailfish 1.0
 import "../controls"
 import "VaultHome.js" as Logic
@@ -130,7 +129,7 @@ Page {
 			id: propertyValueDelegate
 
 			property variant propertyValue: propertiesForDisplay[ index ]
-			property variant propertyDefinition: vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef )
+            property variant propertyDefinition: vault.propertyDefinitionsReady ? vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef ) : null
 
 			// Position.
 			anchors.left: parent.left
@@ -150,7 +149,7 @@ Page {
 				anchors.right: parent.right
 
 				// Content
-				text: propertyDefinition.Name
+                text: propertyDefinition ? propertyDefinition.Name : ""
 				color: Theme.secondaryColor
 			}
 
@@ -166,8 +165,9 @@ Page {
 				anchors.right: parent.right
 
 				// Content
-				propertyDefinitionName: propertyDefinition.Name
+                propertyDefinitionName: propertyDefinition ? propertyDefinition.Name : ""
 				propertyValue: propertyValueDelegate.propertyValue
+                vault: propertyValues.vault
 			}
 		}
 	}

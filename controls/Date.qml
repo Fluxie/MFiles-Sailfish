@@ -6,6 +6,7 @@ Button {
 	id: date
 
 	// Properties
+    property Loader container
 	property variant value
 	onValueChanged: {
 		text: value.DisplayValue

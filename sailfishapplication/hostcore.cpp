@@ -48,11 +48,12 @@ HostCore* HostCore::instance()
  *Prepares vault.
  */
 VaultCore* HostCore::prepareVault(
-	const QString& url
+	const QString& url,
+	const QString& authentication
 )
 {
 	// Create a new vault object and move it to this thread.
-	VaultCore* core = new VaultCore( url );
+	VaultCore* core = new VaultCore( url, authentication );
 	core->moveToThread( this );
 	QQmlEngine::setObjectOwnership( core, QQmlEngine::JavaScriptOwnership );
 

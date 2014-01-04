@@ -24,14 +24,16 @@
 #include "objectcache.h"
 #include "objecttypecache.h"
 #include "propertydefcache.h"
+#include "valuelistcache.h"
 
 VaultCore::VaultCore(
 	const QString& url,
+	const QString& authentication,
 	QObject *parent ) :
 	QObject(parent),
 	m_url( url ),
 	m_lock( QMutex::NonRecursive ),	
-	m_authentication(),
+	m_authentication( authentication ),
 	m_cachesPopulated( false )
 {
 	// Metadata caches.
@@ -39,11 +41,13 @@ VaultCore::VaultCore(
 	m_objectTypes = new ObjectTypeCache( this );
 	m_propertyDefinitions = new PropertyDefCache( this );
 	m_objectCache = new ObjectCache( this );
+	m_valueLists = new ValueListCache( this );
 
 	// Connect authentication info change to refresh events of caches.
 	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( this, &VaultCore::authenticationChanged, m_objectTypes, &ObjectTypeCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( this, &VaultCore::authenticationChanged, m_propertyDefinitions, &PropertyDefCache::requestRefresh, Qt::QueuedConnection );
+	QObject::connect( this, &VaultCore::authenticationChanged, m_valueLists, &ValueListCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_classes, &ClassCache::refreshed, this, &VaultCore::cacheRefreshed );
 	QObject::connect( m_objectTypes, &ObjectTypeCache::refreshed, this, &VaultCore::cacheRefreshed );
 	QObject::connect( m_propertyDefinitions, &PropertyDefCache::refreshed, this, &VaultCore::cacheRefreshed );

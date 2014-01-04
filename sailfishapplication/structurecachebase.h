@@ -20,19 +20,20 @@
 #define STRUCTURECACHEBASE_H
 
 #include <QObject>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QMutex>
 #include <QHash>
+
+#include "corebase.h"
 
 // Foward declarations.
 class VaultCore;
 class MfwsRest;
 class QNetworkReply;
 
-class StructureCacheBase : public QObject
+class StructureCacheBase : public CoreBase
 {
-	//! Definition for cached item container.
-	typedef QHash< int, QJsonObject >  CACHE_CONTAINER;
 
 	Q_OBJECT
 public:
@@ -40,7 +41,8 @@ public:
 	//! Constructor.
 	explicit StructureCacheBase(
 		const QString& resource,  //!< The resource this cache caches. E.g /structure/classes
-		VaultCore *parent  //!< Parent vault.
+		VaultCore* parent,  //!< Parent vault.
+		bool immediateRefresh = true  //!< True if the cache should be refreshed immediately.
 	);
 
 	//! Destructor.
@@ -48,6 +50,9 @@ public:
 
 	//! Gets an item from the cache.
 	Q_INVOKABLE QJsonValue get( int id ) const;
+
+	//! Gets the values as a list.
+	Q_INVOKABLE QJsonArray list() const;
 
 	//! Is this cache populated?
 	bool populated() const { return m_populated; }
@@ -63,6 +68,9 @@ signals:
 	//! Signaled when cache has been refreshed.
 	void refreshed();
 
+	//! Signaled when the populated status has changed.
+	void populatedChanged();
+
 public slots:
 
 	//! Requests the cache refresh.
@@ -71,17 +79,39 @@ public slots:
 	//! Sets the cache content from the given network reply.
 	void setContentFrom( QNetworkReply* reply );
 
+// Protected interface.
+protected:
+
+	//! Definition for cached item container.
+	typedef QHash< int, int > CACHE_MAPPER;
+
+	//! Override this to clear the satellite data when the cache contents is cleared.
+	virtual void clearSatelliteDataNts() {}
+
+	//! Override this to populate satellite data that after the cache contens has been refreshed.
+	virtual void populateSatelliteDataNts() {}
+
+	//! Accesses the cache.
+	const CACHE_MAPPER& cacheMapperNts() const { return m_cache; }
+
+	//! Access the actual data.
+	const QJsonArray& dataNts() const { return m_data; }
+
+// Protected data.
+protected:
+
+	mutable QMutex m_mutex;  //!< Protects access to members.
+
 // Private data.
 private:
 
-	// Static data that does not need protecion.
-	VaultCore* m_vault;
-	MfwsRest* m_rest;  //!< Access to M-Files REST API.
+	// Static data that does not need protecion.		
 	QString m_resource;  //!< The cached resource.
 
-	mutable QMutex m_lock;  //!< Protects access to members.
+	// Dynamic variables.
 	bool m_populated;  //!< Set to true when the cache has been populated.
-	CACHE_CONTAINER m_cache;  //!> A collection of available items.
+	CACHE_MAPPER m_cache;  //!> A collection of available items.
+	QJsonArray m_data;  //!< The actual data received via REST API.
 	
 };
 

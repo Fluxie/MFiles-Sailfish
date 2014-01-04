@@ -31,6 +31,8 @@
 #include "objectfront.h"
 #include "objver.h"
 #include "propertydefcache.h"
+#include "valuelistcore.h"
+#include "valuelistfront.h"
 
 VaultFront::VaultFront(QObject *parent) :
 	QObject(parent),
@@ -58,13 +60,13 @@ void VaultFront::initialize(
 	Q_ASSERT( m_core == 0 );
 
 	// Prepare new core.
-	m_core = HostCore::instance()->prepareVault( url );
-	m_core->setAuthentication( authentication );
+	m_core = HostCore::instance()->prepareVault( url, authentication );
 
 	// Connect events
 	QObject::connect( m_core, &VaultCore::allCachesPopulated, this, &VaultFront::allCachesPopulated, Qt::QueuedConnection );
 	QObject::connect( m_core->classes(), &ClassCache::refreshed, this, &VaultFront::classesRefreshed, Qt::QueuedConnection );
 	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::refreshed, this, &VaultFront::objectTypesRefreshed, Qt::QueuedConnection );
+	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::populatedChanged, this, &VaultFront::propertyDefinitionsReadyChanged, Qt::QueuedConnection );
 	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::refreshed, this, &VaultFront::propertyDefinitionsRefreshed, Qt::QueuedConnection );
 }
 
@@ -141,6 +143,44 @@ ObjectFront* VaultFront::object(
 	// Return the front.
 	return front;
 }
+
+//! Gets a reference to a value list.
+ValueListFront* VaultFront::valueList(
+	int id,  //!< The id of the requested value list.
+	int propertyDefinition  //!< The id of the property definition used to filter the value list.
+)
+{
+	// Value list requested.
+	qDebug( QString( "Value list %1 requested for property definition %2." ).arg( id ).arg( propertyDefinition ).toLatin1() );
+
+	// Try fetching available core.
+	qDebug( "Fetching value list from object type cache." );
+	ValueListCore* listCore = 0;
+	if( propertyDefinition != -1 )
+		listCore = m_core->objectTypes()->list( id, propertyDefinition );
+	else
+		listCore = m_core->objectTypes()->list( id );
+	if( listCore == 0 )
+		return 0;
+
+	// Instantiate new front.
+	qDebug( "Instantiating value list front." );
+	ValueListFront* front = new ValueListFront( m_core, listCore );
+	QQmlEngine::setObjectOwnership( front, QQmlEngine::JavaScriptOwnership );
+	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::valueListAvailable, front, &ValueListFront::coreAvailable );	
+
+	// Return the front.
+	qDebug( "Returning..." );
+	return front;
+}
+
+//! Checks if the property definitions are ready.
+bool VaultFront::propertyDefinitionsReady()
+{
+	// The property definitions are ready when the cache is populated.
+	return m_core->propertyDefinitions()->populated();
+}
+
 
 //! Call when a new object has been changed.
 void VaultFront::objectChanged(	const QJsonValue& objectInfo )

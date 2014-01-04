@@ -13,6 +13,7 @@ SilicaFlickable {
 	contentWidth: field.implicitWidth;
 	flickableDirection: Flickable.HorizontalFlick
 
+    property Loader container
 	property variant value
 	onValueChanged: {
 		if( value )

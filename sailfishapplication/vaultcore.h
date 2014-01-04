@@ -31,6 +31,7 @@ class ClassCache;
 class ObjectTypeCache;
 class PropertyDefCache;
 class ObjectCache;
+class ValueListCache;
 
 /**
  * @brief The VaultCore class
@@ -45,6 +46,7 @@ public:
 	//! Constructor.
 	explicit VaultCore(
 		const QString& url,  //!< URL to the M-Files REST API.
+		const QString& authentication,  //!> Authentication information if available.
 		QObject *parent = 0  //!< Owner.
 	);
 
@@ -68,6 +70,9 @@ public:
 
 	//! Objects.
 	ObjectCache* objects() const { return m_objectCache; }
+
+	//! Value lists.
+	ValueListCache* valuelists() const { return m_valueLists; }
 	
 signals:
 
@@ -95,6 +100,7 @@ private:
 	ObjectTypeCache* m_objectTypes;
 	PropertyDefCache*  m_propertyDefinitions;
 	ObjectCache* m_objectCache;
+	ValueListCache* m_valueLists;
 	QString m_url;
 
 	// Authentication information.

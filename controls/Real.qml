@@ -4,6 +4,7 @@ import mohari.sailfish 1.0
 
 TextField {
 
+    property Loader container
 	property variant value
 	onValueChanged: {
 		if( value.HasValue )

@@ -28,6 +28,7 @@
 // Forward declarations.
 class ObjID;
 class ObjectFront;
+class ValueListFront;
 class VaultCore;
 
 /*!
@@ -41,6 +42,7 @@ class VaultFront : public QObject
 {
 	Q_OBJECT
 	Q_ENUMS( CacheType )
+	Q_PROPERTY( bool propertyDefinitionsReady READ propertyDefinitionsReady NOTIFY propertyDefinitionsReadyChanged )
 public:
 
 	enum CacheType
@@ -74,6 +76,20 @@ public:
 	Q_INVOKABLE ObjectFront* object(
 		const QJsonValue& id  //!< Json object that identifies the object. This can be ObjVer or ObjectVersion.
 	);
+
+    //! Gets a reference to a value list.
+    Q_INVOKABLE ValueListFront* valueList(
+        int id  //!< The id of the requested value list.
+    ) { return valueList( id, -1 ); }
+
+    //! Gets a reference to a value list.
+    Q_INVOKABLE ValueListFront* valueList(
+        int id,  //!< The id of the requested value list.
+        int PropertyDefinition  //!< The id of the property definition used to filter the value list.
+    );
+
+	//! Checks if the property definitions are ready.
+	bool propertyDefinitionsReady();
 	
 signals:
 
@@ -88,6 +104,9 @@ signals:
 
 	//! Signaled when property definitions are refreshed.
 	void propertyDefinitionsRefreshed();
+
+	//! Signaled when property definitions ready state is changed.
+	void propertyDefinitionsReadyChanged();
 	
 public slots:
 

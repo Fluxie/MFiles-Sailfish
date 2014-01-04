@@ -43,7 +43,8 @@ public slots:
 
 	//! Prepares vault.
 	VaultCore* prepareVault(
-			const QString& url
+		const QString& url,
+		const QString& authentication
 	);
 
 // Private interface.

@@ -24,9 +24,11 @@
 #include <QObject>
 
 #include "structurecachebase.h"
+#include "valuelistkey.h"
 
 // Forward declarations.
 class VaultCore;
+class ValueListCore;
 
 /*!
  * \brief The ObjectTypeCache class
@@ -35,6 +37,11 @@ class VaultCore;
  */
 class ObjectTypeCache : public StructureCacheBase
 {
+
+
+	//! Definition for cached value lists
+	typedef QHash< ValueListKey, ValueListCore* >  VALUELISTS;
+
 	Q_OBJECT
 public:
 
@@ -44,13 +51,40 @@ public:
 	//! Destructor.
 	~ObjectTypeCache() {}
 
+	//! Gets value list.
+	ValueListCore* list( int id ) const;
+
+	//! Gets value list.
+	ValueListCore* list( int id, int propertyDefinition );
+
 signals:
 
+	//! Signaled when a value list core has become available.
+	void valueListAvailable( ValueListCore* core, ObjectTypeCache* source );
 
 public slots:
 
+
+
+// Protected interface.
+protected:
+
+	//! Override this to clear the satellite data when the cache contents is cleared.
+	virtual void clearSatelliteDataNts();
+
+	//! Override this to populate satellite data that after the cache contens has been refreshed.
+	virtual void populateSatelliteDataNts();
+
+// Private interface.
+private:
+
+	//! Requests value list.
+	ValueListCore* getNewValueListNts( int id, int propertyDefinition );
+
 // Private data.
 private:
+
+	VALUELISTS m_valueLists;  // Cached value listss
 
 };
 

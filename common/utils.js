@@ -65,6 +65,11 @@ function merge( options, defaults ) {
 };
 
 
+/**
+ * Allows inspecting the paremeter with debugger
+ *
+ * @param {inspected} object for inspection
+ */
 function inspect( inspected )
 {
 	return inspected;
