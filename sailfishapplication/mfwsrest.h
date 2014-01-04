@@ -23,11 +23,10 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QJsonValue>
 
-// Forward declaration.
-class QNetworkReply;
-
+//! Helper class for making MFWS REST API calls.
 class MfwsRest : public QObject
 {
 	Q_OBJECT
@@ -50,7 +49,7 @@ public:
 signals:
 
 	//! Signaled when error occurs in the prosessing of the request.
-	void error( const QString& description );
+	void error( QNetworkReply::NetworkError code, const QString& description ) const;
 	
 public slots:
 	

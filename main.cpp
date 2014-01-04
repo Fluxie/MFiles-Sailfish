@@ -28,6 +28,8 @@
 #endif
 
 #include "sailfishapplication.h"
+#include "appmonitor.h"
+#include "errorinfo.h"
 #include "hostcore.h"
 #include "integervalidator.h"
 #include "objectfront.h"
@@ -39,6 +41,9 @@
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {	
+	// REgister metatypes.
+	qRegisterMetaType< ErrorInfo >();
+
 	// Register C++ classes as QML types.	
 	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
@@ -47,6 +52,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
 	qmlRegisterType< ValueListFront >();
+	qmlRegisterType< AppMonitor >();
 
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
 	QScopedPointer<QQuickView> view( Sailfish::createView("main.qml") );

@@ -172,6 +172,7 @@ MfwsRest* ObjectVersionCore::rest()
 		// Create the MfwsRest object for fetching the actual data.
 		m_rest = new MfwsRest( m_owner->vault()->url(), this );
 		m_rest->setAuthentication( m_owner->vault()->authentication() );
+		QObject::connect( m_rest, &MfwsRest::error, m_owner->vault(), &VaultCore::networkError );
 		QObject::connect( m_owner->vault(), &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );
 	}
 	return m_rest;

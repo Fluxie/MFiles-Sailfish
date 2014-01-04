@@ -71,6 +71,17 @@ QNetworkReply* MfwsRest::getJson(
 	// Execute the request and read reply.
 	QNetworkReply* reply = m_network->get( request );
 	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
-		reply->deleteLater(); } );
+
+		// Signal possible error.
+		if( reply->error() != QNetworkReply::NoError )
+		{
+			// Emit the error.
+			// TODO Read the content.
+			emit error( reply->error(), reply->errorString() );
+		}
+
+		// Mark the reply for deletion.
+		reply->deleteLater();
+	} );
 	return reply;
 }

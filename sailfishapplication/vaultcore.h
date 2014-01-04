@@ -23,7 +23,9 @@
 
 #include <QObject>
 #include <QMutex>
+#include <QNetworkReply>
 
+#include "errorinfo.h"
 #include "vaultcore.h"
 
 // Forward declarations.
@@ -81,6 +83,9 @@ signals:
 
 	//! Authentication changed signal.
 	void authenticationChanged( const QString& authentication );	
+
+	//! Signaled when error happens when processing "core" operation.
+	void error( const ErrorInfo& error );
 	
 public slots:
 
@@ -91,6 +96,9 @@ public slots:
 
 	//! A cache hosted by this core has been refreshed.
 	void cacheRefreshed();
+
+	//! A network error has occurred within the vault.
+	void networkError( QNetworkReply::NetworkError code, const QString& description );
 
 // Private data.
 private:

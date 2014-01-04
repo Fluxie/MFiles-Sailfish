@@ -123,5 +123,10 @@ void VaultCore::cacheRefreshed()
 	}  // end if
 }
 
-
-
+//! A network error has occurred within the vault.
+void VaultCore::networkError( QNetworkReply::NetworkError code, const QString& description )
+{
+	// Convert to our error object and emit.
+	ErrorInfo errorinfo( description );
+	emit error( errorinfo );
+}

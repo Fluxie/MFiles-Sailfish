@@ -14,6 +14,7 @@ ValueListCache::ValueListCache( VaultCore* parent ) :
 	// Create the MfwsRest object for fetching the actual data.
 	m_rest = new MfwsRest( m_owner->url(), this );
 	m_rest->setAuthentication( m_owner->authentication() );
+	QObject::connect( m_rest, &MfwsRest::error, m_owner, &VaultCore::networkError );
 	QObject::connect( m_owner, &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );
 }
 

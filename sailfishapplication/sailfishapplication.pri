@@ -23,7 +23,9 @@ SOURCES += $$PWD/sailfishapplication.cpp \
     sailfishapplication/valuelistfront.cpp \
     sailfishapplication/valuelistmodel.cpp \
     sailfishapplication/frontbase.cpp \
-    sailfishapplication/corebase.cpp
+    sailfishapplication/corebase.cpp \
+    sailfishapplication/appmonitor.cpp \
+    sailfishapplication/errorinfo.cpp
 HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/objecttypecache.h \
     sailfishapplication/hostcore.h \
@@ -48,7 +50,9 @@ HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/valuelistmodel.h \
     sailfishapplication/valuelistkey.h \
     sailfishapplication/frontbase.h \
-    sailfishapplication/corebase.h
+    sailfishapplication/corebase.h \
+    sailfishapplication/appmonitor.h \
+    sailfishapplication/errorinfo.h
 INCLUDEPATH += $$PWD
 
 TARGETPATH = /usr/bin

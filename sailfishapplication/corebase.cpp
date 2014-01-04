@@ -54,6 +54,7 @@ MfwsRest* CoreBase::rest()
 	{
 		m_rest = new MfwsRest( this->vault()->url(), this );
 		m_rest->setAuthentication( this->vault()->authentication() );
+		QObject::connect( m_rest, &MfwsRest::error, this->vault(), &VaultCore::networkError );
 		QObject::connect( this->vault(), &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );
 
 	}  // end if.
