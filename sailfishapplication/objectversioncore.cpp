@@ -109,6 +109,7 @@ void ObjectVersionCore::initialize()
 {
 	// We must be in the same thread as our owner.
 	this->moveToThread( m_owner->thread() );
+	QObject::connect( this, &ObjectVersionCore::error, m_owner, &ObjectCore::reportError );
 
 	// We can perform certain initialization only from the thread that will own this object.
 	if( QThread::currentThread() == this->thread() )

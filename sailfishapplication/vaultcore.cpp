@@ -42,17 +42,17 @@ VaultCore::VaultCore(
 	m_objectCache = new ObjectCache( this );
 
 	// Connect events.
-	QObject::connect( m_classes, &ClassCache::error, this, &VaultCore::error );
+	QObject::connect( m_classes, &ClassCache::error, this, &VaultCore::reportError );
 	QObject::connect( m_classes, &ClassCache::refreshed, this, &VaultCore::cacheRefreshed );
 	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
 
 	QObject::connect( this, &VaultCore::authenticationChanged, m_objectTypes, &ObjectTypeCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_objectTypes, &ObjectTypeCache::refreshed, this, &VaultCore::cacheRefreshed );
-	QObject::connect( m_objectTypes, &ObjectTypeCache::error, this, &VaultCore::error );
+	QObject::connect( m_objectTypes, &ObjectTypeCache::error, this, &VaultCore::reportError );
 
 	QObject::connect( this, &VaultCore::authenticationChanged, m_propertyDefinitions, &PropertyDefCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_propertyDefinitions, &PropertyDefCache::refreshed, this, &VaultCore::cacheRefreshed );
-	QObject::connect( m_propertyDefinitions, &PropertyDefCache::error, this, &VaultCore::error );
+	QObject::connect( m_propertyDefinitions, &PropertyDefCache::error, this, &VaultCore::reportError );
 
 	qDebug( "VaultCore instantiated." );
 }
@@ -123,4 +123,10 @@ void VaultCore::cacheRefreshed()
 		// This was a regular refresh.
 
 	}  // end if
+}
+
+//! An error has occurred within the vault.
+void VaultCore::reportError( const ErrorInfo& errorinfo )
+{
+	emit error( errorinfo );
 }

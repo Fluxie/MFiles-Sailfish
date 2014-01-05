@@ -59,6 +59,13 @@ void CoreBase::reportNetworkError( QNetworkReply::NetworkError code, const QStri
 	emit error( errorinfo );
 }
 
+//! An error has occurred within the core or in an object related to this core.
+void CoreBase::reportError( const ErrorInfo& errorinfo )
+{
+	// Re-emit
+	emit error( errorinfo );
+}
+
 //! Accesses the MFWS REST API.
 MfwsRest* CoreBase::rest()
 {

@@ -45,6 +45,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qRegisterMetaType< ErrorInfo >();
 
 	// Register C++ classes as QML types.	
+	qmlRegisterType< AppMonitor >("mohari.sailfish", 1, 0, "AppMonitor");
 	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");
@@ -52,14 +53,18 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
 	qmlRegisterType< ValueListFront >();
-	qmlRegisterType< AppMonitor >();
 
+	// Create and register global monitor.
+	QScopedPointer< AppMonitor > monitor( new AppMonitor() );
+
+	// Create host core.
+	QScopedPointer< HostCore > host( new HostCore( monitor.data() ) );
+	host->start();
+
+	// Create the application and register the GlobalMonitor.
     QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
 	QScopedPointer<QQuickView> view( Sailfish::createView("main.qml") );
-
-    // Create host core.
-	QScopedPointer< HostCore > host( new HostCore() );
-	host->start();
+	view->engine()->rootContext()->setContextProperty( "GlobalMonitor", monitor.data() );
     
     Sailfish::showView(view.data());
     

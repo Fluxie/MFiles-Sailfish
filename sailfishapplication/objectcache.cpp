@@ -47,6 +47,7 @@ QSharedPointer< ObjectCore > ObjectCache::object(
 
 	// Create a new ObjectCore for the object version as one did not exist before.
 	ObjectCore* object = new ObjectCore( m_vault, id );
+	QObject::connect( object, &ObjectCore::error, m_vault, &VaultCore::reportError );
 	cachedObject = new QSharedPointer< ObjectCore >( object );
 	m_cache.insert( id, cachedObject );
 	return *cachedObject;

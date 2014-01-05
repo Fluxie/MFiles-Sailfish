@@ -91,8 +91,6 @@ Page {
 		}
 	}
 
-	// Define a component that represents individual property value.
-
 
 	// Declare list view that displays the property values.
 	SilicaListView {

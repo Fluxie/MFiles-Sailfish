@@ -19,6 +19,7 @@
  */
 
 #include "hostcore.h"
+#include "appmonitor.h"
 #include "vaultcore.h"
 
 #include <QEventLoop>
@@ -31,11 +32,15 @@ namespace
 
 
 
-HostCore::HostCore(QObject *parent) :
-    QThread(parent)
+HostCore::HostCore( AppMonitor* monitor ) :
+	QThread( 0 ),
+	m_monitor( monitor )
 {
 	Q_ASSERT( g_instance == 0 );
 	g_instance = this;
+
+	// Connect events to the monitor.
+	QObject::connect( this, &HostCore::error, monitor, &AppMonitor::reportError );
 }
 
 //! Returns Host instance.
@@ -55,10 +60,18 @@ VaultCore* HostCore::prepareVault(
 	// Create a new vault object and move it to this thread.
 	VaultCore* core = new VaultCore( url, authentication );
 	core->moveToThread( this );
+	QObject::connect( core, &VaultCore::error, this, &HostCore::reportError );
 	QQmlEngine::setObjectOwnership( core, QQmlEngine::JavaScriptOwnership );
 
 	// Return the vault core.
 	return core;
+}
+
+//! Reports an error somewhere within the application.
+void HostCore::reportError( const ErrorInfo& errorinfo )
+{
+	// Emit.
+	emit error( errorinfo );
 }
 
 /**

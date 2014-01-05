@@ -23,7 +23,10 @@
 
 #include <QThread>
 
+#include "errorinfo.h"
+
 // Forward declarations.
+class AppMonitor;
 class VaultCore;
 
 class HostCore : public QThread
@@ -32,12 +35,15 @@ class HostCore : public QThread
 public:
 
 	//! Constructor.
-	explicit HostCore(QObject *parent = 0);
+	explicit HostCore( AppMonitor* monitor );
 
 	//! Returns Host instance.
 	static HostCore* instance();
     
 signals:
+
+	//! Signaled when an error occurss within the application.
+	void error( const ErrorInfo& error );
     
 public slots:
 
@@ -46,6 +52,9 @@ public slots:
 		const QString& url,
 		const QString& authentication
 	);
+
+	//! Reports an error somewhere within the application.
+	void reportError( const ErrorInfo& error );
 
 // Private interface.
 private:
@@ -56,7 +65,7 @@ private:
 // Private data.
 private:
 
-
+	AppMonitor* m_monitor;  //!< Global application monitor.
 
 };
 

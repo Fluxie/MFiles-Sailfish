@@ -40,8 +40,6 @@ VaultFront::VaultFront(QObject *parent) :
 	QObject(parent),
 	m_core( 0 )
 {
-	// Initialize the application monitor.
-	m_monitor = new AppMonitor( this );
 }
 
 //! Destructor.
@@ -67,7 +65,6 @@ void VaultFront::initialize(
 	m_core = HostCore::instance()->prepareVault( url, authentication );
 
 	// Connect events
-	QObject::connect( m_core, &VaultCore::error, this->monitor(), &AppMonitor::reportError );
 	QObject::connect( m_core, &VaultCore::allCachesPopulated, this, &VaultFront::allCachesPopulated, Qt::QueuedConnection );
 	QObject::connect( m_core->classes(), &ClassCache::refreshed, this, &VaultFront::classesRefreshed, Qt::QueuedConnection );
 	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::refreshed, this, &VaultFront::objectTypesRefreshed, Qt::QueuedConnection );

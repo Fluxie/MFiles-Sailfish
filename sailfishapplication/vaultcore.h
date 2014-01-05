@@ -93,6 +93,9 @@ public slots:
 	//! A cache hosted by this core has been refreshed.
 	void cacheRefreshed();
 
+	//! An error has occurred within the vault.
+	void reportError( const ErrorInfo& errorinfo );
+
 // Private data.
 private:
 

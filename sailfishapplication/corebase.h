@@ -47,6 +47,9 @@ public slots:
 	//! A network error has occurred within the core.
 	void reportNetworkError( QNetworkReply::NetworkError code, const QString& description );
 
+	//! An error has occurred within the core or in an object related to this core.
+	void reportError( const ErrorInfo& errorinfo );
+
 // Protected interface.
 protected:
 

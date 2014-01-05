@@ -7,10 +7,10 @@ Overlay {
     id: errorDisplay
     overlayAlpha: 0.2
 
-    property VaultFront vault
+    property AppMonitor monitor
 
     // Visible only if there are errors to display.
-    visible: vault.monitor.lastError !== ''
+    visible: monitor.lastError !== ''
 
     Overlay {
 
@@ -41,14 +41,14 @@ Overlay {
                 anchors.rightMargin: Theme.paddingLarge
 
                 // Display.
-                text: vault.monitor.lastError
+                text: monitor.lastError
                 verticalAlignment: Text.AlignVCenter
                 //color: highlighted ? Theme.highlightColor : Theme.primaryColor
             }
 
             // The user can acknowledge the errors by clicking on them.
             onClicked: {
-                vault.monitor.hideErrors();
+                monitor.hideErrors();
             }
         }
 

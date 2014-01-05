@@ -44,7 +44,6 @@ class VaultFront : public QObject
 	Q_OBJECT
 	Q_ENUMS( CacheType )
 	Q_PROPERTY( bool propertyDefinitionsReady READ propertyDefinitionsReady NOTIFY propertyDefinitionsReadyChanged )
-	Q_PROPERTY( AppMonitor* monitor READ monitor NOTIFY monitorChanged )
 public:
 
 	enum CacheType
@@ -90,9 +89,6 @@ public:
         int PropertyDefinition  //!< The id of the property definition used to filter the value list.
     );
 
-	//! Application monitor.
-	AppMonitor* monitor() { return m_monitor; }
-
 	//! Checks if the property definitions are ready.
 	bool propertyDefinitionsReady();
 	
@@ -112,9 +108,6 @@ signals:
 
 	//! Signaled when property definitions ready state is changed.
 	void propertyDefinitionsReadyChanged();
-
-	//! Signaled when the application monitor changes. Basically never, but required for QML compatibility.
-	void monitorChanged();
 	
 public slots:
 
@@ -131,7 +124,6 @@ private:
 private:
 
 	VaultCore* m_core;  //!< Vault core.
-	AppMonitor* m_monitor;  //!< Monitor for errors.
 };
 
 #endif // VAULTACCESS_H
