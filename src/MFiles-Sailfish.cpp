@@ -24,11 +24,12 @@
 #include <QtQml>
 #include <QStringListModel>
 
+#include <sailfishapp.h>
+
 #ifdef QT_QML_DEBUG
 #include <QtQuick>
 #endif
 
-#include "sailfishapplication.h"
 #include "appmonitor.h"
 #include "errormodel.h"
 #include "errorinfo.h"
@@ -68,11 +69,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	host->start();
 
 	// Create the application and register the GlobalMonitor.
-    QScopedPointer<QGuiApplication> app(Sailfish::createApplication(argc, argv));
-	QScopedPointer<QQuickView> view( Sailfish::createView("main.qml") );
+	QScopedPointer<QGuiApplication> app(SailfishApp::application( argc, argv ) );
+	app->setQuitOnLastWindowClosed( true );
+	QScopedPointer<QQuickView> view( SailfishApp::createView() );
 	view->engine()->rootContext()->setContextProperty( "GlobalMonitor", monitor.data() );
-    
-    Sailfish::showView(view.data());
+	view->setSource( SailfishApp::pathTo( "qml/MFiles-Sailfish.qml" ) );
+	view->showFullScreen();
     
 	int result = app->exec();;	
 

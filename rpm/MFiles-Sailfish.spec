@@ -6,10 +6,6 @@
 Name:       MFiles-Sailfish
 
 # >> macros
-%{!?qtc_qmake5:%define qtc_qmake5 qmake}
-%{!?qtc_qmake:%define qtc_qmake qmake}
-%{!?qtc_make:%define qtc_make make}
-%{?qtc_builddir:%define _builddir %qtc_builddir}
 # << macros
 
 %{!?qtc_qmake:%define qtc_qmake %qmake}
@@ -21,14 +17,15 @@ Version:    0.1
 Release:    1
 Group:      Qt/Qt
 License:    LICENSE
+URL:        http://example.org/
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  MFiles-Sailfish.yaml
-Requires:   sailfishsilica-qt5
-Requires:   mapplauncherd-booster-silica-qt5
-BuildRequires:  pkgconfig(qdeclarative5-boostable)
-BuildRequires:  pkgconfig(Qt5Core)
-BuildRequires:  pkgconfig(Qt5Qml)
+Requires:   sailfishsilica-qt5 >= 0.10.9
 BuildRequires:  pkgconfig(Qt5Quick)
+BuildRequires:  pkgconfig(Qt5Qml)
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(sailfishapp) >= 0.0.10
+BuildRequires:  desktop-file-utils
 
 %description
 Short description of my SailfishOS Application
@@ -60,10 +57,19 @@ rm -rf %{buildroot}
 # >> install post
 # << install post
 
+desktop-file-install --delete-original       \
+  --dir %{buildroot}%{_datadir}/applications             \
+   %{buildroot}%{_datadir}/applications/*.desktop
+
 %files
 %defattr(-,root,root,-)
-/usr/share/applications
-/usr/share/MFiles-Sailfish
+%{_bindir}
+%{_datadir}/%{name}/qml
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/86x86/apps/%{name}.png
 /usr/bin
+/usr/share/MFiles-Sailfish
+/usr/share/applications
+/usr/share/icons/hicolor/86x86/apps
 # >> files
 # << files

@@ -1,8 +1,7 @@
 [Desktop Entry]
 Type=Application
+X-Nemo-Application-Type=silica-qt5
 Name=MFiles-Sailfish
-Icon=icon-launcher-gallery
-Exec=invoker --type=silica-qt5 -s /usr/bin/MFiles-Sailfish
-Comment=Sailfish UI application
-
+Icon=MFiles-Sailfish
+Exec=MFiles-Sailfish
 
