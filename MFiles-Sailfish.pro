@@ -1,28 +1,83 @@
-# The name of your app
+# The name of your app.
+# NOTICE: name defined in TARGET has a corresponding QML filename.
+#         If name defined in TARGET is changed, following needs to be
+#         done to match new name:
+#         - corresponding QML filename must be changed
+#         - desktop icon filename must be changed
+#         - desktop filename must be changed
+#         - icon definition filename in desktop file must be changed
 TARGET = MFiles-Sailfish
 
-# C++ sources
-SOURCES += main.cpp
+CONFIG += sailfishapp
+CONFIG += c++11
 
-# C++ headers
-HEADERS +=
+SOURCES += src/MFiles-Sailfish.cpp \
+    src/objecttypecache.cpp \
+    src/hostcore.cpp \
+    src/vaultcore.cpp \
+    src/classcache.cpp \
+    src/mfwsrest.cpp \
+    src/structurecachebase.cpp \
+    src/propertydefcache.cpp \
+    src/objectfront.cpp \
+    src/objectcore.cpp \
+    src/vaultfront.cpp \
+    src/objver.cpp \
+    src/objectcache.cpp \
+    src/objid.cpp \
+    src/objectversioncore.cpp \
+    src/objectversionfront.cpp \
+    src/realvalidator.cpp \
+    src/integervalidator.cpp \
+    src/valuelistcore.cpp \
+    src/valuelistfront.cpp \
+    src/valuelistmodel.cpp \
+    src/frontbase.cpp \
+    src/corebase.cpp \
+    src/appmonitor.cpp \
+    src/errorinfo.cpp \
+    src/errorlayer.cpp \
+    src/errormodel.cpp
+HEADERS += src/objecttypecache.h \
+    src/hostcore.h \
+    src/vaultcore.h \
+    src/classcache.h \
+    src/mfwsrest.h \
+    src/structurecachebase.h \
+    src/propertydefcache.h \
+    src/objectfront.h \
+    src/objectcore.h \
+    src/vaultfront.h \
+    src/objver.h \
+    src/objectcache.h \
+    src/objid.h \
+    src/objectversioncore.h \
+    src/objectversionfront.h \
+    src/realvalidator.h \
+    src/integervalidator.h \
+    src/valuelistcore.h \
+    src/valuelistfront.h \
+    src/valuelistmodel.h \
+    src/valuelistkey.h \
+    src/frontbase.h \
+    src/corebase.h \
+    src/appmonitor.h \
+    src/errorinfo.h \
+    src/errorlayer.h \
+    src/errormodel.h
 
 # QML files and folders
-qml.files = *.qml common controls dialogs pages cover main.qml
+qml.files = *.qml common controls dialogs pages cover
 
-# The .desktop file
-desktop.files = MFiles-Sailfish.desktop
-
-# Please do not modify the following line.
-include(sailfishapplication/sailfishapplication.pri)
-
-OTHER_FILES = \
-    rpm/MFiles-Sailfish.yaml \
+OTHER_FILES += qml/MFiles-Sailfish.qml \
+    qml/cover/*.qml \
+    qml/pages/*.qml \
+    qml/pages/*.js \
+    qml/dialogs/*.qml \
+    qml/dialogs/*.js \
+    qml/controls/*.qml \
+    qml/controls/*.js \
     rpm/MFiles-Sailfish.spec \
-    pages/LogIn.qml \
-    controls/TypedValue.js \
-    controls/Lookups.qml \
-    dialogs/AccurateTimePickerDialog.qml \
-    dialogs/AccurateTimePicker.js \
-    controls/ErrorDisplay.qml
+    rpm/MFiles-Sailfish.yaml \
+    MFiles-Sailfish.desktop
 
