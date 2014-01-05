@@ -11,6 +11,8 @@ CoreBase::CoreBase( VaultCore* owner ) :
 	m_rest( 0 ),
 	m_state( Initializing )
 {
+	Q_CHECK_PTR( m_vault );
+
 	// Transfer to correct thread.
 	this->moveToThread( owner->thread() );
 }
@@ -22,11 +24,14 @@ CoreBase::CoreBase( VaultCore* owner, QObject* parent ) :
 	m_rest( 0 ),
 	m_state( Initializing )
 {
+	Q_CHECK_PTR( m_vault );
+
 	// Transfer to correct thread.
-	if( owner->thread() != parent->thread() )
+	if( parent != 0 && owner->thread() != parent->thread() )
 		qCritical( "Owner and parent must live in the same thread." );
 	this->moveToThread( owner->thread() );
-	this->setParent( parent );
+	if( parent != 0 )
+		this->setParent( parent );
 
 	// Initialize the core.
 	initializeBase( parent );
@@ -46,6 +51,14 @@ void CoreBase::initializeBase( QObject* parent )
 	emit initialized();
 }
 
+//! A network error has occurred within the core.
+void CoreBase::reportNetworkError( QNetworkReply::NetworkError code, const QString& description )
+{
+	// Convert to our error object and emit.
+	ErrorInfo errorinfo( description );
+	emit error( errorinfo );
+}
+
 //! Accesses the MFWS REST API.
 MfwsRest* CoreBase::rest()
 {
@@ -54,7 +67,7 @@ MfwsRest* CoreBase::rest()
 	{
 		m_rest = new MfwsRest( this->vault()->url(), this );
 		m_rest->setAuthentication( this->vault()->authentication() );
-		QObject::connect( m_rest, &MfwsRest::error, this->vault(), &VaultCore::networkError );
+		QObject::connect( m_rest, &MfwsRest::error, this, &CoreBase::reportNetworkError );
 		QObject::connect( this->vault(), &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );
 
 	}  // end if.

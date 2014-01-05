@@ -2,6 +2,9 @@
 #define COREBASE_H
 
 #include <QObject>
+#include <QNetworkReply>
+
+#include "errorinfo.h"
 
 // Forward declarations.
 class MfwsRest;
@@ -33,10 +36,16 @@ signals:
 	//! Signaled when the core becomes initialized.
 	void initialized();
 
+	//! Signaled when an error occurs in the procssing of a request to the core.
+	void error( const ErrorInfo& error );
+
 public slots:
 
 	//! Initializes the core. Must be called from the thread that owns the core.
 	void initializeBase( QObject* parent );
+
+	//! A network error has occurred within the core.
+	void reportNetworkError( QNetworkReply::NetworkError code, const QString& description );
 
 // Protected interface.
 protected:

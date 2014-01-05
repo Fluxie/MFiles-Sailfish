@@ -24,7 +24,6 @@
 #include "objectcache.h"
 #include "objecttypecache.h"
 #include "propertydefcache.h"
-#include "valuelistcache.h"
 
 VaultCore::VaultCore(
 	const QString& url,
@@ -41,16 +40,19 @@ VaultCore::VaultCore(
 	m_objectTypes = new ObjectTypeCache( this );
 	m_propertyDefinitions = new PropertyDefCache( this );
 	m_objectCache = new ObjectCache( this );
-	m_valueLists = new ValueListCache( this );
 
-	// Connect authentication info change to refresh events of caches.
-	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
-	QObject::connect( this, &VaultCore::authenticationChanged, m_objectTypes, &ObjectTypeCache::requestRefresh, Qt::QueuedConnection );
-	QObject::connect( this, &VaultCore::authenticationChanged, m_propertyDefinitions, &PropertyDefCache::requestRefresh, Qt::QueuedConnection );
-	QObject::connect( this, &VaultCore::authenticationChanged, m_valueLists, &ValueListCache::requestRefresh, Qt::QueuedConnection );
+	// Connect events.
+	QObject::connect( m_classes, &ClassCache::error, this, &VaultCore::error );
 	QObject::connect( m_classes, &ClassCache::refreshed, this, &VaultCore::cacheRefreshed );
+	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
+
+	QObject::connect( this, &VaultCore::authenticationChanged, m_objectTypes, &ObjectTypeCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_objectTypes, &ObjectTypeCache::refreshed, this, &VaultCore::cacheRefreshed );
+	QObject::connect( m_objectTypes, &ObjectTypeCache::error, this, &VaultCore::error );
+
+	QObject::connect( this, &VaultCore::authenticationChanged, m_propertyDefinitions, &PropertyDefCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_propertyDefinitions, &PropertyDefCache::refreshed, this, &VaultCore::cacheRefreshed );
+	QObject::connect( m_propertyDefinitions, &PropertyDefCache::error, this, &VaultCore::error );
 
 	qDebug( "VaultCore instantiated." );
 }
@@ -121,12 +123,4 @@ void VaultCore::cacheRefreshed()
 		// This was a regular refresh.
 
 	}  // end if
-}
-
-//! A network error has occurred within the vault.
-void VaultCore::networkError( QNetworkReply::NetworkError code, const QString& description )
-{
-	// Convert to our error object and emit.
-	ErrorInfo errorinfo( description );
-	emit error( errorinfo );
 }

@@ -30,16 +30,11 @@
 #include "vaultcore.h"
 
 ObjectCore::ObjectCore( VaultCore* vault, ObjID id ) :
-	QObject( 0 ),
-	m_vault( vault ),
-	m_rest( 0 ),
+	CoreBase( vault, 0 ),
 	m_id( id ),
 	m_latestKnownVersion( -1 ),
 	m_latestVersionCached( false )
 {
-	// Must be in the same thread as VaultCore
-	this->moveToThread( vault->thread() );
-
 	// Request latest version.
 	QMetaObject::invokeMethod( this, "requestLatestVersion", Qt::QueuedConnection );
 }
@@ -102,22 +97,6 @@ ObjectVersionCore* ObjectCore::version(
 	return 0;
 }
 
-//! Accesses the vault. May return NULL.
-VaultCore* ObjectCore::vault()
-{
-
-	// This can only be called from the thread that owns the *Core objects.
-	// Otherwise in some peculiar situations the vault could have been destroyed
-	// wihtout us detecting it.
-	if( QThread::currentThread() != this->thread() )
-	{
-		qDebug( "ObjectCore: VaultCore thread access violation.");
-	}
-
-	// Return the vault.
-	return m_vault;
-}
-
 //! Called when a REST request for fetching object version information becomes available.
 void ObjectCore::versionAvailable( QNetworkReply* reply, bool latest )
 {
@@ -169,19 +148,4 @@ void ObjectCore::versionAvailable( QNetworkReply* reply, bool latest )
 	// Was latest version changed?
 	if( latestKnownVersionChanged )
 		emit latestVersionChanged();
-}
-
-//! Gets the REST API.
-MfwsRest* ObjectCore::rest()
-{
-	// Initialize the REST API if not already done.
-	if( m_rest == 0 )
-	{
-		// Create the MfwsRest object for fetching the actual data.
-		m_rest = new MfwsRest( m_vault->url(), this );
-		m_rest->setAuthentication( m_vault->authentication() );
-		QObject::connect( m_rest, &MfwsRest::error, m_vault, &VaultCore::networkError );
-		QObject::connect( m_vault, &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );
-	}
-	return m_rest;
 }

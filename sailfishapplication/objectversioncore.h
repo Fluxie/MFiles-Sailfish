@@ -27,13 +27,14 @@
 #include <QJsonValue>
 #include <QMutex>
 
+#include "corebase.h"
 #include "objver.h"
 
 // Forward declarations.
 class MfwsRest;
 class ObjectCore;
 
-class ObjectVersionCore : public QObject
+class ObjectVersionCore : public CoreBase
 {
 	Q_OBJECT
 public:
@@ -101,9 +102,6 @@ private:
 
 	//! Refreshes property value information.
 	void refreshPropertyValues();
-
-	//! Gets the REST API.
-	MfwsRest* rest();
 
 // Private data.
 private:

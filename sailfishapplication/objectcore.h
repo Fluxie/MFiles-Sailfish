@@ -26,6 +26,7 @@
 #include <QJsonValue>
 #include <QMutex>
 
+#include "corebase.h"
 #include "objid.h"
 
 // Forward declarations.
@@ -34,7 +35,7 @@ class MfwsRest;
 class QNetworkReply;
 class VaultCore;
 
-class ObjectCore : public QObject
+class ObjectCore : public CoreBase
 {
 	Q_OBJECT
 
@@ -59,9 +60,6 @@ public:
 	ObjectVersionCore* version(
 		const QJsonValue& version
 	);
-
-	//! Accesses the vault.
-	VaultCore* vault();
 	
 signals:
 
@@ -76,18 +74,12 @@ public slots:
 	//! Called when a REST request for fetching object version information becomes available.
 	void versionAvailable( QNetworkReply* reply, bool latest );
 
-// Private interface.
-private:
-
-	//! Gets the REST API.
-	MfwsRest* rest();
-
 // Private data.
 private:
 
-	// Variables that are never updated.
-	VaultCore* m_vault;  //!< Vault root.
-	MfwsRest* m_rest;  //!< Access to M-Files REST API.
+	friend class ObjectVersionCore;
+
+	// Variables that are never updated.	
 	ObjID m_id;  //!< The id of this object.
 
 	mutable QMutex m_mtx;  //!< Mutex that protects this object.

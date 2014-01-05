@@ -18,7 +18,6 @@ SOURCES += $$PWD/sailfishapplication.cpp \
     sailfishapplication/objectversionfront.cpp \
     sailfishapplication/realvalidator.cpp \
     sailfishapplication/integervalidator.cpp \
-    sailfishapplication/valuelistcache.cpp \
     sailfishapplication/valuelistcore.cpp \
     sailfishapplication/valuelistfront.cpp \
     sailfishapplication/valuelistmodel.cpp \
@@ -44,7 +43,6 @@ HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/objectversionfront.h \
     sailfishapplication/realvalidator.h \
     sailfishapplication/integervalidator.h \
-    sailfishapplication/valuelistcache.h \
     sailfishapplication/valuelistcore.h \
     sailfishapplication/valuelistfront.h \
     sailfishapplication/valuelistmodel.h \

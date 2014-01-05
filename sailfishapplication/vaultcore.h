@@ -33,7 +33,6 @@ class ClassCache;
 class ObjectTypeCache;
 class PropertyDefCache;
 class ObjectCache;
-class ValueListCache;
 
 /**
  * @brief The VaultCore class
@@ -72,9 +71,6 @@ public:
 
 	//! Objects.
 	ObjectCache* objects() const { return m_objectCache; }
-
-	//! Value lists.
-	ValueListCache* valuelists() const { return m_valueLists; }
 	
 signals:
 
@@ -97,9 +93,6 @@ public slots:
 	//! A cache hosted by this core has been refreshed.
 	void cacheRefreshed();
 
-	//! A network error has occurred within the vault.
-	void networkError( QNetworkReply::NetworkError code, const QString& description );
-
 // Private data.
 private:
 
@@ -108,7 +101,6 @@ private:
 	ObjectTypeCache* m_objectTypes;
 	PropertyDefCache*  m_propertyDefinitions;
 	ObjectCache* m_objectCache;
-	ValueListCache* m_valueLists;
 	QString m_url;
 
 	// Authentication information.
