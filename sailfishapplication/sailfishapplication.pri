@@ -24,7 +24,9 @@ SOURCES += $$PWD/sailfishapplication.cpp \
     sailfishapplication/frontbase.cpp \
     sailfishapplication/corebase.cpp \
     sailfishapplication/appmonitor.cpp \
-    sailfishapplication/errorinfo.cpp
+    sailfishapplication/errorinfo.cpp \
+    sailfishapplication/errorlayer.cpp \
+    sailfishapplication/errormodel.cpp
 HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/objecttypecache.h \
     sailfishapplication/hostcore.h \
@@ -50,7 +52,9 @@ HEADERS += $$PWD/sailfishapplication.h \
     sailfishapplication/frontbase.h \
     sailfishapplication/corebase.h \
     sailfishapplication/appmonitor.h \
-    sailfishapplication/errorinfo.h
+    sailfishapplication/errorinfo.h \
+    sailfishapplication/errorlayer.h \
+    sailfishapplication/errormodel.h
 INCLUDEPATH += $$PWD
 
 TARGETPATH = /usr/bin

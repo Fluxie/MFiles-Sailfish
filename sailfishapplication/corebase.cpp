@@ -56,6 +56,7 @@ void CoreBase::reportNetworkError( QNetworkReply::NetworkError code, const QStri
 {
 	// Convert to our error object and emit.
 	ErrorInfo errorinfo( description );
+	PUSH_ERROR_LAYER( errorinfo );
 	emit error( errorinfo );
 }
 
@@ -63,6 +64,7 @@ void CoreBase::reportNetworkError( QNetworkReply::NetworkError code, const QStri
 void CoreBase::reportError( const ErrorInfo& errorinfo )
 {
 	// Re-emit
+	PUSH_ERROR_LAYER( errorinfo );
 	emit error( errorinfo );
 }
 

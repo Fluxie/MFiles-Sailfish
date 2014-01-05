@@ -20,8 +20,7 @@ Rectangle {
         rootOrigo.y = point.y;
     }
     x: fillScreen ? rootOrigo.x : 0  // If we want to fill the screen, we need to use coordinates scaled to the root item.
-    y: fillScreen ? rootOrigo.y : 0  // If we want to fill the screen, we need to use coordinates scaled to the root item.
-    z: 1  // Display on top of everything else.
+    y: fillScreen ? rootOrigo.y : 0  // If we want to fill the screen, we need to use coordinates scaled to the root item.    
     height: fillScreen ? screen.height : childrenRect.height
     width: fillScreen ? screen.width : childrenRect.width
     color: Qt.rgba( overlayColor.redF, overlayColor.greenF, overlayColor.blueF, overlayAlpha )

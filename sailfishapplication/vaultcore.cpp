@@ -128,5 +128,6 @@ void VaultCore::cacheRefreshed()
 //! An error has occurred within the vault.
 void VaultCore::reportError( const ErrorInfo& errorinfo )
 {
+	PUSH_ERROR_LAYER( errorinfo );
 	emit error( errorinfo );
 }

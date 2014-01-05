@@ -71,6 +71,7 @@ VaultCore* HostCore::prepareVault(
 void HostCore::reportError( const ErrorInfo& errorinfo )
 {
 	// Emit.
+	PUSH_ERROR_LAYER( errorinfo );
 	emit error( errorinfo );
 }
 

@@ -22,6 +22,7 @@
 #include <QQuickView>
 #include <QQmlContext>
 #include <QtQml>
+#include <QStringListModel>
 
 #ifdef QT_QML_DEBUG
 #include <QtQuick>
@@ -29,6 +30,7 @@
 
 #include "sailfishapplication.h"
 #include "appmonitor.h"
+#include "errormodel.h"
 #include "errorinfo.h"
 #include "hostcore.h"
 #include "integervalidator.h"
@@ -46,6 +48,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
 	// Register C++ classes as QML types.	
 	qmlRegisterType< AppMonitor >("mohari.sailfish", 1, 0, "AppMonitor");
+	qmlRegisterType< ErrorModel >("mohari.sailfish", 1, 0, "ErrorModel");
 	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");
@@ -53,6 +56,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
 	qmlRegisterType< ValueListFront >();
+
+	// Register certain QT specific types in order to use them in QML.
+	qmlRegisterType< QStringListModel >();
 
 	// Create and register global monitor.
 	QScopedPointer< AppMonitor > monitor( new AppMonitor() );
