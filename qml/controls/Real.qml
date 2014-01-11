@@ -8,6 +8,8 @@ TextField {
     property variant propertyValue
     property VaultFront vault
 
+    // Value
+    color: Theme.primaryColor
     text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
 	validator: RealValidator { decimals: 2; notation: "StandardNotation" }
 }

@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import mohari.sailfish 1.0
 
-Button {
+BackgroundItem {
 
 	id: date
 
@@ -10,7 +10,16 @@ Button {
     property variant propertyValue
     property VaultFront vault
 
-    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+    Label{
+
+        // Position.
+        anchors.fill: parent
+        anchors.leftMargin: Theme.paddingLarge
+
+        // Text.
+        verticalAlignment: Text.AlignVCenter
+        text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+    }
 
 	// Action
 	onClicked: {

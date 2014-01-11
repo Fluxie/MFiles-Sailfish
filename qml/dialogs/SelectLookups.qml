@@ -62,6 +62,8 @@ Dialog {
 			Row {
 
 				Label {
+
+                    verticalAlignment: Text.AlignVCenter
                     text: model.display
 				}
 

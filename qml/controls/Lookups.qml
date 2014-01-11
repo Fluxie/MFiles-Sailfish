@@ -40,16 +40,24 @@ Column{
 	Repeater {
 		id: content
 
-		Label {
+        BackgroundItem {
 
-			// Position
-			anchors.left: parent.left
-			anchors.right: parent.right
-			height: Theme.itemSizeExtraSmall
+            // Position
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: Theme.itemSizeExtraSmall
 
-			// Ccntent
-			text: lookupValues[ index ].DisplayValue
-		}
+            Label {
+
+                // Position.
+                anchors.fill: parent
+                anchors.leftMargin: Theme.paddingLarge
+
+                // Content
+                verticalAlignment: Text.AlignVCenter
+                text: lookupValues[ index ].DisplayValue
+            }
+        }
 
 	}
 
@@ -71,7 +79,7 @@ Column{
 		// Action
 		onClicked: {
 			var listing = pageStack.push(
-					'../pages/LookupListing.qml', { title: lookups.parent.propertyDefinitionName, typedValue: value } );
+                    '../pages/LookupListing.qml', { title: propertyDefinitionName, typedValue: lookups.typedValue } );
 		}
 	}
 

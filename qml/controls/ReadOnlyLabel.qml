@@ -4,14 +4,9 @@ import mohari.sailfish 1.0
 
 SilicaFlickable {
 
-	id: extendedText	
-	anchors.top: parent.top
-	//anchors.bottom: parent.bottom
-	anchors.left: parent.left
-	anchors.right: parent.right
-	height: field.implicitHeight + Theme.paddingSmall
-	contentHeight: field.implicitHeight
-	contentWidth: field.implicitWidth;
+	id: extendedText
+    contentHeight: Theme.itemSizeExtraSmall
+    contentWidth: parent.width
 	flickableDirection: Flickable.HorizontalFlick
 
     // Properties
@@ -20,10 +15,12 @@ SilicaFlickable {
 
 	Label {
 
-		id: field
-		anchors.fill: parent
+        // Position.
+        anchors.fill: parent
+        anchors.leftMargin: Theme.paddingLarge
 
-
+        // Text.
+        verticalAlignment: Text.AlignVCenter
         text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
 	}
 

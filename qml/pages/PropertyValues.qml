@@ -132,9 +132,7 @@ Page {
 			// Position.
 			anchors.left: parent.left
 			anchors.right: parent.right
-			height: label.height + ( typedValue.dynamicHeight ? Math.max( typedValue.minimumHeight, typedValue.height ) : typedValue.minimumHeight )
-			// contentHeight: label.height + typedValue.minimumHeight
-
+            height: label.height + ( typedValue.dynamicHeight ? Math.max( typedValue.minimumHeight, typedValue.height ) : typedValue.minimumHeight ) + Theme.paddingMedium
 
 			// Label.
 			Label {
@@ -159,7 +157,6 @@ Page {
 				anchors.top: label.bottom
 				//anchors.bottom: parent.bottom
 				anchors.left: parent.left
-				anchors.leftMargin: Theme.paddingMedium
 				anchors.right: parent.right
 
 				// Content

@@ -9,12 +9,12 @@ ComboBox {
     id: comboBox
 
 	label: ''
+    valueColor: Theme.primaryColor
 
     // Properties
     property variant propertyValue
     property VaultFront vault
 	property bool dynamicHeight: true
-
     onPropertyValueChanged: {
         Logic.setValue( propertyValue, comboBox );
     }

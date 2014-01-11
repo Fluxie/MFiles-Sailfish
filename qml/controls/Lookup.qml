@@ -4,7 +4,7 @@ import mohari.sailfish 1.0
 
 import "Lookup.js" as Logic
 
-Button {
+BackgroundItem {
 
     id: lookup
 
@@ -14,8 +14,18 @@ Button {
     property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
 
     // Do not enable before the property definition is available
-    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
     enabled: vault ? vault.propertyDefinitionsReady : false
+
+    Label {
+
+        // Position.
+        anchors.fill: parent
+        anchors.leftMargin: Theme.paddingLarge
+
+        // Text.
+        verticalAlignment: Text.AlignVCenter
+        text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+    }
 
 	// Action
 	onClicked: {        

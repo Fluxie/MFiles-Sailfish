@@ -64,6 +64,7 @@ Page {
 				anchors.verticalCenter: parent.verticalCenter
 
 				// Content
+                verticalAlignment: Text.AlignVCenter
 				text: lookupListing.lookupValues[ index ].DisplayValue
 			}
 

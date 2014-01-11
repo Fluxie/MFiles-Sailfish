@@ -7,6 +7,8 @@ TextField {
     property variant propertyValue
     property VaultFront vault
 
+    // Value
+    color: Theme.primaryColor
     text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
 	validator: IntegerValidator {}
 }
