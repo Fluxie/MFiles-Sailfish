@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import mohari.sailfish 1.0
 
 SilicaFlickable {
 
@@ -13,19 +14,17 @@ SilicaFlickable {
 	contentWidth: field.implicitWidth;
 	flickableDirection: Flickable.HorizontalFlick
 
-    property Loader container
-	property variant value
-	onValueChanged: {
-		if( value )
-			field.text = value.DisplayValue;
-	}
+    // Properties
+    property variant propertyValue
+    property VaultFront vault
+
 	Label {
 
 		id: field
 		anchors.fill: parent
 
 
-		text: ''
+        text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
 	}
 
 	HorizontalScrollDecorator { flickable: extendedText }

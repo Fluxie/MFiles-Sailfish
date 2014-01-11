@@ -21,10 +21,10 @@
 .pragma library
 
 //! Sets the value for the control.
-function setValue( container, control ) {
+function setValue( propertyValue, control ) {
 
     // Update the value.
-    var value = container.propertyValue.TypedValue;
+    var value = propertyValue.TypedValue;
     if( ! value.HasValue )
         control.currentIndex = 0;
     else if( value.Value )

@@ -26,13 +26,13 @@ Loader {
 
 	// Set the value after loading has been completed.
 	onLoaded: {
-        item.container = typedValue;
-		item.value = propertyValue.TypedValue;        
+        propertyValueBinder.target = typedValue.item
+        vaultBinder.target = typedValue.item
 		if( item.dynamicHeight )
 			dynamicHeight = item.dynamicHeight;
 	}
 
-	// Bind
+    // Connect dynamic height.
 	Connections {
 		target: typedValue.item
 		ignoreUnknownSignals: true
@@ -41,4 +41,21 @@ Loader {
 				typedValue.height = item.height;
 		}
 	}
+
+    // Bind container to the selected control.
+    Binding {
+
+        id: propertyValueBinder
+
+        property: "propertyValue"
+        value: propertyValue
+    }
+
+    Binding {
+
+        id: vaultBinder
+
+        property: "vault"
+        value: vault
+    }
 }

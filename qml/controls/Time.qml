@@ -1,16 +1,16 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import mohari.sailfish 1.0
 
 Button {
 
 	id: time
 
 	// Properties
-    property Loader container
-	property variant value
-	onValueChanged: {
-		text: value.DisplayValue
-	}
+    property variant propertyValue
+    property VaultFront vault
+
+    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
 
 	// Action
 	onClicked: {

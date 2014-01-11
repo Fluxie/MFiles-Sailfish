@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import mohari.sailfish 1.0
 
 import "Boolean.js" as Logic
 
@@ -9,25 +10,19 @@ ComboBox {
 
 	label: ''
 
-    property Loader container
+    // Properties
+    property variant propertyValue
+    property VaultFront vault
 	property bool dynamicHeight: true
-    property variant value
 
-    Connections {
-        target: comboBox.container
-        ignoreUnknownSignals: true
-        onPropertyValueChanged: {
-            Logic.setValue( comboBox.container, comboBox );
-        }
-        onTargetChanged: {
-            Logic.setValue( comboBox.container, comboBox );
-        }
+    onPropertyValueChanged: {
+        Logic.setValue( propertyValue, comboBox );
     }
 
 	menu: ContextMenu {
 
-		MenuItem { text: "" }
-		MenuItem { text: "Yes" }
-		MenuItem { text: "No" }
+        MenuItem { text: qsTr( "" ) }
+        MenuItem { text: qsTr( "Yes" ) }
+        MenuItem { text: qsTr( "No" ) }
 	}
 }

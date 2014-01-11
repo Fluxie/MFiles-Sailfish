@@ -9,13 +9,12 @@ Button {
     id: lookup
 
 	// Properties
-    property Loader container
-    property variant value    
-    property int propertyDefinitionId: container ? container.propertyValue.PropertyDef : -1
-    property VaultFront vault: container ? container.vault : null
+    property variant propertyValue
+    property VaultFront vault
+    property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
 
     // Do not enable before the property definition is available
-    text: container ? container.propertyValue.TypedValue.DisplayValue : ""
+    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
     enabled: vault ? vault.propertyDefinitionsReady : false
 
 	// Action

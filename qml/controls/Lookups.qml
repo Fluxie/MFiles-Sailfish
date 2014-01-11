@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import mohari.sailfish 1.0
 
 import "../common/utils.js" as Utils
 
@@ -8,17 +9,23 @@ Column{
 
 	id: lookups
 
-    property Loader container
-	property variant value
+    // Properties
+    property variant propertyValue
+    property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
+    property variant typedValue: propertyValue ? propertyValue.TypedValue : undefined
+    property VaultFront vault
+    property bool propertyDefinitionsReady: vault ? vault.propertyDefinitionsReady : false
+    property string propertyDefinitionName: ( propertyDefinitionsReady && propertyDefinitionId !== -1 ) ? vault.get( VaultFront.PropertyDefinition, propertyDefinitionId ).Name : ""
+
 	property variant lookupValues: {}
 
-	onValueChanged: {
-		if( value )
+    onTypedValueChanged: {
+        if( typedValue )
 		{
 			// Set the model for the repeater to display the property values.
 			// The number of values displayed is limited.
-			console.assert( value.DataType === 10, "Excepted multi-select lookup, got " + value.DataType );
-			lookupValues = value.Lookups;
+            console.assert( typedValue.DataType === 10, "Excepted multi-select lookup, got " + typedValue.DataType );
+            lookupValues = typedValue.Lookups;
 			if( lookupValues.length > 2 )
 				content.model = 2;
 			else

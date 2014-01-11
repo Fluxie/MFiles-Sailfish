@@ -4,13 +4,10 @@ import mohari.sailfish 1.0
 
 TextField {
 
-    property Loader container
-	property variant value
-	onValueChanged: {
-		if( value.HasValue )
-			text = value.DisplayValue;
-		else
-			text = ''
-	}
+    // Properties
+    property variant propertyValue
+    property VaultFront vault
+
+    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
 	validator: RealValidator { decimals: 2; notation: "StandardNotation" }
 }
