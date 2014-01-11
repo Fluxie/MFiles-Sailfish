@@ -2,6 +2,8 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import mohari.sailfish 1.0
 
+import "Date.js" as Logic
+
 BackgroundItem {
 
 	id: date
@@ -9,8 +11,11 @@ BackgroundItem {
 	// Properties
 	property variant propertyValue
 	property VaultFront vault
+	onPropertyValueChanged: dateLabel.text = Logic.getLabelText( propertyValue )
 
 	Label {
+
+		id: dateLabel
 
 		// Position.
 		anchors.fill: parent
@@ -18,16 +23,17 @@ BackgroundItem {
 
 		// Text.
 		verticalAlignment: Text.AlignVCenter
-		text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+		text: Logic.getLabelText( propertyValue )
 	}
 
 	// Action
 	onClicked: {
+		var dt = new Date( propertyValue.TypedValue.Value );
 		var dialog = pageStack.push("Sailfish.Silica.DatePickerDialog", {
-										date: new Date('2012/11/23')
+										date: dt
 									})
 		dialog.accepted.connect(function () {
-			date.text = "You chose: " + dialog.dateText
+			dateLabel.text = Logic.getLabelText( dialog.date );
 		})
 	}
 }
