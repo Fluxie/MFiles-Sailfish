@@ -4,9 +4,9 @@ import mohari.sailfish 1.0
 
 TextArea {
 
-    // Properties
-    property variant propertyValue
-    property VaultFront vault
+	// Properties
+	property variant propertyValue
+	property VaultFront vault
 
-    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
+	text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
 }

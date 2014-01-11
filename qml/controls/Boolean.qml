@@ -6,23 +6,23 @@ import "Boolean.js" as Logic
 
 ComboBox {
 
-    id: comboBox
+	id: comboBox
 
 	label: ''
-    valueColor: Theme.primaryColor
+	valueColor: Theme.primaryColor
 
-    // Properties
-    property variant propertyValue
-    property VaultFront vault
+	// Properties
+	property variant propertyValue
+	property VaultFront vault
 	property bool dynamicHeight: true
-    onPropertyValueChanged: {
-        Logic.setValue( propertyValue, comboBox );
-    }
+	onPropertyValueChanged: {
+		Logic.setValue( propertyValue, comboBox )
+	}
 
 	menu: ContextMenu {
 
-        MenuItem { text: qsTr( "" ) }
-        MenuItem { text: qsTr( "Yes" ) }
-        MenuItem { text: qsTr( "No" ) }
+		MenuItem { text: qsTr( "" ) }
+		MenuItem { text: qsTr( "Yes" ) }
+		MenuItem { text: qsTr( "No" ) }
 	}
 }

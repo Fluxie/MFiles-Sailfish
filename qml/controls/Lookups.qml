@@ -4,32 +4,36 @@ import mohari.sailfish 1.0
 
 import "../common/utils.js" as Utils
 
+
 // Typed value is represented by a loader as we will dynamically select the control we use to display the value.
-Column{
+Column {
 
 	id: lookups
 
-    // Properties
-    property variant propertyValue
-    property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
-    property variant typedValue: propertyValue ? propertyValue.TypedValue : undefined
-    property VaultFront vault
-    property bool propertyDefinitionsReady: vault ? vault.propertyDefinitionsReady : false
-    property string propertyDefinitionName: ( propertyDefinitionsReady && propertyDefinitionId !== -1 ) ? vault.get( VaultFront.PropertyDefinition, propertyDefinitionId ).Name : ""
+	// Properties
+	property variant propertyValue
+	property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
+	property variant typedValue: propertyValue ? propertyValue.TypedValue : undefined
+	property VaultFront vault
+	property bool propertyDefinitionsReady: vault ? vault.propertyDefinitionsReady : false
+	property string propertyDefinitionName: ( propertyDefinitionsReady && propertyDefinitionId !== -1 ) ? vault.get( VaultFront.PropertyDefinition, propertyDefinitionId ).Name : ""
 
-	property variant lookupValues: {}
+	property variant lookupValues: {
 
-    onTypedValueChanged: {
-        if( typedValue )
-		{
+	}
+
+	onTypedValueChanged: {
+		if (typedValue) {
 			// Set the model for the repeater to display the property values.
 			// The number of values displayed is limited.
-            console.assert( typedValue.DataType === 10, "Excepted multi-select lookup, got " + typedValue.DataType );
-            lookupValues = typedValue.Lookups;
-			if( lookupValues.length > 2 )
-				content.model = 2;
+			console.assert(
+						typedValue.DataType === 10,
+						"Excepted multi-select lookup, got " + typedValue.DataType)
+			lookupValues = typedValue.Lookups
+			if (lookupValues.length > 2)
+				content.model = 2
 			else
-				content.model = lookupValues.length;
+				content.model = lookupValues.length
 		}
 	}
 
@@ -40,25 +44,24 @@ Column{
 	Repeater {
 		id: content
 
-        BackgroundItem {
+		BackgroundItem {
 
-            // Position
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: Theme.itemSizeExtraSmall
+			// Position
+			anchors.left: parent.left
+			anchors.right: parent.right
+			height: Theme.itemSizeExtraSmall
 
-            Label {
+			Label {
 
-                // Position.
-                anchors.fill: parent
-                anchors.leftMargin: Theme.paddingLarge
+				// Position.
+				anchors.fill: parent
+				anchors.leftMargin: Theme.paddingLarge
 
-                // Content
-                verticalAlignment: Text.AlignVCenter
-                text: lookupValues[ index ].DisplayValue
-            }
-        }
-
+				// Content
+				verticalAlignment: Text.AlignVCenter
+				text: lookupValues[index].DisplayValue
+			}
+		}
 	}
 
 	// Button for opening lookup listing.
@@ -78,12 +81,10 @@ Column{
 
 		// Action
 		onClicked: {
-			var listing = pageStack.push(
-                    '../pages/LookupListing.qml', { title: propertyDefinitionName, typedValue: lookups.typedValue } );
+			var listing = pageStack.push('../pages/LookupListing.qml', {
+											 title: propertyDefinitionName,
+											 typedValue: lookups.typedValue
+										 })
 		}
 	}
-
 }
-
-
-

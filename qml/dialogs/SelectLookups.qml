@@ -11,17 +11,14 @@ Dialog {
 	property int valueList
 	property int propertyDefinition
 	property VaultFront vault
-    property variant valueListData: vault ? vault.valueList( valueList, propertyDefinition ) : null
+	property variant valueListData: vault ? vault.valueList( valueList, propertyDefinition ) : null
 
 	DialogHeader {
 
 		id: header
 
 		title: "Choose"
-
 	}
-
-
 
 	SilicaListView {
 
@@ -33,9 +30,9 @@ Dialog {
 		anchors.bottom: parent.bottom
 		anchors.leftMargin: Theme.paddingLarge
 
-        model: ValueListModel {
-            valueList: valueListData ? valueListData : null
-        }
+		model: ValueListModel {
+			valueList: valueListData ? valueListData : null
+		}
 
 		// Position
 		header: SearchField {
@@ -46,7 +43,6 @@ Dialog {
 			anchors.right: parent.right
 
 			placeholderText: 'Search'
-
 		}
 
 		ViewPlaceholder {
@@ -55,7 +51,7 @@ Dialog {
 			text: 'Searching...'
 		}
 
-		delegate: ListItem	{
+		delegate: ListItem {
 
 			id: listItem
 
@@ -63,14 +59,10 @@ Dialog {
 
 				Label {
 
-                    verticalAlignment: Text.AlignVCenter
-                    text: model.display
+					verticalAlignment: Text.AlignVCenter
+					text: model.display
 				}
-
 			}
-
-
 		}
-
 	}
 }

@@ -4,11 +4,11 @@ import mohari.sailfish 1.0
 
 TextField {
 
-    property variant propertyValue
-    property VaultFront vault
+	property variant propertyValue
+	property VaultFront vault
 
-    // Value
-    color: Theme.primaryColor
-    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+	// Value
+	color: Theme.primaryColor
+	text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
 	validator: IntegerValidator {}
 }

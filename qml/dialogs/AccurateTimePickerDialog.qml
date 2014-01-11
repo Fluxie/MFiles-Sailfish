@@ -7,21 +7,22 @@ Dialog {
 
 	id: accurateTimePicker
 
-    // Properties, alias the clock properties directly to controls.
+	// Properties, alias the clock properties directly to controls.
 	property alias hour: clock.hour
-    property alias hourMode: clock.hourMode
+	property alias hourMode: clock.hourMode
 	property alias minute: clock.minute
-    property alias second: seconds.value
-    property string timeText: ''
-    property string timeFormat: Qt.locale().timeFormat( Locale.LongFormat ).replace( /[.]/g, ":" ).replace( /t/g, "" ).replace( /^\s*/, "").replace( /^\s*$/, "" )
+	property alias second: seconds.value
+	property string timeText: ''
+	property string timeFormat: Qt.locale().timeFormat(
+									Locale.LongFormat ).replace( /[.]/g, ":" ).replace( /t/g, "" ).replace( /^\s*/, "" ).replace( /^\s*$/, "" )
 
-    onHourChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
-    onMinuteChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
-	onSecondChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker );
-    onTimeTextChanged: header.acceptText = timeText
+	onHourChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
+	onMinuteChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
+	onSecondChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
+	onTimeTextChanged: header.acceptText = timeText
 
-    // Synchronize the data after the dialog has been loaded.
-    Component.onCompleted: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
+	// Synchronize the data after the dialog has been loaded.
+	Component.onCompleted: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
 
 	DialogHeader {
 
@@ -30,10 +31,10 @@ Dialog {
 		anchors.top: parent.top
 		anchors.right: parent.right
 
-        acceptText: ''
+		acceptText: ''
 	}
 
-	// Clock
+	// Clock, hours and minutes
 	TimePicker {
 
 		id: clock

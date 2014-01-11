@@ -7,32 +7,35 @@ BackgroundItem {
 	id: time
 
 	// Properties
-    property variant propertyValue
-    property VaultFront vault
+	property variant propertyValue
+	property VaultFront vault
 
-    Label {
+	Label {
 
-        id: timeLabel
+		id: timeLabel
 
-        // Position.
-        anchors.fill: parent
-        anchors.leftMargin: Theme.paddingLarge
+		// Position.
+		anchors.fill: parent
+		anchors.leftMargin: Theme.paddingLarge
 
-        // Text.
-        verticalAlignment: Text.AlignVCenter
-        text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
-    }
+		// Text.
+		verticalAlignment: Text.AlignVCenter
+		text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+	}
 
 	// Action
 	onClicked: {
 
-        // // This is available in all editors.
-        var dt = new Date( propertyValue.TypedValue.Value );
-        var dialog = pageStack.push("../dialogs/AccurateTimePickerDialog.qml", {
-                                        hour: dt.getUTCHours(), minute: dt.getUTCMinutes(), second: dt.getUTCSeconds() } );
-		dialog.accepted.connect(function() {
-            timeLabel.text = dialog.timeText
-            // TODO: Update the property value.
+		// // This is available in all editors.
+		var dt = new Date(propertyValue.TypedValue.Value)
+		var dialog = pageStack.push("../dialogs/AccurateTimePickerDialog.qml", {
+										hour: dt.getUTCHours(),
+										minute: dt.getUTCMinutes(),
+										second: dt.getUTCSeconds()
+									})
+		dialog.accepted.connect(function () {
+			timeLabel.text = dialog.timeText
+			// TODO: Update the property value.
 		})
 	}
 }

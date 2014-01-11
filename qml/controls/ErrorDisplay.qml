@@ -4,92 +4,90 @@ import mohari.sailfish 1.0
 
 Overlay {
 
-    id: errorDisplay
-    overlayAlpha: 0.2
-    z: 1  // Display on top of everything else.
+	id: errorDisplay
+	overlayAlpha: 0.2
+	z: 1 // Display on top of everything else.
 
-    property AppMonitor monitor
-    property variant detailsPage
+	property AppMonitor monitor
+	property variant detailsPage
 
-    // Visible only if there are errors to display.
-    visible: monitor.lastError.message !== '' && ! detailsPage
+	// Visible only if there are errors to display.
+	visible: monitor.lastError.message !== '' && !detailsPage
 
-    Overlay {
+	Overlay {
 
-        id: messageArea
+		id: messageArea
 
-        overlayAlpha: 0.4
+		overlayAlpha: 0.4
 
-        // Position.
-        fillScreen: false
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: Theme.itemSizeLarge * 2
-        y: ( parent.height / 2 ) - Theme.itemSizeLarge
+		// Position.
+		fillScreen: false
+		anchors.left: parent.left
+		anchors.right: parent.right
+		height: Theme.itemSizeLarge * 2
+		y: (parent.height / 2) - Theme.itemSizeLarge
 
-        BackgroundItem {
+		BackgroundItem {
 
-            // Position.
-            anchors.fill: parent
+			// Position.
+			anchors.fill: parent
 
-            Column {
+			Column {
 
-                // Positioning.
-                anchors.fill: parent
-                anchors.leftMargin: Theme.paddingLarge
-                anchors.rightMargin: Theme.paddingLarge
+				// Positioning.
+				anchors.fill: parent
+				anchors.leftMargin: Theme.paddingLarge
+				anchors.rightMargin: Theme.paddingLarge
 
-                // Display the error.
-                Label {
+				// Display the error.
+				Label {
 
-                    id: message
+					id: message
 
-                    // Positioning.
-                    anchors.left:  parent.left
-                    anchors.right: parent.right
-                    height: Theme.itemSizeMedium
+					// Positioning.
+					anchors.left: parent.left
+					anchors.right: parent.right
+					height: Theme.itemSizeMedium
 
+					// Display.
+					text: monitor.lastError.message
+					verticalAlignment: Text.AlignVCenter
+					//color: highlighted ? Theme.highlightColor : Theme.primaryColor
+				}
 
-                    // Display.
-                    text: monitor.lastError.message
-                    verticalAlignment: Text.AlignVCenter
-                    //color: highlighted ? Theme.highlightColor : Theme.primaryColor
-                }
+				Button {
 
-                Button {
+					id: details
 
-                    id: details
+					// Positioning.
+					anchors.left: parent.left
+					anchors.right: parent.right
 
-                    // Positioning.
-                    anchors.left:  parent.left
-                    anchors.right: parent.right
+					text: "Details"
 
-                    text: "Details"
+					// Show our details page.
+					onClicked: {
+						detailsPage = pageStack.push(
+									'../pages/ErrorDetails.qml', {
+										error: monitor.lastError
+									})
+					}
+				}
+			}
 
-                    // Show our details page.
-                    onClicked: {
-                        detailsPage = pageStack.push( '../pages/ErrorDetails.qml', { error: monitor.lastError } );
-                    }
-                }
+			// The user can acknowledge the errors by clicking on them.
+			onClicked: {
+				monitor.hideErrors()
+			}
+		}
+	}
 
-            }
-
-
-            // The user can acknowledge the errors by clicking on them.
-            onClicked: {
-                monitor.hideErrors();
-            }
-        }
-
-    }
-
-    // Cleart the details page when the current page of the page stack changes. e.g our details page has been replaced.
-    Connections {
-        target: pageStack
-        onCurrentPageChanged: {
-            if( detailsPage && detailsPage !== pageStack.currentPage )
-                detailsPage = null;
-        }
-    }
+	// Cleart the details page when the current page of the page stack changes. e.g our details page has been replaced.
+	Connections {
+		target: pageStack
+		onCurrentPageChanged: {
+			if (detailsPage && detailsPage !== pageStack.currentPage)
+				detailsPage = null
+		}
+	}
 }
-

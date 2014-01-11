@@ -6,13 +6,11 @@ TextField {
 
 	id: field
 
-    // Properties
-    property variant propertyValue
-    property VaultFront vault
+	// Properties
+	property variant propertyValue
+	property VaultFront vault
 
-    // Text
-    color: Theme.primaryColor
-    text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
+	// Text
+	color: Theme.primaryColor
+	text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
 }
-
-

@@ -7,26 +7,26 @@ BackgroundItem {
 	id: date
 
 	// Properties
-    property variant propertyValue
-    property VaultFront vault
+	property variant propertyValue
+	property VaultFront vault
 
-    Label{
+	Label {
 
-        // Position.
-        anchors.fill: parent
-        anchors.leftMargin: Theme.paddingLarge
+		// Position.
+		anchors.fill: parent
+		anchors.leftMargin: Theme.paddingLarge
 
-        // Text.
-        verticalAlignment: Text.AlignVCenter
-        text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
-    }
+		// Text.
+		verticalAlignment: Text.AlignVCenter
+		text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+	}
 
 	// Action
 	onClicked: {
 		var dialog = pageStack.push("Sailfish.Silica.DatePickerDialog", {
-			date: new Date('2012/11/23')
-		})
-		dialog.accepted.connect(function() {
+										date: new Date('2012/11/23')
+									})
+		dialog.accepted.connect(function () {
 			date.text = "You chose: " + dialog.dateText
 		})
 	}

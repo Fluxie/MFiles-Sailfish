@@ -6,35 +6,38 @@ import "Lookup.js" as Logic
 
 BackgroundItem {
 
-    id: lookup
+	id: lookup
 
 	// Properties
-    property variant propertyValue
-    property VaultFront vault
-    property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
+	property variant propertyValue
+	property VaultFront vault
+	property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
 
-    // Do not enable before the property definition is available
-    enabled: vault ? vault.propertyDefinitionsReady : false
+	// Do not enable before the property definition is available
+	enabled: vault ? vault.propertyDefinitionsReady : false
 
-    Label {
+	Label {
 
-        // Position.
-        anchors.fill: parent
-        anchors.leftMargin: Theme.paddingLarge
+		// Position.
+		anchors.fill: parent
+		anchors.leftMargin: Theme.paddingLarge
 
-        // Text.
-        verticalAlignment: Text.AlignVCenter
-        text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
-    }
+		// Text.
+		verticalAlignment: Text.AlignVCenter
+		text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+	}
 
 	// Action
-	onClicked: {        
-        console.log( "onClicked" );
-        console.log( "Property definition:" + propertyDefinitionId );
-        var propertyDefinition = vault.get( VaultFront.PropertyDefinition, propertyDefinitionId );
-        var valueListId = propertyDefinition.ValueList;
-        var dialog = pageStack.push("../dialogs/SelectLookups.qml",
-                                    { valueList: valueListId, propertyDefinition: propertyDefinitionId, vault: lookup.vault } );
-		dialog.accepted.connect(function() {})
+	onClicked: {
+		console.log("onClicked")
+		console.log("Property definition:" + propertyDefinitionId)
+		var propertyDefinition = vault.get( VaultFront.PropertyDefinition, propertyDefinitionId )
+		var valueListId = propertyDefinition.ValueList
+		var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
+										valueList: valueListId,
+										propertyDefinition: propertyDefinitionId,
+										vault: lookup.vault
+									})
+		dialog.accepted.connect(function () {})
 	}
 }

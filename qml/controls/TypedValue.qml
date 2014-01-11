@@ -4,58 +4,59 @@ import mohari.sailfish 1.0
 
 import "TypedValue.js" as Logic
 
+
 // Typed value is represented by a loader as we will dynamically select the control we use to display the value.
 Loader {
 
-	id: typedValue		
+	id: typedValue
 
 	// Properties
 	property string propertyDefinitionName
 	property variant propertyValue
-    property VaultFront vault
+	property VaultFront vault
 	property real minimumHeight: Theme.itemSizeMedium
 	property bool dynamicHeight: false
 
 	// Updates the control when the property valeu changes.
 	onPropertyValueChanged: {
-		if( propertyValue ) {
-			source = Logic.selectControl( propertyValue.TypedValue );
-			minimumHeight = Logic.selectImplicitHeight( propertyValue.TypedValue );
+		if (propertyValue) {
+			source = Logic.selectControl(propertyValue.TypedValue)
+			minimumHeight = Logic.selectImplicitHeight(propertyValue.TypedValue)
 		}
 	}
 
 	// Set the value after loading has been completed.
 	onLoaded: {
-        propertyValueBinder.target = typedValue.item
-        vaultBinder.target = typedValue.item
-		if( item.dynamicHeight )
-			dynamicHeight = item.dynamicHeight;
+		propertyValueBinder.target = typedValue.item
+		vaultBinder.target = typedValue.item
+		if (item.dynamicHeight)
+			dynamicHeight = item.dynamicHeight
 	}
 
-    // Connect dynamic height.
+	// Connect dynamic height.
 	Connections {
 		target: typedValue.item
 		ignoreUnknownSignals: true
 		onHeightChanged: {
-			if( typedValue.dynamicHeight )
-				typedValue.height = item.height;
+			if (typedValue.dynamicHeight)
+				typedValue.height = item.height
 		}
 	}
 
-    // Bind container to the selected control.
-    Binding {
+	// Bind container to the selected control.
+	Binding {
 
-        id: propertyValueBinder
+		id: propertyValueBinder
 
-        property: "propertyValue"
-        value: propertyValue
-    }
+		property: "propertyValue"
+		value: propertyValue
+	}
 
-    Binding {
+	Binding {
 
-        id: vaultBinder
+		id: vaultBinder
 
-        property: "vault"
-        value: vault
-    }
+		property: "vault"
+		value: vault
+	}
 }
