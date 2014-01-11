@@ -77,6 +77,7 @@ OTHER_FILES += qml/MFiles-Sailfish.qml \
     qml/dialogs/*.js \
     qml/controls/*.qml \
     qml/controls/*.js \
+    qml/common/*.js \
     rpm/MFiles-Sailfish.spec \
     rpm/MFiles-Sailfish.yaml \
     MFiles-Sailfish.desktop

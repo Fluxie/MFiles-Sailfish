@@ -12,6 +12,8 @@ BackgroundItem {
 
     Label {
 
+        id: timeLabel
+
         // Position.
         anchors.fill: parent
         anchors.leftMargin: Theme.paddingLarge
@@ -23,9 +25,14 @@ BackgroundItem {
 
 	// Action
 	onClicked: {
-		var dialog = pageStack.push("../dialogs/AccurateTimePickerDialog.qml" );
+
+        // // This is available in all editors.
+        var dt = new Date( propertyValue.TypedValue.Value );
+        var dialog = pageStack.push("../dialogs/AccurateTimePickerDialog.qml", {
+                                        hour: dt.getUTCHours(), minute: dt.getUTCMinutes(), second: dt.getUTCSeconds() } );
 		dialog.accepted.connect(function() {
-			time.text = "You chose: " + dialog.timeText
+            timeLabel.text = dialog.timeText
+            // TODO: Update the property value.
 		})
 	}
 }
