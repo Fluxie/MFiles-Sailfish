@@ -132,7 +132,7 @@ Page {
 			// Position.
 			anchors.left: parent.left
 			anchors.right: parent.right
-            height: label.height + ( typedValue.dynamicHeight ? Math.max( typedValue.minimumHeight, typedValue.height ) : typedValue.minimumHeight ) + Theme.paddingMedium
+			height: label.height + Math.max( typedValue.minimumHeight, typedValue.height ) + Theme.paddingMedium
 
 			// Label.
 			Label {

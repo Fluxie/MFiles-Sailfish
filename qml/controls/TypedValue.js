@@ -105,7 +105,7 @@ function selectImplicitHeight( typedValue ) {
 		return selectImplicitHeightForMSLookup( lookups );
 
 	case 13:
-		return Silica.Theme.itemSizeExtraLarge * 2;
+		return Silica.Theme.itemSizeExtraLarge;
 
 	// We return simple read-only control for types we do not recognize.
 	default:

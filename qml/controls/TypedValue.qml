@@ -15,7 +15,6 @@ Loader {
 	property variant propertyValue
 	property VaultFront vault
 	property real minimumHeight: Theme.itemSizeMedium
-	property bool dynamicHeight: false
 
 	// Updates the control when the property valeu changes.
 	onPropertyValueChanged: {
@@ -29,18 +28,6 @@ Loader {
 	onLoaded: {
 		propertyValueBinder.target = typedValue.item
 		vaultBinder.target = typedValue.item
-		if (item.dynamicHeight)
-			dynamicHeight = item.dynamicHeight
-	}
-
-	// Connect dynamic height.
-	Connections {
-		target: typedValue.item
-		ignoreUnknownSignals: true
-		onHeightChanged: {
-			if (typedValue.dynamicHeight)
-				typedValue.height = item.height
-		}
 	}
 
 	// Bind container to the selected control.
