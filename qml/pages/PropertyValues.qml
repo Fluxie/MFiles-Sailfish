@@ -31,77 +31,18 @@ Page {
 	// Define properties
 	property variant objectVersion
 	property VaultFront vault
-	property variant objectData
-	property variant latestVersion
-	property variant propertiesForDisplay
-
-	// Store the property values for display of the latest version if they are available.
-	onLatestVersionChanged: {
-
-		// Set the listener target if the latest version is available.
-		if( latestVersion )
-		{
-			// Connect the latest version to listeners and store property values for display if available.
-			latestVersionConnections.target = latestVersion;
-			if( latestVersion.propertiesForDisplay )
-				propertiesForDisplay = latestVersion.propertiesForDisplay;
-			else
-				propertiesForDisplay = null;
-		}
-		else
-		{
-			// Clear references.
-			latestVersionConnections.target = null;
-			propertiesForDisplay = null;
-
-		}  // end if
-	}
-
-	// Update the number of property values when the property values for display change.
-	onPropertiesForDisplayChanged: {
-		if( propertiesForDisplay )
-			propertyValueList.propertyValueCount = propertiesForDisplay.length;
-		else
-			propertyValueList.propertyValueCount = 0;
-	}
-
-	// Read object data.
-	objectData: vault.object( objectVersion );
-	latestVersion: objectData.latest();
-
-	// Listen for new versions.
-	Connections {
-		target: objectData
-		onLatestVersionChanged : {
-			latestVersion = objectData.latest();
-		}
-	}
-
-	// List for changes to property values in the latest version
-	Connections {
-		id: latestVersionConnections
-		target: null
-
-		// Update the list model when the property values for display have changed.
-		onPropertiesForDisplayChanged : {
-			if( latestVersionConnections.target.propertiesForDisplay )
-				propertiesForDisplay = latestVersionConnections.target.propertiesForDisplay;
-			else
-				propertiesForDisplay = null;
-		}
-	}
-
+	property variant objectData: vault.object( objectVersion )
+	property int latestVersion: objectData.latestVersion
 
 	// Declare list view that displays the property values.
 	SilicaListView {
 
 		id: propertyValueList
 
-		// The number of property values.
-		// We use the number of property values as the model and update the model here.
-		property int propertyValueCount : 0
-		onPropertyValueCountChanged: {
-			propertyValueList.model = propertyValueCount;
+		model: PropertyValueModel {
+
+			dataFilter: PropertyValueModel.PropertyValuesForDisplay
+			objectVersion: objectData.version( propertyValues.latestVersion )
 		}
 
 		// Position
@@ -126,8 +67,7 @@ Page {
 
 			id: propertyValueDelegate
 
-			property variant propertyValue: propertiesForDisplay[ index ]
-            property variant propertyDefinition: vault.propertyDefinitionsReady ? vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef ) : null
+			property variant propertyDefinition: vault.propertyDefinitionsReady ? vault.get( VaultFront.PropertyDefinition, model.propertyDefinitionId ) : null
 
 			// Position.
 			anchors.left: parent.left
@@ -161,7 +101,7 @@ Page {
 
 				// Content
                 propertyDefinitionName: propertyDefinition ? propertyDefinition.Name : ""
-				propertyValue: propertyValueDelegate.propertyValue
+				propertyValue: model.propertyValue
                 vault: propertyValues.vault
 			}
 		}

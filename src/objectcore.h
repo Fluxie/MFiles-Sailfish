@@ -74,6 +74,12 @@ public slots:
 	//! Called when a REST request for fetching object version information becomes available.
 	void versionAvailable( QNetworkReply* reply, bool latest );
 
+// Private interface.
+private:
+
+	//! Gets core for the specified version.
+	ObjectVersionCore* getCore( int version );
+
 // Private data.
 private:
 

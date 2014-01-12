@@ -37,6 +37,7 @@
 #include "integervalidator.h"
 #include "objectfront.h"
 #include "objectversionfront.h"
+#include "propertyvaluemodel.h"
 #include "realvalidator.h"
 #include "vaultfront.h"
 #include "valuelistmodel.h"
@@ -50,6 +51,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	// Register C++ classes as QML types.	
 	qmlRegisterType< AppMonitor >("mohari.sailfish", 1, 0, "AppMonitor");
 	qmlRegisterType< ErrorModel >("mohari.sailfish", 1, 0, "ErrorModel");
+	qmlRegisterType< PropertyValueModel >("mohari.sailfish", 1, 0, "PropertyValueModel");
 	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");

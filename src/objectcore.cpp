@@ -65,22 +65,8 @@ ObjectVersionCore* ObjectCore::latest()
 	if( m_latestKnownVersion < 1 )		
 		return 0;
 
-	VERSIONS::iterator itr = m_versions.find( m_latestKnownVersion );
-	if( itr != m_versions.end() )
-	{
-		// The core was already cached.
-		return itr.value();
-	}
-	else
-	{
-		// This version has not been cached previously.
-		ObjVer objver( m_id, m_latestKnownVersion );
-		ObjectVersionCore* versionCore = new ObjectVersionCore( this, objver );
-		m_versions.insert( objver.version(), versionCore );
-		return versionCore;
-
-	}  // end if
-	return 0;
+	// Get core.
+	return this->getCore( m_latestKnownVersion );
 }
 
 //! Returns reference to the specific version.
@@ -89,12 +75,48 @@ ObjectVersionCore* ObjectCore::version(
 )
 {
 	// Parse object verion.
-	ObjVer specificVersion( version.toObject() );
-	if( specificVersion.objId() != m_id )
+	int versionNumber = 0;
+	if( version.isDouble() )
+	{
+		// As number.
+		versionNumber = version.toDouble();
+	}
+	else if( version.isObject() )
+	{
+		// Parse from the ObjVer.
+		ObjVer specificVersion( version.toObject() );
+		if( specificVersion.objId() != m_id )
+		{
+			qCritical( "Invalid specific version." );
+			return 0;
+		}
+	}
+	else if( version.isString() )
+	{
+		// Try parsing the version from string.
+		QString asString = version.toString();
+		bool conversionOk = false;
+		versionNumber = asString.toInt( &conversionOk );
+		if( !conversionOk )
+		{
+			qCritical( QString( "Unexpected version %1." ).arg( asString ).toLatin1() );
+			return 0;
+		}
+	}
+	else
+	{
+		// Unexpected version.
+		qCritical( QString( "Unexpected version %1." ).arg( version.toString() ).toLatin1() );
 		return 0;
 
-	// TODO: Implement.
-	return 0;
+	}  // end if
+
+	// Is version number invalid at this point?
+	if( versionNumber < 1 )
+		return 0;
+
+	// Return core.
+	return this->getCore( versionNumber );
 }
 
 //! Called when a REST request for fetching object version information becomes available.
@@ -148,4 +170,27 @@ void ObjectCore::versionAvailable( QNetworkReply* reply, bool latest )
 	// Was latest version changed?
 	if( latestKnownVersionChanged )
 		emit latestVersionChanged();
+}
+
+//! Gets new core for the specified version.
+ObjectVersionCore* ObjectCore::getCore( int version )
+{
+	// Try fetching a cached core and if not available
+	// then return a new one.
+	VERSIONS::iterator itr = m_versions.find( version );
+	if( itr != m_versions.end() )
+	{
+		// The core was already cached.
+		return itr.value();
+	}
+	else
+	{
+		// This version has not been cached previously.
+		ObjVer objver( m_id, version );
+		ObjectVersionCore* versionCore = new ObjectVersionCore( this, objver );
+		m_versions.insert( objver.version(), versionCore );
+		return versionCore;
+
+	}  // end if
+	return 0;
 }
