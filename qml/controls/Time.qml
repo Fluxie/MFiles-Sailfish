@@ -6,10 +6,6 @@ BackgroundItem {
 
 	id: time
 
-	// Properties
-	property variant propertyValue
-	property VaultFront vault
-
 	Label {
 
 		id: timeLabel

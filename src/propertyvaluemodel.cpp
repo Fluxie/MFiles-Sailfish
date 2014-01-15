@@ -1,6 +1,7 @@
 #include "propertyvaluemodel.h"
 
 #include <QHash>
+#include <QVariantMap>
 
 #include "objectversionfront.h"
 
@@ -55,6 +56,52 @@ QVariant PropertyValueModel::data( const QModelIndex& index, int role ) const
 		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
 	}
 	return data;
+}
+
+//! Flags.
+Qt::ItemFlags PropertyValueModel::flags( const QModelIndex &index ) const
+{
+
+	if (!index.isValid())
+		 return Qt::ItemIsEnabled;
+
+	 return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+}
+
+//! Sets the data.
+bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &value, int role )
+{
+	// Skip setting any data if we do not have any values to show.
+	if( ! m_objectVersion || m_propertyValues.size() == 0 )
+		return false;
+	if( role != PropertyValueRole )
+		return false;
+	if( ! index.isValid() )
+		return false;
+
+	// The value given should be valid.
+	Q_ASSERT( value.isValid() );
+
+	// We can only convert variant maps at the moment.
+	// JSON objects are returned as variants maps from QML.
+	if( value.type() != QVariant::Map )
+	{
+		// TODO: Report error.
+		qCritical( value.typeName() );
+		return false;
+	}
+
+	// Check if the value has changed.
+	const QJsonValue& previousValue = m_propertyValues[ index.row() ];	
+	QJsonValue newValue( QJsonObject::fromVariantMap( qvariant_cast< QVariantMap >( value ) ) );
+	if( previousValue == newValue )
+		return false;
+
+	// The value denoted by the index has changed. Update it with the new value and signal the change.
+	qDebug( "Updating property value model data." );
+	m_propertyValues[ index.row() ] = newValue;
+	emit dataChanged( index, index );
+	return true;
 }
 
 //! Role names.

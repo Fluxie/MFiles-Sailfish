@@ -11,10 +11,8 @@ Column {
 	id: lookups
 
 	// Properties
-	property variant propertyValue
 	property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
 	property variant typedValue: propertyValue ? propertyValue.TypedValue : undefined
-	property VaultFront vault
 	property bool propertyDefinitionsReady: vault ? vault.propertyDefinitionsReady : false
 	property string propertyDefinitionName: ( propertyDefinitionsReady && propertyDefinitionId !== -1 ) ? vault.get( VaultFront.PropertyDefinition, propertyDefinitionId ).Name : ""
 

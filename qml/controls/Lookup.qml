@@ -9,8 +9,6 @@ BackgroundItem {
 	id: lookup
 
 	// Properties
-	property variant propertyValue
-	property VaultFront vault
 	property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
 
 	// Do not enable before the property definition is available

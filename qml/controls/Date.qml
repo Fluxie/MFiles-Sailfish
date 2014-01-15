@@ -8,11 +8,6 @@ BackgroundItem {
 
 	id: date
 
-	// Properties
-	property variant propertyValue
-	property VaultFront vault
-	onPropertyValueChanged: dateLabel.text = Logic.getLabelText( propertyValue )
-
 	Label {
 
 		id: dateLabel

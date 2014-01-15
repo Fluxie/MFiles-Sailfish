@@ -11,12 +11,8 @@ ComboBox {
 	label: ''
 	valueColor: Theme.primaryColor
 
-	// Properties
-	property variant propertyValue
-	property VaultFront vault
-	onPropertyValueChanged: {
-		Logic.setValue( propertyValue, comboBox )
-	}
+	// Select the value.
+	currentIndex: propertyValue.TypedValue.HasValue ? ( propertyValue.TypedValue.Value ? 1 : 2 ) : 0
 
 	menu: ContextMenu {
 

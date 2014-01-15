@@ -100,10 +100,14 @@ Page {
 				anchors.right: parent.right
 
 				// Content
-                propertyDefinitionName: propertyDefinition ? propertyDefinition.Name : ""
+				propertyDefinitionName: propertyDefinition ? propertyDefinition.Name : ""
 				propertyValue: model.propertyValue
-                vault: propertyValues.vault
-			}
+				vault: propertyValues.vault
+
+				// Update the model if necessary.
+				onAccepted: model.propertyValue = typedValue.propertyValue
+
+			}  // end TypedValue
 		}
 	}
 }

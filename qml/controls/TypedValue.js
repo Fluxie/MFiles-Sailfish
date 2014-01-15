@@ -114,6 +114,41 @@ function selectImplicitHeight( typedValue ) {
 
 }
 
+/**
+ * Creates a new typed value based on an existing property value with an updated data.
+ *
+ * @param {value] typedValue The typed value used as a base.
+ * @param {value} value Updated data.
+ */
+function setTypedValue( typedValue, value ) {
+
+	// Update the data.
+	switch( typedValue.DataType )
+	{
+	// Text
+	case 1 :
+		if( value && value !== "" ) {
+			typedValue.Value = value;
+			typedValue.DisplayValue = value.toString();
+			//typedValue.HasValue = true;
+		}
+		else {
+
+			// Clear the previous value.
+			typedValue.Value = undefined;
+			typedValue.DisplayValue = "";
+			//typedValue.HasValue = false;
+		}
+		break;
+
+	// For now, no-op. TODO Make this an error.
+	default:
+		console.log( typedValue );
+		console.trace();
+		break;
+
+	}
+}
 
 /**
  * Selects implicit height for the typed value control that represents multi-select lookup.

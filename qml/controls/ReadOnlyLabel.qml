@@ -9,10 +9,6 @@ SilicaFlickable {
 	contentWidth: parent.width
 	flickableDirection: Flickable.HorizontalFlick
 
-	// Properties
-	property variant propertyValue
-	property VaultFront vault
-
 	Label {
 
 		// Position.
