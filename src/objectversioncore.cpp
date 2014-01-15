@@ -25,6 +25,7 @@
 #include <QJsonDocument>
 #include <QNetworkReply>
 #include <QThread>
+#include <QtAlgorithms>
 
 #include "mfwsrest.h"
 #include "objectcore.h"
@@ -80,7 +81,7 @@ void ObjectVersionCore::setPropertiesForDisplay(
 		QMutexLocker lock( &m_mtx );
 
 		// Properties for display.
-		m_propertiesForDisplay = propertiesForDisplay;
+		m_propertiesForDisplay = ObjectVersionCore::normalizePropertyValues( ForDisplay, propertiesForDisplay );
 	}
 
 	// Properties for display changed.
@@ -97,7 +98,7 @@ void ObjectVersionCore::setProperties(
 		QMutexLocker lock( &m_mtx );
 
 		// Properties.
-		m_properties = properties;
+		m_properties = ObjectVersionCore::normalizePropertyValues( All, properties );
 	}
 
 	// Properties changed.
@@ -153,13 +154,123 @@ void ObjectVersionCore::requestPropertiesForDisplay()
 // !Refreshes object version information.
 void ObjectVersionCore::refreshObjectVersion()
 {
-
+	qDebug( "TODO" );
 }
 
 //! Refreshes property value information.
 void ObjectVersionCore::refreshPropertyValues()
 {
+	qDebug( "TODO" );
+}
 
+/** Property values that are blocked for display purposes.
+ *
+ * NOTE: MFWS REST API should not include the property values 81 and 82 in the propertiesForDisplay.
+ *
+ * 81 = Favorite View
+ * 82 = Accessed by Me
+ */
+const int ObjectVersionCore::BLOCKED_FOR_DISPLAY_PROPERTY_VALUES[] = { 81, 82 };
+
+/**
+ * @brief Normalizes property values for use. Receives the normalized property values.
+ * @param purpose The usage purpose of the property values.
+ * @param values VAlues to normalize.
+ * @return Normalized property values.
+ */
+QJsonArray ObjectVersionCore::normalizePropertyValues( PropertyValuePurpose purpose, const QJsonArray& values )
+{
+	// Normalize the property values for the intended purpose.
+	QJsonArray normalized( values );
+	for( QJsonArray::iterator itr = normalized.begin(); itr != normalized.end(); )
+	{
+		// Normalize the property value.
+		if( normalizePropertyValue( purpose, *itr ) )
+		{
+			// The value is accepted. Move to the next value.
+			itr++;
+		}
+		else
+		{
+			// The value was not accepted. Erase it.
+			itr = normalized.erase( itr );
+		}
+
+	}  // end for.
+
+	// Return the normalized values.
+	return normalized;
 }
 
 
+//! Normalizes property value for use. Receives true if the property value is acceptable for the intended purpose.
+bool ObjectVersionCore::normalizePropertyValue( PropertyValuePurpose purpose, QJsonValueRef value )
+{
+	// Block certain property values.
+	QJsonObject asObject = value.toObject();
+	switch( purpose )
+	{
+	case ForDisplay :
+		{
+			Q_ASSERT( asObject.contains( "PropertyDef" ) );
+			int propertyDef = asObject[ "PropertyDef" ].toDouble();
+			const int* blocked = qFind( BLOCKED_FOR_DISPLAY_PROPERTY_VALUES,
+										BLOCKED_FOR_DISPLAY_PROPERTY_VALUES + sizeof( BLOCKED_FOR_DISPLAY_PROPERTY_VALUES ) / sizeof( int ),
+										propertyDef );
+			if( blocked != BLOCKED_FOR_DISPLAY_PROPERTY_VALUES + sizeof( BLOCKED_FOR_DISPLAY_PROPERTY_VALUES ) / sizeof( int ) )
+				return false;  // The property value was blocked.
+		}
+		break;
+
+	// All property values are accepted.
+	case All:
+		break;
+
+	// Unexpected purpose.
+	case Undefined :
+	default :
+		qCritical( "TODO: Error reporting." );
+		return false;
+		break;
+	}
+
+	// Normalize the typed value part.
+	QJsonObject typedValue = asObject[ "TypedValue" ].toObject();
+	if( ! typedValue.contains( "HasValue" ) )
+		typedValue[ "HasValue" ] = false;  // MFWS REST API does not include the field "HasValue" if the value is undefined. This can be considered a bug in MFWS REST API.
+
+	// Perform data type specific normalization.
+	Q_ASSERT( typedValue.contains( "DataType" ) );
+	int dataType = typedValue[ "DataType" ].toDouble();
+	switch( dataType )
+	{
+	// Single-line text.
+	case 1:
+		{
+			// For single-line text values we explicitly set the value to an empty string
+			// if we receive an undefined or null text based value.
+			QJsonValue value = typedValue[ "Value" ];
+			if( ! typedValue.contains( "Value" ) ||  // "Value" is not included if the value in M-Files is empty/null. This is a bug in MFWS REST API.
+				value.isUndefined() || value.isNull() )
+			{
+				// Ensure that the empty single-line text is represented by a valid string.
+				// In M-Files null, undefined and empty string are semantically equivalent.
+				typedValue[ "Value" ] = QString( "" );
+				typedValue[ "DisplayValue" ] = QString( "" );
+			}
+		}
+		break;
+
+	// The data type does not require special handling.
+	default:
+		break;
+	}
+	// NOTE: QJsonXYZ objects use implicit sharing of the data. e.g. copies are only created when
+	// something is modified. As we just modified the values and created copies we need to assign the copies
+	// back to the original values.
+	asObject[ "TypedValue" ] = typedValue;  // Re-assign the typed value to the PropertyVAlue object.
+	value = asObject;  // Update the actual property value.
+
+	// This property value was accepted.
+	return true;
+}

@@ -103,11 +103,27 @@ private:
 	//! Refreshes property value information.
 	void refreshPropertyValues();
 
+	//! The intended purpose of the property value.
+	enum PropertyValuePurpose
+	{
+		Undefined,  //!< Undefined.
+		ForDisplay,  //!< Property value is ment for display.
+		All  //!< All property values.
+	};
+
+	//! Property values that are blocked for display purposes.
+	static const int BLOCKED_FOR_DISPLAY_PROPERTY_VALUES[];
+
+	//! Normalizes property values for use. Receives the normalized property values.
+	static QJsonArray normalizePropertyValues( PropertyValuePurpose purpose, const QJsonArray& values );
+
+	//! Normalizes property value for use. Receives true if the property value is acceptable for the intended purpose.
+	static bool normalizePropertyValue( PropertyValuePurpose purpose, QJsonValueRef value );
+
 // Private data.
 private:
 
 	ObjectCore* m_owner;  //!< Object that owns this verision
-	MfwsRest* m_rest;  //!< Access to M-Files REST API.
 	ObjVer m_objver;  //!< Object version.
 
 	mutable QMutex m_mtx;
