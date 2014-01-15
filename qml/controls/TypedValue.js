@@ -127,18 +127,8 @@ function setTypedValue( typedValue, value ) {
 	{
 	// Text
 	case 1 :
-		if( value && value !== "" ) {
-			typedValue.Value = value;
-			typedValue.DisplayValue = value.toString();
-			//typedValue.HasValue = true;
-		}
-		else {
-
-			// Clear the previous value.
-			typedValue.Value = undefined;
-			typedValue.DisplayValue = "";
-			//typedValue.HasValue = false;
-		}
+		typedValue.Value = value.toString();
+		typedValue.DisplayValue = value.toString();
 		break;
 
 	// For now, no-op. TODO Make this an error.

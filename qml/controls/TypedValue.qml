@@ -21,7 +21,7 @@ Loader {
 	// Signaled when the property value selection as been submitted/accepted.
 	signal accepted	
 
-	// Updates the control when the property valeu changes.
+	// Updates the control when the property value changes.
 	onPropertyValueChanged: {
 		if( propertyValue ) {
 			source = Logic.selectControl( propertyValue.TypedValue )
@@ -37,6 +37,8 @@ Loader {
 	// Submits a new value to the typed value.
 	// The actual controls should call this function to update the property value.
 	function submit( newValue ) {
+
+		// Update the property value.
 		var newPropertyValue = Utils.deepCopy( typedValue.propertyValue );
 		Logic.setTypedValue( newPropertyValue.TypedValue, newValue );
 		typedValue.propertyValue = newPropertyValue

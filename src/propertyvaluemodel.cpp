@@ -83,7 +83,7 @@ bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &valu
 	Q_ASSERT( value.isValid() );
 
 	// We can only convert variant maps at the moment.
-	// JSON objects are returned as variants maps from QML.
+	// JSON objects are returned as variant maps from QML.
 	if( value.type() != QVariant::Map )
 	{
 		// TODO: Report error.
