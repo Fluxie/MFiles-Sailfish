@@ -126,9 +126,24 @@ function setTypedValue( typedValue, value ) {
 	switch( typedValue.DataType )
 	{
 	// Text
-	case 1 :
+	case 1:
+	case 13:
 		typedValue.Value = value.toString();
 		typedValue.DisplayValue = value.toString();
+		break;
+
+	// Integer
+	case 2 :
+		typedValue.Value = value;
+		typedValue.DisplayValue = value.toString();
+		console.log( typedValue.DisplayValue )
+		break;
+
+	// Real
+	case 3 :
+		typedValue.Value = value;
+		typedValue.DisplayValue = Number( value ).toLocaleString( Qt.locale(),  "f", 2 );
+		console.log( typedValue.DisplayValue )
 		break;
 
 	// For now, no-op. TODO Make this an error.

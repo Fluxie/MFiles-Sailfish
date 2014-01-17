@@ -45,6 +45,12 @@ Column {
 			// Text.
 			color: Theme.primaryColor
 			text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
+
+			// Submit the changes when the active focus is lost.
+			onActiveFocusChanged: {
+				if( ! activeFocus )
+					typedValue.submit( textEditor.text );
+			}
 		}
 
 		// A vertical line on the right side of the text editor control.
