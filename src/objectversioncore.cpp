@@ -140,7 +140,6 @@ void ObjectVersionCore::sendPropertiesToServer( const QJsonArray& updatedPropert
 		QJsonObject asObject = updated.toObject();
 		int propertyDef = asObject[ "PropertyDef" ].toDouble();
 		updatedPropertiesIndex.insert( propertyDef, i );
-		qDebug( "Proeprty mapping." );
 
 	}  // end for
 

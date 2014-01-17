@@ -39,9 +39,6 @@ Dialog {
 
 			id: search
 
-			anchors.left: parent.left
-			anchors.right: parent.right
-
 			placeholderText: 'Search'
 		}
 
