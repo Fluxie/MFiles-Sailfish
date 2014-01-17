@@ -2,6 +2,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 import "AccurateTimePicker.js" as Logic
+import "../common/utils.js" as Utils
 
 Dialog {
 
@@ -13,8 +14,7 @@ Dialog {
 	property alias minute: clock.minute
 	property alias second: seconds.value
 	property string timeText: ''
-	property string timeFormat: Qt.locale().timeFormat(
-									Locale.LongFormat ).replace( /[.]/g, ":" ).replace( /t/g, "" ).replace( /^\s*/, "" ).replace( /^\s*$/, "" )
+	property string timeFormat: Utils.getTimeFormat()
 
 	onHourChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
 	onMinuteChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )

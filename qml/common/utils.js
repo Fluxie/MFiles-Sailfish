@@ -21,6 +21,17 @@
 .pragma library
 
 /**
+ * Gets proper time format for formatting Time.
+ *
+ * @returns {object} Time format.
+ */
+function getTimeFormat() {
+	// Construct and return the time format.
+	var timeFormat = Qt.locale().timeFormat( Qt.DefaultLocaleLongDate ).replace( /[.]/g, ":" ).replace( /t/g, "" ).replace( /^\s*/, "" ).replace( /^\s*$/, "" )
+	return timeFormat;
+}
+
+/**
  * Create a deep copy of the object
  *
  * @param {object} obj Object to copy

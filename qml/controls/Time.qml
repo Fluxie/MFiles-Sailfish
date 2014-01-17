@@ -30,8 +30,15 @@ BackgroundItem {
 										second: dt.getUTCSeconds()
 									})
 		dialog.accepted.connect(function () {
-			timeLabel.text = dialog.timeText
-			// TODO: Update the property value.
+
+			// Construct the date object based on the previous value.
+			var dt = new Date( propertyValue.TypedValue.Value );
+			dt.setUTCHours( dialog.hour );
+			dt.setUTCMinutes( dialog.minute );
+			dt.setUTCSeconds( dialog.second );
+
+			// Submit the value.
+			typedValue.submit( dt );
 		})
 	}
 }

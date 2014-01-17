@@ -28,7 +28,9 @@ BackgroundItem {
 										date: dt
 									})
 		dialog.accepted.connect(function () {
-			dateLabel.text = Logic.getLabelText( dialog.date );
-		})
+
+			// Submit.
+			typedValue.submit( dialog.date );
+		} )
 	}
 }

@@ -18,6 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
+.import "../common/utils.js" as Utils
 .import Sailfish.Silica 1.0 as Silica
 
 var __TVMFDataTypes = {
@@ -136,14 +137,28 @@ function setTypedValue( typedValue, value ) {
 	case 2 :
 		typedValue.Value = value;
 		typedValue.DisplayValue = value.toString();
-		console.log( typedValue.DisplayValue )
 		break;
 
 	// Real
 	case 3 :
 		typedValue.Value = value;
 		typedValue.DisplayValue = Number( value ).toLocaleString( Qt.locale(),  "f", 2 );
-		console.log( typedValue.DisplayValue )
+		break;
+
+	// Date
+	case 5 :
+		typedValue.Value = value;
+		typedValue.DisplayValue = Qt.formatDate( value, Qt.DefaultLocaleShortDate );
+		break;
+
+	// Time
+	case 6 :
+		typedValue.Value = value;
+		var timeForDisplay = new Date();
+		timeForDisplay.setHours( value.getUTCHours() );
+		timeForDisplay.setMinutes( value.getUTCMinutes() );
+		timeForDisplay.setSeconds( value.getUTCSeconds() );
+		typedValue.DisplayValue = timeForDisplay.toLocaleTimeString( Qt.locale(), Utils.getTimeFormat() );
 		break;
 
 	// For now, no-op. TODO Make this an error.
