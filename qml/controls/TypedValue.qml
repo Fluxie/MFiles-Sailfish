@@ -24,6 +24,10 @@ Loader {
 	// Updates the control when the property value changes.
 	onPropertyValueChanged: {
 		if( propertyValue ) {
+			if( propertyValue.TypedValue.DataType == 10 )
+				asynchronous = true;
+			else
+				asynchronous = false;
 			source = Logic.selectControl( propertyValue.TypedValue )
 			minimumHeight = Logic.selectImplicitHeight( propertyValue.TypedValue )
 		}
