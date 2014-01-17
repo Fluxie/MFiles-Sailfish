@@ -56,19 +56,8 @@ QNetworkReply* MfwsRest::getJson(
 
 
 
-	// Prepare the request.
-	QNetworkRequest request;
-	if( m_authentication.size() == 0 )
-		qCritical( "Authentication information is not available." );
-	request.setRawHeader( "X-Authentication", m_authentication.toLatin1() );
-	request.setRawHeader("Accept", "application/json");
-	request.setRawHeader("Content-Type", "application/json");
-	QString finalUrl = QString("%1/REST%2").arg( m_url, resource );
-	request.setUrl( QUrl( finalUrl ) );
-
-	qDebug() << finalUrl;
-
 	// Execute the request and read reply.
+	QNetworkRequest request = this->prepareRequest( resource );
 	QNetworkReply* reply = m_network->get( request );
 	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
 
@@ -84,4 +73,77 @@ QNetworkReply* MfwsRest::getJson(
 		reply->deleteLater();
 	} );
 	return reply;
+}
+
+//! Posts resources.
+QNetworkReply* MfwsRest::postJson(
+	QString& resource,  //!< The name of the resource.
+	const QJsonDocument& post  //!< The value to post.
+) const
+{
+	// Execute the request and read reply.
+	QNetworkRequest request = this->prepareRequest( resource );
+	QNetworkReply* reply = m_network->post( request, post.toJson() );
+	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
+
+		// Signal possible error.
+		if( reply->error() != QNetworkReply::NoError )
+		{
+			// Emit the error.
+			// TODO Read the content.
+			emit error( reply->error(), reply->errorString() );
+		}
+
+		// Mark the reply for deletion.
+		reply->deleteLater();
+	} );
+	return reply;
+}
+
+/**
+ * @brief MfwsRest::putJson
+ * @param resource  //!< Server resource.
+ * @param put The JSON document to 'PUT' to the server.
+ * @return  Reply
+ */
+QNetworkReply* MfwsRest::putJson(
+	QString& resource,  //!< The name of the resource.
+	const QJsonDocument& put  //!< The value to post.
+) const
+{
+	// Execute the request and read reply.
+	QNetworkRequest request = this->prepareRequest( resource );
+	QNetworkReply* reply = m_network->put( request, put.toJson() );
+	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
+
+		// Signal possible error.
+		if( reply->error() != QNetworkReply::NoError )
+		{
+			// Emit the error.
+			// TODO Read the content.
+			emit error( reply->error(), reply->errorString() );
+		}
+
+		// Mark the reply for deletion.
+		reply->deleteLater();
+	} );
+	qDebug( "Posted" );
+	return reply;
+}
+
+
+//! Prepares request.
+QNetworkRequest MfwsRest::prepareRequest( const QString& resource ) const
+{
+	// Prepare and return the request.
+	QNetworkRequest request;
+	if( m_authentication.size() == 0 )
+		qCritical( "Authentication information is not available." );
+	request.setRawHeader( "X-Authentication", m_authentication.toLatin1() );
+	request.setRawHeader("Accept", "application/json");
+	request.setRawHeader("Content-Type", "application/json; charset=utf-8");
+	QString finalUrl = QString("%1/REST%2").arg( m_url, resource );
+	request.setUrl( QUrl( finalUrl ) );
+	qDebug() << finalUrl;
+	return request;
 }

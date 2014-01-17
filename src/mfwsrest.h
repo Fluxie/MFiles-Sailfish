@@ -26,6 +26,9 @@
 #include <QNetworkReply>
 #include <QJsonValue>
 
+// Forward declaration.
+class QJsonDocument;
+
 //! Helper class for making MFWS REST API calls.
 class MfwsRest : public QObject
 {
@@ -41,9 +44,22 @@ public:
 	//! Destructor.
 	virtual ~MfwsRest();
 	
-	//! Gets resources. The response if submitted to the given slot.
+	//! Gets resources.
 	QNetworkReply* getJson(
 		QString& resource  //!< The name of the resource.
+	) const;
+
+	//! Posts resources.
+	QNetworkReply* postJson(
+		QString& resource,  //!< The name of the resource.
+		const QJsonDocument& post  //!< The object to post.
+	) const;
+
+
+	//! Puts resource.
+	QNetworkReply* putJson(
+		QString& resource,  //!< The name of the resource.
+		const QJsonDocument& put  //!< The value to post.
 	) const;
 
 signals:
@@ -55,6 +71,12 @@ public slots:
 	
 	//! Sets the authentication information.
 	void setAuthentication( const QString& authentication ) { m_authentication = authentication; }
+
+// Private interface.
+private:
+
+	//! Prepares request.
+	QNetworkRequest prepareRequest( const QString& resource ) const;
 
 // Private data.
 private:

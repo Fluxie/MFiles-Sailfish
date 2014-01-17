@@ -24,6 +24,7 @@
 void FrontBase::coreAvailable( QObject* core, QObject* source )
 {
 	// Store the core if it is accepted to this object.
+	qDebug( "Core available" );
 	if( this->accept( core ) )
 		this->setCore( core, source );
 }
@@ -31,7 +32,8 @@ void FrontBase::coreAvailable( QObject* core, QObject* source )
 //! Sets the core.
 void FrontBase::setCore( QObject* core, QObject* source )
 {
-	// Store the core, disconnect from the core source and notify listeners.
+	// Store the core, disconnect from the core source and notify listeners.	
+	qDebug( "Set core" );
 	m_core = core;
 	source->disconnect( this, "coreAvailable" );
 	emit refreshed();

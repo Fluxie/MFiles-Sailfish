@@ -10,37 +10,20 @@ Column {
 
 	id: lookups
 
-	// Properties
-	property int propertyDefinitionId: propertyValue ? propertyValue.PropertyDef : -1
-	property variant typedValue: propertyValue ? propertyValue.TypedValue : undefined
-	property bool propertyDefinitionsReady: vault ? vault.propertyDefinitionsReady : false
-	property string propertyDefinitionName: ( propertyDefinitionsReady && propertyDefinitionId !== -1 ) ? vault.get( VaultFront.PropertyDefinition, propertyDefinitionId ).Name : ""
-
-	property variant lookupValues: {
-
-	}
-
-	onTypedValueChanged: {
-		if (typedValue) {
-			// Set the model for the repeater to display the property values.
-			// The number of values displayed is limited.
-			console.assert(
-						typedValue.DataType === 10,
-						"Excepted multi-select lookup, got " + typedValue.DataType)
-			lookupValues = typedValue.Lookups
-			if (lookupValues.length > 2)
-				content.model = 2
-			else
-				content.model = lookupValues.length
-		}
-	}
-
 	// Position
 	anchors.fill: parent
 
 	// Lookup values
 	Repeater {
 		id: content
+
+		model: LookupModel {
+
+			id: lookupModel
+
+			rowLimit: 2
+			propertyValue: typedValue.propertyValue
+		}
 
 		BackgroundItem {
 
@@ -57,7 +40,7 @@ Column {
 
 				// Content
 				verticalAlignment: Text.AlignVCenter
-				text: lookupValues[index].DisplayValue
+				text: model.display
 			}
 		}
 	}
@@ -71,8 +54,8 @@ Column {
 		anchors.horizontalCenter: parent.horizontalCenter
 
 		// Visibility
-		visible: lookupValues.length > 2
-		enabled: lookupValues.length > 2
+		visible: lookupModel.lookupCount > lookupModel.rowLimit
+		enabled: lookupModel.lookupCount > lookupModel.rowLimit
 
 		// Content
 		text: "More"

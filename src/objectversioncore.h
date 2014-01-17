@@ -91,6 +91,9 @@ public slots:
 		const QJsonArray& properties
 	);
 
+	//! Sends the given property values to the server. This creates a new version of the object.
+	void sendPropertiesToServer( const QJsonArray& properties );
+
 // Private interface.
 private:
 

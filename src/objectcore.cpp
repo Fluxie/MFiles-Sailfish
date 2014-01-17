@@ -122,6 +122,13 @@ ObjectVersionCore* ObjectCore::version(
 //! Called when a REST request for fetching object version information becomes available.
 void ObjectCore::versionAvailable( QNetworkReply* reply, bool latest )
 {
+	// Process only if there was no error.
+	if( reply->error() != QNetworkReply::NoError )
+	{
+		qDebug( "Error when sending the property values." );
+		return;
+	}
+
 	// Parse the returned JSON.
 	QByteArray replyContent = reply->readAll();
 	QJsonDocument result = QJsonDocument::fromJson( replyContent );

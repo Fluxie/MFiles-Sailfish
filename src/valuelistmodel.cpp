@@ -86,7 +86,6 @@ QVariant ValueListModel::forDisplay( const QModelIndex & index ) const
 {
 	QJsonValue asValue = m_data.at( index.row() );
 	QString text = asValue.toObject()[ "Name" ].toString();
-	qDebug( QString( "Display role %1" ).arg( text ).toLatin1() );
 	return QVariant( text );
 }
 

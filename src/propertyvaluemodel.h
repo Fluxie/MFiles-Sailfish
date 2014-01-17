@@ -76,6 +76,12 @@ public slots:
 	//! Refreshes the property values based on the current filter and object version.
 	void refreshPropertyValues();
 
+	//! Submit the changes made to the model.
+	virtual bool submit();
+
+	//! Revert the changes made to the model.
+	virtual void revert();
+
 // Private interface.
 private:
 

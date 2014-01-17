@@ -68,8 +68,8 @@ signals:
 	
 public slots:
 
-
-	
+	//! Sends the given property values to the server. This creates a new version of the object.
+	void sendPropertiesToServer( const QJsonArray& properties );
 
 // Private data.
 private:

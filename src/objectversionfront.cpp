@@ -44,3 +44,10 @@ QJsonValue ObjectVersionFront::propertiesForDisplay() const { return m_core->pro
 
 //! Gets property values.
 QJsonValue ObjectVersionFront::properties() const { return m_core->properties(); }
+
+//! Sends the given property values to the server. This creates a new version of the object.
+void ObjectVersionFront::sendPropertiesToServer( const QJsonArray& properties )
+{
+	// Delegate.
+	QMetaObject::invokeMethod( this->m_core, "sendPropertiesToServer", Q_ARG( const QJsonArray&, properties ) );
+}

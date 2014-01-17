@@ -34,7 +34,7 @@ BackgroundItem {
 		var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
 										valueList: valueListId,
 										propertyDefinition: propertyDefinitionId,
-										vault: lookup.vault
+										vault: vault
 									})
 		dialog.accepted.connect(function () {})
 	}

@@ -52,9 +52,21 @@ Page {
 		// Header for the page.
 		header: PageHeader {
 
-			 id: header
-			 title: 'Properties'
-		 }
+			id: header
+			title: 'Properties'
+		}
+
+		PullDownMenu {
+			id: pullDownMenu
+
+			MenuItem {
+
+				id: submitChanges
+
+				text: "Save"
+				onClicked: propertyValueList.model.submit()
+			}
+		}
 
 		// Placeholder for empty list view.
 		ViewPlaceholder {

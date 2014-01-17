@@ -104,6 +104,36 @@ bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &valu
 	return true;
 }
 
+/**
+ * @brief Submit the changes made to the model.
+ * @return True if the changes we succesfully submitted.
+ */
+bool PropertyValueModel::submit()
+{
+	qDebug( "Submit called." );
+
+	// Skip.
+	if( m_objectVersion == 0 )
+		return false;
+
+	// Send the properties to the server.
+	m_objectVersion->sendPropertiesToServer( m_propertyValues );
+
+	// Succeeded.
+	return true;
+}
+
+/**
+ * @brief Revert the changes made to the model.
+ */
+void PropertyValueModel::revert()
+{
+	qDebug( "Revert called." );
+
+	// Reload the property values.
+	this->refreshPropertyValues();
+}
+
 //! Role names.
 //! Note: The documentation claims that we should call setRoleNames to specify the roles.
 //! However, this function no longer exists and roleNAmes has been made virtula.

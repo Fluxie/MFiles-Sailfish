@@ -23,6 +23,7 @@
 #include <QByteArray>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QNetworkReply>
 #include <QThread>
 #include <QtAlgorithms>
@@ -103,6 +104,74 @@ void ObjectVersionCore::setProperties(
 
 	// Properties changed.
 	emit propertiesChanged();
+}
+
+/**
+ * @brief Sends the given property values to the server. This creates a new version of the object.
+ * @param updatedProperties Properties to send.
+ */
+void ObjectVersionCore::sendPropertiesToServer( const QJsonArray& updatedProperties )
+{
+	qDebug( "Sending properties to server." );
+
+	// Acquire copy of the current property values.
+	QJsonArray forSending;
+	{
+		QMutexLocker lock( &m_mtx );
+
+		// Check that we actually have valid property values to work with.
+		if( m_properties.size() == 0 || m_propertiesForDisplay.size() == 0 )
+		{
+			qCritical( "TODO: Report error - Must fetch properties before sending them back to the server." );
+			return;
+		}
+
+		// Take the copy.
+		forSending = m_properties;
+	}
+
+	// Map update property values by property definition to their location
+	// in the input array.
+	QHash< int, int > updatedPropertiesIndex;
+	for( int i = 0; i < updatedProperties.size(); i++ )
+	{
+		// Map the current property value by property definition to the index.
+		QJsonValue updated = updatedProperties[ i ];
+		QJsonObject asObject = updated.toObject();
+		int propertyDef = asObject[ "PropertyDef" ].toDouble();
+		updatedPropertiesIndex.insert( propertyDef, i );
+		qDebug( "Proeprty mapping." );
+
+	}  // end for
+
+	// TODO: Calculate removed properties based on the current for display properties
+
+	// Update the property values with the client provided property values.
+	for( QJsonArray::iterator itr = forSending.begin(); itr != forSending.end(); itr++ )
+	{
+		// Get the property definition of the current property value.
+		QJsonValueRef current = (*itr);
+		QJsonObject asObject = current.toObject();
+		int propertyDef = asObject[ "PropertyDef" ].toDouble();
+
+		// Try finding the property value from the set of updated property values and update it.
+		QHash< int, int >::const_iterator itrUpdated = updatedPropertiesIndex.find( propertyDef );
+		if( itrUpdated != updatedPropertiesIndex.end() )
+		{
+			// This property value has been updated.
+			qDebug( "Updated property value." );
+			current = updatedProperties[ itrUpdated.value() ];
+		}
+
+	}  // end for
+
+	// Send the property values to the server.
+	QString resource( "/objects/%1/%2/%3/properties?include=properties,propertiesForDisplay" );
+	QString args = resource.arg( m_objver.type() ).arg( m_objver.id() ).arg( m_objver.version() );
+	QJsonDocument document( forSending );
+	QNetworkReply* reply = this->rest()->putJson( args, document );
+	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
+			this->m_owner->versionAvailable( reply, true ); } );
 }
 
 //! Performs initialization operations.

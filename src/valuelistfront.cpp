@@ -51,7 +51,7 @@ QJsonArray ValueListFront::items()
 
 	// Fetch the core and return the value list.
 	qDebug( "Returning value list items...");
-	ValueListCore* core = this->valueList();	
+	ValueListCore* core = this->valueList();
 	return core->list();
 }
 
