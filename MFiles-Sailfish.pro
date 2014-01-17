@@ -38,7 +38,8 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/errorinfo.cpp \
     src/errorlayer.cpp \
     src/errormodel.cpp \
-    src/propertyvaluemodel.cpp
+    src/propertyvaluemodel.cpp \
+    src/lookupmodel.cpp
 HEADERS += src/objecttypecache.h \
     src/hostcore.h \
     src/vaultcore.h \
@@ -66,7 +67,8 @@ HEADERS += src/objecttypecache.h \
     src/errorinfo.h \
     src/errorlayer.h \
     src/errormodel.h \
-    src/propertyvaluemodel.h
+    src/propertyvaluemodel.h \
+    src/lookupmodel.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover
