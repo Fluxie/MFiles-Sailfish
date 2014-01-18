@@ -329,6 +329,11 @@ bool ObjectVersionCore::normalizePropertyValue( PropertyValuePurpose purpose, QJ
 		}
 		break;
 
+	// Multi-select lookup.
+	case 10:
+		typedValue[ "DisplayValue" ] = QString();
+		break;
+
 	// The data type does not require special handling.
 	default:
 		break;

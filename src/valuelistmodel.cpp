@@ -32,6 +32,19 @@ ValueListModel::ValueListModel() :
 {
 }
 
+//! Blocked lookups
+QJsonArray ValueListModel::blockedLookups() const
+{
+	// Collect and return the blocked lookups.
+	QJsonArray blocked;
+	QList< QJsonValue > blockedAsList = m_blockedLookups.values();
+	foreach( const QJsonValue& bl, blockedAsList )
+	{
+		blocked.push_back( bl );
+	}
+	return blocked;
+}
+
 //! Returns the number of rows under the given parent.
 int ValueListModel::rowCount( const QModelIndex& parent ) const
 {
@@ -83,7 +96,7 @@ void ValueListModel::resetFromList()
 	this->beginResetModel();
 	if( m_valueList )
 	{
-		m_data = m_valueList->items();
+		m_data = this->filterBlocked( m_valueList->items() );
 		this->includeSelectedLookupIfMissing( false );
 	}
 	else
@@ -103,7 +116,7 @@ void ValueListModel::setValueList( ValueListFront* valueList )
 	// Changing the value list resets the model.
 	this->beginResetModel();
 	m_valueList = valueList;
-	m_data = m_valueList->items();
+	m_data = this->filterBlocked( m_valueList->items() );
 	QObject::connect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
 
 	// Include the selected lookup in the list if it is missing.
@@ -124,6 +137,51 @@ void ValueListModel::setSelectedLookup( const QJsonValue& lookup )
 	m_selectedLookup = lookup;
 	this->includeSelectedLookupIfMissing( true );
 	emit selectedLookupChanged();
+}
+
+//! Sets the blocked lookups.
+void ValueListModel::setBlockedLookups( const QJsonArray& blocked )
+{
+	// Set the blocked lookups and construct a blocking list from them.
+	m_blockedLookups.clear();
+	for( QJsonArray::const_iterator itr = blocked.constBegin(); itr != blocked.constEnd(); itr++ )
+	{
+		// Store the blocked lookups.
+		QJsonObject asObject = (*itr).toObject();
+		int itemId = asObject[ "Item" ].toDouble();
+		m_blockedLookups.insert( itemId, (*itr) );
+	}
+	this->resetFromList(); // Reset after blocking.
+	emit blockedLookupsChanged();
+}
+
+//! Returns an array of value list items without the blocked lookups.
+QJsonArray ValueListModel::filterBlocked( const QJsonArray& items ) const
+{
+	// Filter the items if necessary.
+	QJsonArray filtered;
+	if( m_blockedLookups.empty() )
+	{
+		// No need to make a separate filterint.
+		filtered = items;
+	}
+	else
+	{
+		// Include only those items that are not filtered.
+		for( QJsonArray::const_iterator itr = items.constBegin(); itr != items.constEnd(); itr++ )
+		{
+			// Check if the item is blocked and include if not.
+			QJsonObject asObject = (*itr).toObject();
+			int id = asObject[ "ID" ].toDouble();
+			if( ! m_blockedLookups.contains( id ) )
+				filtered.push_back( (*itr) );
+
+		}  // end for
+
+	}  // end if
+
+	// Return.
+	return filtered;
 }
 
 //! Includes the selected lookup in the data if it is missing.
@@ -202,12 +260,16 @@ void ValueListModel::insertLookup( int row, const QJsonValue& lookup, bool notif
 	vlitemToInsert[ "ParentID" ] = 0;
 	vlitemToInsert[ "ValueListID" ] = m_valueList->id();
 
-	// Make the insert.
-	if( notify )
-		this->beginInsertRows( this->index( row ), row, row );
-	m_data.insert( row, QJsonValue( vlitemToInsert ) );
-	if( notify )
-		this->endInsertRows();
+	// Make the insert if the item is not blocked.
+	int id = vlitemToInsert[ "ID" ].toDouble();
+	if( ! m_blockedLookups.contains( id ) )
+	{
+		if( notify )
+			this->beginInsertRows( this->index( row ), row, row );
+		m_data.insert( row, QJsonValue( vlitemToInsert ) );
+		if( notify )
+			this->endInsertRows();
+	}
 }
 
 //! Returns data for display.

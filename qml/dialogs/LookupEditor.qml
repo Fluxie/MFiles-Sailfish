@@ -4,7 +4,7 @@ import mohari.sailfish 1.0
 
 import "../common/utils.js" as Utils
 
-Page {
+Dialog {
 
 	id: lookupListing
 
@@ -12,26 +12,30 @@ Page {
 	property VaultFront vault
 	property alias propertyValue: lookupModel.propertyValue
 
+	DialogHeader {
+
+		id: lookupHeader
+	}
+
 	// Declare list view that displays the property values.
 	SilicaListView {
 
 		id: lookupList
 
 		// Position
-		anchors.fill: parent
+		anchors { top: lookupHeader.bottom; left: parent.left; right: parent.right; bottom: parent.bottom }
+		anchors.leftMargin: Theme.paddingLarge
 
 		// Header for the page.
-		header: PageHeader {
+		header: Label {
 
-			id: header
-			title: lookupListing.title
+			id: listingHeader
+
+			color: Theme.highlightColor
+			text: lookupListing.title
 		}
 
-		anchors.top: header.bottom
-		anchors.left: parent.left
-		anchors.leftMargin: Theme.paddingLarge
-		anchors.right: parent.right
-		anchors.bottom: parent.bottom
+
 
 		model: LookupModel {
 			id: lookupModel
@@ -59,7 +63,7 @@ Page {
 				anchors.verticalCenter: parent.verticalCenter
 
 				// Content
-                verticalAlignment: Text.AlignVCenter
+				verticalAlignment: Text.AlignVCenter
 				text: model.display
 			}
 

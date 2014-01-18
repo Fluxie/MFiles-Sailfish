@@ -168,6 +168,12 @@ function setTypedValue( typedValue, value ) {
 		typedValue.DisplayValue = value.DisplayValue;
 		break;
 
+	// Multi-select lookup
+	case 10:
+		typedValue.Value = value;
+		typedValue.Lookups = value;
+		break;
+
 	// For now, no-op. TODO Make this an error.
 	default:
 		console.log( typedValue );

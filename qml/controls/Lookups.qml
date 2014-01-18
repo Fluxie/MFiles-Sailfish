@@ -28,8 +28,6 @@ Column {
 		BackgroundItem {
 
 			// Position
-			anchors.left: parent.left
-			anchors.right: parent.right
 			height: Theme.itemSizeExtraSmall
 
 			Label {
@@ -41,6 +39,31 @@ Column {
 				// Content
 				verticalAlignment: Text.AlignVCenter
 				text: model.display
+			}
+
+			// Action
+			onClicked: {
+
+				// Block lookups that are already values of the property value.
+				var blockedLookups = Utils.except(
+							propertyValue.TypedValue.Lookups, model.lookup, function( lookup ) { return lookup.Item; });
+
+				// Show the page.
+				var propertyDefinition = vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef )
+				var valueListId = propertyDefinition.ValueList
+				var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
+												valueList: valueListId,
+												propertyDefinition: propertyValue.PropertyDef,
+												vault: vault,
+												blockedLookups: blockedLookups,
+												selectedLookup: model.lookup
+											})
+				dialog.accepted.connect(function () {
+
+					// Submit the updated lookups.
+					model.lookup = dialog.selectedLookup
+					typedValue.submit( lookupModel.propertyValue.TypedValue.Lookups );
+				} );
 			}
 		}
 	}
@@ -62,10 +85,17 @@ Column {
 
 		// Action
 		onClicked: {
-			var listing = pageStack.push('../pages/LookupListing.qml', {
+			var listing = pageStack.push('../dialogs/LookupEditor.qml', {
 											 title: propertyDefinitionName,
-											 typedValue: lookups.typedValue
+											 propertyValue: typedValue.propertyValue,
+											 vault: typedValue.vault
 										 })
+			listing.accepted.connect( function() {
+
+				// Submit the updated lookups.
+				typedValue.submit( listing.propertyValue.TypedValue.Lookups );
+
+			} );
 		}
 	}
 }

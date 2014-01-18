@@ -39,6 +39,7 @@ class ValueListModel : public QAbstractListModel
 	Q_OBJECT
 	Q_PROPERTY( ValueListFront* valueList READ valueList WRITE setValueList NOTIFY valueListChanged )
 	Q_PROPERTY( QJsonValue selectedLookup READ selectedLookup WRITE setSelectedLookup NOTIFY selectedLookupChanged )
+	Q_PROPERTY( QJsonArray blockedLookups READ blockedLookups WRITE setBlockedLookups NOTIFY blockedLookupsChanged )
 public:
 
 	//! Constructor
@@ -52,6 +53,9 @@ public:
 
 	//! The currently selected lookup.
 	QJsonValue selectedLookup() const { return m_selectedLookup; }
+
+	//! Blocked lookups
+	QJsonArray blockedLookups() const;
 
 	//! Returns the number of rows under the given parent.
 	virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
@@ -70,6 +74,9 @@ signals:
 	//! Signaled when the selected lookup changes.
 	void selectedLookupChanged();
 
+	//! Signaled when the blocked lookups change.
+	void blockedLookupsChanged();
+
 public slots:
 
 	//! Called when the reset of the model data is required.
@@ -81,8 +88,14 @@ public slots:
 	//! Sets the currently selected lookup.
 	void setSelectedLookup( const QJsonValue& lookup );
 
+	//! Sets the blocked lookups.
+	void setBlockedLookups( const QJsonArray& blocked );
+
 // Private interface.
 private:
+
+	//! Returns an array of value list items without the blocked lookups.
+	QJsonArray filterBlocked( const QJsonArray& items ) const;
 
 	//! Includes the selected lookup in the data if it is missing.
 	void includeSelectedLookupIfMissing( bool notify );
@@ -114,6 +127,7 @@ private:
 	ValueListFront* m_valueList;  //!< The value list used to populate the model.
 	QJsonArray m_data;  //!< A cached copy of the value list item data.
 	QJsonValue m_selectedLookup;  //!< The lookup value that is currently selected.
+	QHash< int, QJsonValue > m_blockedLookups;  //!< A collection loops that should not be shown in the listing.
 
 };
 

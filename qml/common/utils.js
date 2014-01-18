@@ -63,7 +63,7 @@ function deepCopy( obj ) {
  * Merge missing properties from the defaults to the options
  *
  * @param {object} options Options to merge to
- * @param {objec} defaults Options to merge from
+ * @param {object} defaults Options to merge from
  */
 function merge( options, defaults ) {
 	for( var d in defaults ) {
@@ -74,6 +74,36 @@ function merge( options, defaults ) {
 
 	return options;
 };
+
+/**
+  * Returns an array of objects given all expect the one listed in except.
+  *
+  * @param {object} all Array of objects
+  * @param {object} except Object that is excluded from the return.
+  * @param {function} getId Function that returns the id of the object.
+  */
+function except( all, except, getId ) {
+
+	// Iterate over the items in 'all' and collect all items except the one specified in except.
+	var exceptId = getId( except );
+	var otherCount = all.length - 1;
+	var others = new Array( 0 );
+	if( otherCount > 0 )
+	{
+		// Collect the objects that are included all excepte the value specified in 'except.
+		var id;
+		all.forEach( function( other ) {
+
+			id = getId( other );
+			if( id !== exceptId )
+				others.push( other );
+		} );
+
+	}  // end if
+
+	// The others.
+	return others;
+}
 
 
 /**

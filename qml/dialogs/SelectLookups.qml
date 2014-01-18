@@ -12,6 +12,7 @@ Dialog {
 	property int propertyDefinition
 	property VaultFront vault
 	property variant valueListData: vault ? vault.valueList( valueList, propertyDefinition ) : null
+	property alias blockedLookups: valueListModel.blockedLookups
 	property alias selectedLookup: valueListModel.selectedLookup
 
 	DialogHeader {
@@ -58,19 +59,15 @@ Dialog {
 
 			// Set highlight if presser or if selected.
 			highlighted: down || model.id === valueListModel.selectedLookup.Item
+			height: Theme.itemSizeExtraSmall
 
-			Row {
+			Label {
 
+				// Position.
 				anchors.fill: parent
 
-				Label {
-
-					// Position.
-					anchors { top: parent.top; bottom: parent.bottom }
-
-					verticalAlignment: Text.AlignVCenter
-					text: model.display
-				}
+				verticalAlignment: Text.AlignVCenter
+				text: model.display
 			}
 
 			// Select the clicked lookup
