@@ -161,6 +161,13 @@ function setTypedValue( typedValue, value ) {
 		typedValue.DisplayValue = timeForDisplay.toLocaleTimeString( Qt.locale(), Utils.getTimeFormat() );
 		break;
 
+	// Single-select lookup
+	case 9:
+		typedValue.Value = value;
+		typedValue.Lookup = value;
+		typedValue.DisplayValue = value.DisplayValue;
+		break;
+
 	// For now, no-op. TODO Make this an error.
 	default:
 		console.log( typedValue );

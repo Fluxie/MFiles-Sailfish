@@ -36,6 +36,7 @@ class ValueListFront : public FrontBase
 	Q_OBJECT
 	Q_ENUMS( Status )
 	Q_PROPERTY( Status status READ status NOTIFY statusChanged )
+	Q_PROPERTY( int id READ id NOTIFY idChanged )
 public:
 
 	enum Status
@@ -58,10 +59,16 @@ public:
 	//! Status.
 	Status status();
 
+	//! The id of the value list.
+	int id() const { return m_id; }
+
 signals:
 
 	//! Signaled when the status of the value list has changed.
 	void statusChanged();
+
+	//! Signaled when the id of the value list changes. Basically never.
+	void idChanged();
 
 public slots:
 

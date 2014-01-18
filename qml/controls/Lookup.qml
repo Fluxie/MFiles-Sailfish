@@ -27,15 +27,18 @@ BackgroundItem {
 
 	// Action
 	onClicked: {
-		console.log("onClicked")
-		console.log("Property definition:" + propertyDefinitionId)
 		var propertyDefinition = vault.get( VaultFront.PropertyDefinition, propertyDefinitionId )
 		var valueListId = propertyDefinition.ValueList
 		var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
 										valueList: valueListId,
 										propertyDefinition: propertyDefinitionId,
-										vault: vault
+										vault: vault,
+										selectedLookup: propertyValue.TypedValue.Lookup
 									})
-		dialog.accepted.connect(function () {})
+		dialog.accepted.connect(function () {
+
+			// Submit the selected lookup.
+			typedValue.submit( dialog.selectedLookup );
+		} );
 	}
 }

@@ -22,19 +22,23 @@
 #define VALUELISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QHash>
 #include <QVariant>
 
 #include "valuelistfront.h"
 
 //! A model for displaying value list items.
-/**
-  TODO: Cache the value list. UI control calls the methods quite often.
-	This will probably also make it easier to implment partial updates.
- */
 class ValueListModel : public QAbstractListModel
 {
+	//! The role id the lookup role.
+	static const int LookupRole;
+
+	//! The role id the id role.
+	static const int IdRole;
+
 	Q_OBJECT
 	Q_PROPERTY( ValueListFront* valueList READ valueList WRITE setValueList NOTIFY valueListChanged )
+	Q_PROPERTY( QJsonValue selectedLookup READ selectedLookup WRITE setSelectedLookup NOTIFY selectedLookupChanged )
 public:
 
 	//! Constructor
@@ -46,16 +50,25 @@ public:
 	//! Returns the value list.
 	ValueListFront* valueList() { return m_valueList; }
 
+	//! The currently selected lookup.
+	QJsonValue selectedLookup() const { return m_selectedLookup; }
+
 	//! Returns the number of rows under the given parent.
 	virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
 
 	//! Returns the data stored under the given role for the item referred to by the index.
 	virtual QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
+	//! Role names. Note: The documentation claims that we should call setRoleNames to specify the roles. However, this function no longer exists and roleNAmes has been made virtula.
+	virtual QHash< int,QByteArray > roleNames() const;
+
 signals:
 
 	//! Signaled when the value list has changed.
 	void valueListChanged();
+
+	//! Signaled when the selected lookup changes.
+	void selectedLookupChanged();
 
 public slots:
 
@@ -65,10 +78,23 @@ public slots:
 	//! Sets the value list.
 	void setValueList( ValueListFront* valueList );
 
+	//! Sets the currently selected lookup.
+	void setSelectedLookup( const QJsonValue& lookup );
+
 // Private interface.
 private:
 
+	//! Includes the selected lookup in the data if it is missing.
+	void includeSelectedLookupIfMissing( bool notify );
 
+	//! Gets the index of the item in the stored value list item or -1 if the item does not exist.
+	int indexOf( int id ) const;
+
+	//! Inserts lookup to the value list.
+	void insertLookup( const QJsonValue& lookup, bool notify );
+
+	//! Inserts lookup to the value list to the specified position.
+	void insertLookup( int row, const QJsonValue& lookup, bool notify );
 
 	//! Returns data for display.
 	QVariant forDisplay( const QModelIndex & index ) const;
@@ -76,11 +102,18 @@ private:
 	//! Returns data for decoration.
 	QVariant forDecoration( const QModelIndex & index ) const;
 
+	//! Returns data for lookup.
+	QVariant forLookup( const QModelIndex & index ) const;
+
+	//! Returns data for lookup.
+	QVariant forId( const QModelIndex & index ) const;
+
 // Private data.
 private:
 
 	ValueListFront* m_valueList;  //!< The value list used to populate the model.
 	QJsonArray m_data;  //!< A cached copy of the value list item data.
+	QJsonValue m_selectedLookup;  //!< The lookup value that is currently selected.
 
 };
 

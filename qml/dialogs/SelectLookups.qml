@@ -12,12 +12,13 @@ Dialog {
 	property int propertyDefinition
 	property VaultFront vault
 	property variant valueListData: vault ? vault.valueList( valueList, propertyDefinition ) : null
+	property alias selectedLookup: valueListModel.selectedLookup
 
 	DialogHeader {
 
 		id: header
 
-		title: "Choose"
+		acceptText: valueListModel.selectedLookup ? valueListModel.selectedLookup.DisplayValue : ''
 	}
 
 	SilicaListView {
@@ -31,6 +32,9 @@ Dialog {
 		anchors.leftMargin: Theme.paddingLarge
 
 		model: ValueListModel {
+
+			id: valueListModel
+
 			valueList: valueListData ? valueListData : null
 		}
 
@@ -52,14 +56,25 @@ Dialog {
 
 			id: listItem
 
+			// Set highlight if presser or if selected.
+			highlighted: down || model.id === valueListModel.selectedLookup.Item
+
 			Row {
 
+				anchors.fill: parent
+
 				Label {
+
+					// Position.
+					anchors { top: parent.top; bottom: parent.bottom }
 
 					verticalAlignment: Text.AlignVCenter
 					text: model.display
 				}
 			}
+
+			// Select the clicked lookup
+			onClicked: valueListModel.selectedLookup = model.lookup
 		}
 	}
 }
