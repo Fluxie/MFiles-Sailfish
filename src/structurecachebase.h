@@ -28,6 +28,7 @@
 #include "corebase.h"
 
 // Foward declarations.
+class AsyncFetch;
 class VaultCore;
 class MfwsRest;
 class QNetworkReply;
@@ -45,14 +46,22 @@ public:
 		bool immediateRefresh = true  //!< True if the cache should be refreshed immediately.
 	);
 
+	//! Constructor.
+	explicit StructureCacheBase(
+		const QString& resource,  //!< The resource this cache caches. E.g /structure/classes
+		const QString& fetchOne,  //!< String format for fetching one item.
+		VaultCore* parent,  //!< Parent vault.
+		bool immediateRefresh = true  //!< True if the cache should be refreshed immediately.
+	);
+
 	//! Destructor.
 	virtual ~StructureCacheBase() {}
 
 	//! Gets an item from the cache.
-	Q_INVOKABLE QJsonValue get( int id ) const;
+	AsyncFetch* get( int id ) const;
 
 	//! Gets the values as a list.
-	Q_INVOKABLE QJsonArray list() const;
+	QJsonArray list() const;
 
 	//! Is this cache populated?
 	bool populated() const { return m_populated; }
@@ -62,8 +71,8 @@ signals:
 	//! Signaled when cache is unable to server a request from the cache.
 	void missing( int id ) const;
 
-	//! Signaled when the previously missing item becomes available.
-	void available( int id, QJsonObject* item ) const;
+	//! Signaled when fething of an item completes
+	void itemFetched( int cookie, const QJsonValue& value ) const;
 
 	//! Signaled when cache has been refreshed.
 	void refreshed();
@@ -78,6 +87,9 @@ public slots:
 
 	//! Sets the cache content from the given network reply.
 	void setContentFrom( QNetworkReply* reply );
+
+	//! Requests one item to be fetched.
+	void fetchOneItem( int cookie, int id );
 
 // Protected interface.
 protected:
@@ -95,23 +107,34 @@ protected:
 	const CACHE_MAPPER& cacheMapperNts() const { return m_cache; }
 
 	//! Access the actual data.
-	const QJsonArray& dataNts() const { return m_data; }
+	const QJsonArray& dataNts() const { return m_data; }	
 
 // Protected data.
 protected:
 
 	mutable QMutex m_mutex;  //!< Protects access to members.
 
+// Private interface.
+private:
+
+	/**
+	 * @brief getNextCookie
+	 * @return Next cookie.
+	 */
+	int getNextCookieNts() const { return m_nextCookie++; }
+
 // Private data.
 private:
 
 	// Static data that does not need protecion.		
 	QString m_resource;  //!< The cached resource.
+	QString m_fetchOne;  //!< Resource string for fetching one item.
 
 	// Dynamic variables.
 	bool m_populated;  //!< Set to true when the cache has been populated.
 	CACHE_MAPPER m_cache;  //!> A collection of available items.
 	QJsonArray m_data;  //!< The actual data received via REST API.
+	mutable int m_nextCookie;  //!< Next cookie. Cookies are used to distuinginsh requests to fething individual items from each other.
 	
 };
 

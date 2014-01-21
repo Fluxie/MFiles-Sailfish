@@ -24,6 +24,9 @@
 #include <QVariantMap>
 
 #include "objectversionfront.h"
+#include "objver.h"
+#include "propertyvalueownerresolver.h"
+#include "typedvaluefilter.h"
 
 
 //! The role id of the property definition id role.
@@ -32,10 +35,15 @@ const int PropertyValueModel::PropertyDefinitionIdRole = Qt::UserRole;
 //! The role id the property value role.
 const int PropertyValueModel::PropertyValueRole = Qt::UserRole + 1;
 
+//! The role id the filter role.
+const int PropertyValueModel::FilterRole = Qt::UserRole + 2;
+
 PropertyValueModel::PropertyValueModel(QObject *parent) :
 	QAbstractListModel(parent),
 	m_filter( Undefined ),
-	m_objectVersion( 0 )
+	m_objectVersion( 0 ),
+	m_ownerResolver( 0 ),
+	m_vault( 0 )
 {
 }
 
@@ -72,6 +80,11 @@ QVariant PropertyValueModel::data( const QModelIndex& index, int role ) const
 		this->forPropertyValue( index, data );
 		break;
 
+	// Filter.
+	case PropertyValueModel::FilterRole :
+		this->forFilter( index, data );
+		break;
+
 	default:
 		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
 	}
@@ -102,9 +115,19 @@ bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &valu
 	// The value given should be valid.
 	Q_ASSERT( value.isValid() );
 
-	// We can only convert variant maps at the moment.
-	// JSON objects are returned as variant maps from QML.
-	if( value.type() != QVariant::Map )
+	// Read the input value to QJsonValue if possible.
+	QJsonValue newValue;
+	if( value.type() == QVariant::Map )
+	{
+		// Variant map.
+		newValue = QJsonObject::fromVariantMap( qvariant_cast< QVariantMap >( value ) );
+	}
+	else if( value.type() == QVariant::nameToType( "QJsonValue" ) )
+	{
+		// QJSonValue.
+		newValue = qvariant_cast< QJsonValue >( value );
+	}
+	else
 	{
 		// TODO: Report error.
 		qCritical( value.typeName() );
@@ -112,15 +135,16 @@ bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &valu
 	}
 
 	// Check if the value has changed.
-	const QJsonValue& previousValue = m_propertyValues[ index.row() ];	
-	QJsonValue newValue( QJsonObject::fromVariantMap( qvariant_cast< QVariantMap >( value ) ) );
+	const QJsonValue& previousValue = m_propertyValues[ index.row() ];
 	if( previousValue == newValue )
 		return false;
 
 	// The value denoted by the index has changed. Update it with the new value and signal the change.
 	qDebug( "Updating property value model data." );
 	m_propertyValues[ index.row() ] = newValue;
-	emit dataChanged( index, index );
+	QVector< int > changedRoles;
+	changedRoles.push_back( PropertyValueModel::PropertyValueRole );
+	emit dataChanged( index, index, changedRoles );
 	return true;
 }
 
@@ -164,6 +188,7 @@ QHash< int, QByteArray > PropertyValueModel::roleNames() const
 	QHash< int, QByteArray > roles;
 	roles.insert( PropertyValueModel::PropertyDefinitionIdRole, QString( "propertyDefinitionId" ).toLatin1() );
 	roles.insert( PropertyValueModel::PropertyValueRole, QString( "propertyValue" ).toLatin1() );
+	roles.insert( PropertyValueModel::FilterRole, QString( "filter" ).toLatin1() );
 	return roles;
 }
 
@@ -224,6 +249,33 @@ void PropertyValueModel::setObjectVersion( ObjectVersionFront* objectVersion )
 	emit objectVersionChanged();
 }
 
+void PropertyValueModel::setVault( VaultFront* vault )
+{
+	// Skip if identical.
+	if( m_vault == vault )
+		return;
+
+	// Change the vault.
+	this->beginResetModel();
+	{
+		m_vault = vault;
+		this->refreshPropertyValues();
+	}
+	this->endResetModel();
+	emit vaultChanged();
+}
+
+/**
+ * @brief suggestData
+ * @param index The location of the new data.
+ * @param propertyValue The new value for the location.
+ */
+void PropertyValueModel::suggestData( const QModelIndex& index, QJsonValue propertyValue )
+{
+	// Delegate.
+	this->setData( index, QVariant( propertyValue ), PropertyValueModel::PropertyValueRole );
+}
+
 //! Returns data for display.
 void PropertyValueModel::forDisplay( const QModelIndex & index, QVariant& variant ) const
 {
@@ -252,12 +304,33 @@ void PropertyValueModel::forPropertyValue( const QModelIndex & index, QVariant& 
 	variant.setValue( m_propertyValues.at( index.row() ) );
 }
 
+//! Returns data for filter role.
+void PropertyValueModel::forFilter( const QModelIndex & index, QVariant& variant ) const
+{
+	// Get property definition id.
+	qDebug( "for filter");
+	QJsonValue asValue = m_propertyValues.at( index.row() );
+	QJsonObject asObject = asValue.toObject();
+	int id = asObject[ "PropertyDef" ].toDouble();
+	TypedValueFilter* filter = 0;
+	if( m_ownerResolver->mayHaveOwner( index ) )
+		filter = TypedValueFilter::forPropertyDefinition( id, index, m_ownerResolver );
+	else
+		filter = TypedValueFilter::forPropertyDefinition( id );
+	filter->setObjectType( m_objectVersion->objver().type() );
+	variant.setValue( filter );
+}
+
 //! Refreshes the property values based on the current filter and object version.
 void PropertyValueModel::refreshPropertyValues()
 {
-	// Skip if object version is still unavailable.
-	if( m_objectVersion == 0 )
+	// Skip if object version or vault are still unavailable.
+	if( m_objectVersion == 0 || m_vault == 0 )
 		return;
+
+	// Establish owner resolved if still unavailable.
+	if( m_ownerResolver == 0 )
+		m_ownerResolver = new PropertyValueOwnerResolver( this, m_vault );
 
 	// Select the values we want to show based on the filter and then
 	// fetch the appropriate values from the object version.

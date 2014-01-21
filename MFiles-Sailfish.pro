@@ -39,7 +39,21 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/errorlayer.cpp \
     src/errormodel.cpp \
     src/propertyvaluemodel.cpp \
-    src/lookupmodel.cpp
+    src/lookupmodel.cpp \
+    src/typedvaluefilter.cpp \
+    src/classesfront.cpp \
+    src/propertyvalueownerresolver.cpp \
+    src/mfiles/propertyvalue.cpp \
+    src/mfiles/typedvalue.cpp \
+    src/mfiles/lookup.cpp \
+    src/mfiles/valuelistitem.cpp \
+    src/mfiles/propertydef.cpp \
+    src/mfiles/mfilestypecapsule.cpp \
+    src/mfiles/objtype.cpp \
+    src/asyncfetch.cpp \
+    src/lazyownerinfo.cpp \
+    src/mfiles/ownerproperty.cpp \
+    src/allowedlookupsresolver.cpp
 HEADERS += src/objecttypecache.h \
     src/hostcore.h \
     src/vaultcore.h \
@@ -68,7 +82,22 @@ HEADERS += src/objecttypecache.h \
     src/errorlayer.h \
     src/errormodel.h \
     src/propertyvaluemodel.h \
-    src/lookupmodel.h
+    src/lookupmodel.h \
+    src/typedvaluefilter.h \
+    src/classesfront.h \
+    src/mfilesconstants.h \
+    src/propertyvalueownerresolver.h \
+    src/mfiles/propertyvalue.h \
+    src/mfiles/typedvalue.h \
+    src/mfiles/lookup.h \
+    src/mfiles/valuelistitem.h \
+    src/mfiles/propertydef.h \
+    src/mfiles/mfilestypecapsule.h \
+    src/mfiles/objtype.h \
+    src/asyncfetch.h \
+    src/lazyownerinfo.h \
+    src/mfiles/ownerproperty.h \
+    src/allowedlookupsresolver.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

@@ -31,7 +31,7 @@ BackgroundItem {
 		var valueListId = propertyDefinition.ValueList
 		var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
 										valueList: valueListId,
-										propertyDefinition: propertyDefinitionId,
+										filter: typedValue.filter,
 										vault: vault,
 										selectedLookup: propertyValue.TypedValue.Lookup
 									})

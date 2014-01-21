@@ -162,14 +162,14 @@ function setTypedValue( typedValue, value ) {
 		break;
 
 	// Single-select lookup
-	case 9:
+	case 9 :
 		typedValue.Value = value;
 		typedValue.Lookup = value;
 		typedValue.DisplayValue = value.DisplayValue;
 		break;
 
 	// Multi-select lookup
-	case 10:
+	case 10 :
 		typedValue.Value = value;
 		typedValue.Lookups = value;
 		break;
@@ -181,6 +181,12 @@ function setTypedValue( typedValue, value ) {
 		break;
 
 	}
+
+	// Update the HasValue filed.
+	typedValue.HasValue = typedValue.Value ? true : false;
+
+	// Print the value.
+	// Utils.trace( typedValue );
 }
 
 /**
@@ -190,6 +196,9 @@ function setTypedValue( typedValue, value ) {
  */
 function selectImplicitHeightForMSLookup( lookups )
 {
+	// Exit if empty.
+	if( ! lookups )
+		return Silica.Theme.itemSizeExtraSmall;
 
 	var itemsShown = lookups.length;
 	if( itemsShown > 2 )

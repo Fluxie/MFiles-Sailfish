@@ -20,8 +20,46 @@
 
 #include "classcache.h"
 
+#include "mfilesconstants.h"
+
 ClassCache::ClassCache( VaultCore* parent ) :
 	StructureCacheBase( "/structure/classes", parent )
 {
 
+}
+
+//! Fetches the classes of the specified object type.
+QList< int > ClassCache::classesOfObjectType( int objectType )
+{
+	// Lock.
+	QMutexLocker lock( &m_mutex );
+
+	// Should not request for classes of all object types via this method.
+	Q_ASSERT( objectType != MFilesConstants::AllObjectTypes );
+
+	// Return the classes of the given object type.
+	QList< int > classes = m_classesByObjectType.values( objectType );
+	return classes;
+}
+
+//! Override this to clear the satellite data when the cache contents is cleared.
+void ClassCache::clearSatelliteDataNts()
+{
+	// Clear.
+	m_classesByObjectType.clear();
+}
+
+//! Override this to populate satellite data that after the cache contens has been refreshed.
+void ClassCache::populateSatelliteDataNts()
+{
+	// Construct the classes of object type mapping.
+	const QJsonArray& data = this->dataNts();
+	for( QJsonArray::const_iterator itr = data.constBegin(); itr != data.constEnd(); itr++ )
+	{
+		QJsonObject asObject = (*itr).toObject();
+		int id = asObject[ "ID" ].toDouble();
+		int objectType= asObject[ "ObjType" ].toDouble();
+		m_classesByObjectType.insert( objectType, id );
+
+	}  // end foreach
 }

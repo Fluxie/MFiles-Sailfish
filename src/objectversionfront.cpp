@@ -27,6 +27,7 @@ ObjectVersionFront::ObjectVersionFront(
 		ObjectVersionCore* core
 ) :
 	QObject(0),
+	m_objVer( core->objver() ),
 	m_objectCore( objectCore ),
 	m_core( core )
 {
@@ -44,6 +45,13 @@ QJsonValue ObjectVersionFront::propertiesForDisplay() const { return m_core->pro
 
 //! Gets property values.
 QJsonValue ObjectVersionFront::properties() const { return m_core->properties(); }
+
+//! Object version.
+const ObjVer& ObjectVersionFront::objver() const
+{
+	//! Return the version info.
+	return m_objVer;
+}
 
 //! Sends the given property values to the server. This creates a new version of the object.
 void ObjectVersionFront::sendPropertiesToServer( const QJsonArray& properties )

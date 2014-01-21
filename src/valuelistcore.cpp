@@ -18,22 +18,87 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
+#include "mfiles/lookup.h"
+#include "mfiles/typedvalue.h"
+
 #include "valuelistcore.h"
 
 #include "vaultcore.h"
 
-ValueListCore::ValueListCore(VaultCore* vault, int valueList ) :
-	StructureCacheBase( QString( "/valuelists/%1/items?page" ).arg( valueList ), vault, false ),
+ValueListCore::ValueListCore(VaultCore* vault, int valueList, int owner ) :
+	StructureCacheBase(
+		QString( "/valuelists/%1/items?page" ).arg( valueList ),
+		QString( "/valuelists/%1/items/%2?page" ).arg( valueList ).arg( "%1" ),
+		vault, false ),
 	m_valueList( valueList ),
-	m_propertyDefinition( -1 )
+	m_owner( owner ),
+	m_filter( 0 )
 {
 }
 
-//! Constructs value list object to represent one value list accessed via the specified property definition.
-ValueListCore::ValueListCore( VaultCore* vault, int valueList, int propertyDefinition ) :
-	StructureCacheBase( QString( "/valuelists/%1/items?page&propertydef=%2" ).arg( valueList ).arg( propertyDefinition ), vault, true ),
+//! Constructs value list object to represent one value list accessed via the specified filter.
+ValueListCore::ValueListCore( VaultCore* vault, int valueList, int owner, const TypedValueFilter* filter ) :
+	StructureCacheBase(
+		ValueListCore::getResource( true, valueList, owner, filter ),
+		ValueListCore::getResource( false, valueList, owner, filter ),
+		vault, true ),
 	m_valueList( valueList ),
-	m_propertyDefinition( propertyDefinition )
+	m_owner( owner ),
+	m_filter( new TypedValueFilter( *filter, 0 ) )  // Do not specify us as the parent as we may be called from a different thread.
 {
+	// Push the filter object to correct thread.
+	m_filter->moveToThread( this->thread() );
+}
 
+//! Destructor.
+ValueListCore::~ValueListCore()
+{
+	// Cleanup the filter.
+	delete m_filter;
+}
+
+AsyncFetch* ValueListCore::availableItems( const QSet< int > ids )
+{
+	// First check which values are already cached and then fetch the rest.
+	// Though limit the number of separately fetched items to 10.	
+	Q_ASSERT( false );
+	return 0;
+}
+
+//! Gets resource for fetching the relevant value list items.
+QString ValueListCore::getResource( bool allItems, int valueList, int owner, const TypedValueFilter* filter )
+{
+	Q_CHECK_PTR( filter );
+
+	// Construct the resource for fetching the value list items and apply relevant filters.
+	QString resource;
+	if( allItems )
+		resource = QString( "/valuelists/%1/items?page" ).arg( valueList );
+	else
+		resource = QString( "/valuelists/%1/items/%2?page" ).arg( valueList ).arg( "%1" );
+	if( filter->propertyDef() != TypedValueFilter::Undefined )
+		resource.append( QString( "&propertydef=%1" ).arg( filter->propertyDef() ) );
+	TypedValue ownerInfo( filter->ownerInfo() );
+	if( ! ownerInfo.isUndefined() && ownerInfo.hasValue() )
+	{
+		qDebug( "Constructirg owner filter" );
+		QString items;
+		foreach( Lookup lookup, ownerInfo.asLookups() )
+		{
+			// Add separater if there are already items.
+			if( ! items.isEmpty() )
+				items.append( ',' );
+
+			// Append the actual item.
+			items.append( QString::number( lookup.item() ) );
+
+		}  // end foreach.
+		Q_ASSERT( ! items.isEmpty() );
+		qDebug( items.toLatin1() );
+
+		// Append the item list to create the final filter query parameters.
+		resource.append( QString( "&filterItem=%1:%2" ).arg( owner ).arg( items ) );
+	}
+	qDebug( resource.toLatin1() );
+	return resource;
 }

@@ -1,0 +1,59 @@
+#include "typedvaluefilter.h"
+
+TypedValueFilter::TypedValueFilter(QObject *parent) :
+	QObject(parent),
+	m_enabled( false ),
+	m_objectType( TypedValueFilter::Undefined ),
+	m_propertyDef( TypedValueFilter::Undefined ),
+	m_ownerInfo( 0 )
+{
+
+}
+
+//! Initializes new typed value filter for property definition.
+TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef )
+{
+	// Create the filter and return it.
+	TypedValueFilter* filter = new TypedValueFilter();
+	filter->m_enabled = true;
+	filter->m_propertyDef = propertyDef;	
+	return filter;
+}
+
+//! Initializes new typed value filter for property definition.
+TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef, const QModelIndex& index, PropertyValueOwnerResolver* resolver )
+{
+	// Create the filter and return it.
+	TypedValueFilter* filter = forPropertyDefinition( propertyDef );
+	filter->m_ownerInfo = new LazyOwnerInfo( index, resolver );
+	return filter;
+}
+
+QJsonValue TypedValueFilter::ownerInfo() const
+{
+	// Fetch and return the owner info if it is available.
+	if( m_ownerInfo != 0 )
+	{
+		// Delegate.
+		return m_ownerInfo->ownerInfo();
+	}
+	else
+	{
+		// Construct the empty ownership info in similar manner than what is done in PropertyValueOWnerResolver::ownershipInfo.
+		QJsonArray noLookups;
+		TypedValue empty( noLookups );
+		return empty.value();
+	}
+}
+
+//! Sets the object type.
+void TypedValueFilter::setObjectType( int objectType )
+{
+	// Skip if the object type was not changed.
+	if( m_objectType == objectType )
+		return;
+
+	// Change,
+	m_objectType = objectType;
+	emit objectTypeChanged();
+}

@@ -23,6 +23,8 @@
 
 #include <QJsonArray>
 #include <QObject>
+#include <QPointer>
+#include <QSet>
 
 #include "frontbase.h"
 #include "objecttypecache.h"
@@ -54,7 +56,17 @@ public:
 	);
 
 	//! Value list items.
-	Q_INVOKABLE QJsonArray items();
+	Q_INVOKABLE virtual QJsonArray items();
+
+	//! Fetches the specified value list item.
+	Q_INVOKABLE AsyncFetch* item( int id );
+
+	/**
+	 * @brief availableItems fetches all the specified items that are currently available.
+	 * @param ids A collection of ids of items that are fetched.
+	 * @return All specified value list items that are available.
+	 */
+	AsyncFetch* availableItems( const QSet< int > ids );
 
 	//! Status.
 	Status status();
@@ -78,6 +90,9 @@ protected:
 	//! Does this front accept the specified core.
 	virtual bool accept( QObject* core ) const;
 
+	//! Accesses the vault.
+	VaultCore* vault() const { return m_vault; }
+
 // Private interface.
 private:
 
@@ -88,8 +103,8 @@ private:
 private:
 
 	int m_id;  //!< The id this value list represents.
-	int m_propertyDefinition;  //!< The property definition this value list is filtered with.
-	VaultCore* m_vault;		
+	TypedValueFilter* m_filter;  //!< The filter this value list is filtered with.
+	VaultCore* m_vault;
 
 };
 

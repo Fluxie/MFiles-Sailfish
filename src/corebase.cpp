@@ -89,12 +89,14 @@ void CoreBase::reportError( const ErrorInfo& errorinfo )
 }
 
 //! Accesses the MFWS REST API.
-MfwsRest* CoreBase::rest()
+MfwsRest* CoreBase::rest() const
 {
 	// Create the MfwsRest object for fetching the actual data.
 	if( m_rest == 0 )
 	{
-		m_rest = new MfwsRest( this->vault()->url(), this );
+		m_rest = new MfwsRest( this->vault()->url() );
+		m_rest->moveToThread( this->thread() );
+		m_rest->setParent( const_cast< CoreBase* >( this ) );
 		m_rest->setAuthentication( this->vault()->authentication() );
 		QObject::connect( m_rest, &MfwsRest::error, this, &CoreBase::reportNetworkError );
 		QObject::connect( this->vault(), &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );

@@ -24,8 +24,11 @@
 #include <QQmlEngine>
 
 #include "appmonitor.h"
+#include "asyncfetch.h"
+#include "classesfront.h"
 #include "errorinfo.h"
 #include "hostcore.h"
+#include "mfilesconstants.h"
 #include "vaultcore.h"
 #include "classcache.h"
 #include "objecttypecache.h"
@@ -66,6 +69,7 @@ void VaultFront::initialize(
 
 	// Connect events
 	QObject::connect( m_core, &VaultCore::allCachesPopulated, this, &VaultFront::allCachesPopulated, Qt::QueuedConnection );
+	QObject::connect( m_core->classes(), &ClassCache::populatedChanged, this, &VaultFront::classesReadyChanged, Qt::QueuedConnection );
 	QObject::connect( m_core->classes(), &ClassCache::refreshed, this, &VaultFront::classesRefreshed, Qt::QueuedConnection );
 	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::refreshed, this, &VaultFront::objectTypesRefreshed, Qt::QueuedConnection );
 	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::populatedChanged, this, &VaultFront::propertyDefinitionsReadyChanged, Qt::QueuedConnection );
@@ -79,27 +83,43 @@ QJsonValue VaultFront::get(
 ) const
 {
 	// Try fetching the item.
-	QJsonValue item = QJsonValue::Null;
+	AsyncFetch* fetch = 0;
 	switch( type )
 	{
 	case CacheType::Class :
-		item = m_core->classes()->get( id );
+		fetch = m_core->classes()->get( id );
 		break;
 
 	case CacheType::ObjectType :
-		item = m_core->objectTypes()->get( id );
+		fetch = m_core->objectTypes()->get( id );
 		break;
 
 	case CacheType::PropertyDefinition :
-		item = m_core->propertyDefinitions()->get( id );
+		fetch = m_core->propertyDefinitions()->get( id );
 
 	// Unknown item, return the null we set earlier.
 	default:
 		break;
-	};
+	};	
 
-	// Return.
-	return item;
+	QJsonValue value;
+	if( fetch->state() == AsyncFetch::Finished )
+	{
+		value = fetch->value();
+		Q_ASSERT( ! value.isNull() && ! value.isUndefined() );
+	}
+	else if( fetch->state() == AsyncFetch::Error )
+	{
+		value = QJsonValue::Null;
+	}
+	else
+	{
+		Q_ASSERT( false );
+	}
+	fetch->deleteLater();
+
+	// Return the value.
+	return value;
 }
 
 //! Gets a reference to an object.
@@ -149,17 +169,16 @@ ObjectFront* VaultFront::object(
 //! Gets a reference to a value list.
 ValueListFront* VaultFront::valueList(
 	int id,  //!< The id of the requested value list.
-	int propertyDefinition  //!< The id of the property definition used to filter the value list.
+	TypedValueFilter* filter  //!< Filter for searching value list items from the server.
 )
 {
 	// Value list requested.
-	qDebug( QString( "Value list %1 requested for property definition %2." ).arg( id ).arg( propertyDefinition ).toLatin1() );
 
 	// Try fetching available core.
 	qDebug( "Fetching value list from object type cache." );
 	ValueListCore* listCore = 0;
-	if( propertyDefinition != -1 )
-		listCore = m_core->objectTypes()->list( id, propertyDefinition );
+	if( filter && filter->enabled() )
+		listCore = m_core->objectTypes()->list( id, filter );
 	else
 		listCore = m_core->objectTypes()->list( id );
 	if( listCore == 0 )
@@ -167,17 +186,38 @@ ValueListFront* VaultFront::valueList(
 
 	// Instantiate new front.
 	qDebug( "Instantiating value list front." );
-	ValueListFront* front = new ValueListFront( m_core, listCore );
+	ValueListFront* front = 0;
+	int objectType = MFilesConstants::AllObjectTypes;  // All object types.
+	if( filter && filter->enabled() )
+		objectType = filter->objectType();
+	switch( id )
+	{
+	// A special handler for classes value list.
+	case 1 :
+		front = new ClassesFront( m_core, listCore, objectType );
+		break;
+
+	// Use the normal front by default.
+	default:
+		front = new ValueListFront( m_core, listCore );
+		break;
+	}
 	QQmlEngine::setObjectOwnership( front, QQmlEngine::JavaScriptOwnership );
 	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::valueListAvailable, front, &ValueListFront::coreAvailable );	
 
-	// Return the front.
-	qDebug( "Returning..." );
+	// Return the front.	
 	return front;
 }
 
+//! Checks if the classes are ready.
+bool VaultFront::classesReady() const
+{
+	// The classes are ready when the cache is populated.
+	return m_core->classes()->populated();
+}
+
 //! Checks if the property definitions are ready.
-bool VaultFront::propertyDefinitionsReady()
+bool VaultFront::propertyDefinitionsReady() const
 {
 	// The property definitions are ready when the cache is populated.
 	return m_core->propertyDefinitions()->populated();

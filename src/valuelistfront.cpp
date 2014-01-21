@@ -31,9 +31,13 @@ ValueListFront::ValueListFront(
 ) :
 	FrontBase( core ),
 	m_id( core->id() ),
-	m_propertyDefinition( core->propertyDefinition() ),
+	m_filter( 0 ),
 	m_vault( vault )
 {
+	// Create filter.
+	if( core->filter() )
+		m_filter = new TypedValueFilter( *core->filter(), this );
+
 	// Connect refresh events.
 	QObject::connect( core, &ValueListCore::refreshed, this, &ValueListFront::refreshed );
 
@@ -47,12 +51,43 @@ QJsonArray ValueListFront::items()
 {
 	// Empty?
 	if( ! this->core() )
+	{
+		qCritical( "TODO: Report Error." );
 		return QJsonArray();
+	}
 
 	// Fetch the core and return the value list.
-	qDebug( "Returning value list items...");
 	ValueListCore* core = this->valueList();
 	return core->list();
+}
+
+//! Fetches the specified value list item.
+AsyncFetch* ValueListFront::item( int id )
+{
+	// Empty?
+	if( ! this->core() )
+	{
+		qCritical( "TODO: Report Error." );
+		return 0;
+	}
+
+	// Fetch the core and return the fetch operation.
+	ValueListCore* core = this->valueList();
+	return core->get( id );
+}
+
+AsyncFetch* ValueListFront::availableItems( const QSet< int > ids )
+{
+	// Empty?
+	if( ! this->core() )
+	{
+		qCritical( "TODO: Report Error." );
+		return 0;
+	}
+
+	// Fetch the core and return the fetch operation.
+	ValueListCore* core = this->valueList();
+	return core->availableItems( ids );
 }
 
 //! Status.
@@ -77,7 +112,7 @@ bool ValueListFront::accept( QObject* coreCandidate ) const
 	// Can we accept the specified core.
 	qDebug( "Requesting acceptance for ValueListCore." );
 	ValueListCore* core = qobject_cast< ValueListCore* >( coreCandidate );
-	if( core != 0 && core->id() == m_id && core->propertyDefinition() == m_propertyDefinition )
+	if( core != 0 && core->id() == m_id && core->filter() == m_filter )
 		return true;
 	else
 		return false;

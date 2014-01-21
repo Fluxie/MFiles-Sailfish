@@ -25,6 +25,8 @@
 #include <QJsonValue>
 #include <QMetaType>
 
+#include "typedvaluefilter.h"
+
 // Forward declarations.
 class ObjID;
 class ObjectFront;
@@ -43,6 +45,7 @@ class VaultFront : public QObject
 {
 	Q_OBJECT
 	Q_ENUMS( CacheType )
+	Q_PROPERTY( bool classesReady READ classesReady NOTIFY classesReadyChanged )
 	Q_PROPERTY( bool propertyDefinitionsReady READ propertyDefinitionsReady NOTIFY propertyDefinitionsReadyChanged )
 public:
 
@@ -81,16 +84,19 @@ public:
     //! Gets a reference to a value list.
     Q_INVOKABLE ValueListFront* valueList(
         int id  //!< The id of the requested value list.
-    ) { return valueList( id, -1 ); }
+			) { return valueList( id, 0 ); }
 
     //! Gets a reference to a value list.
     Q_INVOKABLE ValueListFront* valueList(
         int id,  //!< The id of the requested value list.
-        int PropertyDefinition  //!< The id of the property definition used to filter the value list.
+		TypedValueFilter* filter  //!< Filter for searching value list items from the server.
     );
 
+	//! Checks if the classes are ready.
+	bool classesReady() const;
+
 	//! Checks if the property definitions are ready.
-	bool propertyDefinitionsReady();
+	bool propertyDefinitionsReady() const;
 	
 signals:
 
@@ -99,6 +105,9 @@ signals:
 
 	//! Signaled when classes are refreshed.
 	void classesRefreshed();
+
+	//! Signaled when the classes read state is changed.
+	void classesReadyChanged();
 
 	//! Signaled when object types are refreshed.
 	void objectTypesRefreshed();

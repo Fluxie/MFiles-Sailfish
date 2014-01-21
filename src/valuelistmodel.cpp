@@ -20,6 +20,9 @@
 
 #include "valuelistmodel.h"
 
+#include "mfiles/lookup.h"
+#include "mfiles/valuelistitem.h"
+
 //! The role id the lookup role.
 const int ValueListModel::LookupRole = Qt::UserRole;
 
@@ -30,6 +33,7 @@ ValueListModel::ValueListModel() :
 	QAbstractListModel(),
 	m_valueList( 0 )
 {
+	qDebug( "ValueListModel constructed." );
 }
 
 //! Blocked lookups
@@ -96,11 +100,15 @@ void ValueListModel::resetFromList()
 	this->beginResetModel();
 	if( m_valueList )
 	{
+		qDebug( "Resetting model..." );
 		m_data = this->filterBlocked( m_valueList->items() );
+		qDebug( "Resetting model..." );
 		this->includeSelectedLookupIfMissing( false );
+		qDebug( "Resetting model..." );
 	}
 	else
 		m_data = QJsonArray();
+	qDebug( "Resetting model..." );
 	this->endResetModel();
 }
 
@@ -111,24 +119,48 @@ void ValueListModel::setValueList( ValueListFront* valueList )
 	if( m_valueList != 0 )
 		qCritical( "Changing the value list of value list model is not supported." );
 	if( m_valueList == valueList )
-		return;  // Do nothing, as nothing has changed.
+		return;  // Do nothing, as nothing has changed.	
 
 	// Changing the value list resets the model.
-	this->beginResetModel();
-	m_valueList = valueList;
-	m_data = this->filterBlocked( m_valueList->items() );
-	QObject::connect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
+	this->beginResetModel();	
+	if( valueList != 0 )
+	{
+		m_valueList = valueList;
+		m_data = this->filterBlocked( m_valueList->items() );
+		QObject::connect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
+	}
+	else
+	{
+		// Clear the previous data.
+		m_data = QJsonArray();
+	}
 
 	// Include the selected lookup in the list if it is missing.
-	this->includeSelectedLookupIfMissing( false );
-
+	this->includeSelectedLookupIfMissing( false );	
 	emit valueListChanged();
 	this->endResetModel();
+}
+
+//! Sets the filter.
+void ValueListModel::setFilter( TypedValueFilter* filter )
+{
+	qDebug( "ValueListModel" );
+	// Skip if the filter isn't changed.
+	if( m_filter == filter )
+		return;
+
+	// Change the filter.
+	m_filter = filter;
+	this->resetFromList();
+	emit filterChanged();
+
+	qDebug( "ValueListModel" );
 }
 
 //! Sets the currently selected lookup.
 void ValueListModel::setSelectedLookup( const QJsonValue& lookup )
 {
+	qDebug( "ValueListModel" );
 	// Skip if the lookup does not change.
 	if( m_selectedLookup == lookup )
 		return;
@@ -137,11 +169,13 @@ void ValueListModel::setSelectedLookup( const QJsonValue& lookup )
 	m_selectedLookup = lookup;
 	this->includeSelectedLookupIfMissing( true );
 	emit selectedLookupChanged();
+	qDebug( "ValueListModel" );
 }
 
 //! Sets the blocked lookups.
 void ValueListModel::setBlockedLookups( const QJsonArray& blocked )
 {
+	qDebug( "ValueListModel" );
 	// Set the blocked lookups and construct a blocking list from them.
 	m_blockedLookups.clear();
 	for( QJsonArray::const_iterator itr = blocked.constBegin(); itr != blocked.constEnd(); itr++ )
@@ -150,14 +184,16 @@ void ValueListModel::setBlockedLookups( const QJsonArray& blocked )
 		QJsonObject asObject = (*itr).toObject();
 		int itemId = asObject[ "Item" ].toDouble();
 		m_blockedLookups.insert( itemId, (*itr) );
-	}
-	this->resetFromList(); // Reset after blocking.
+	}	
+	this->resetFromList(); // Reset after blocking.	
 	emit blockedLookupsChanged();
+	qDebug( "ValueListModel" );
 }
 
 //! Returns an array of value list items without the blocked lookups.
 QJsonArray ValueListModel::filterBlocked( const QJsonArray& items ) const
 {
+	qDebug( "ValueListModel" );
 	// Filter the items if necessary.
 	QJsonArray filtered;
 	if( m_blockedLookups.empty() )
@@ -181,21 +217,26 @@ QJsonArray ValueListModel::filterBlocked( const QJsonArray& items ) const
 	}  // end if
 
 	// Return.
+	qDebug( "ValueListModel" );
 	return filtered;
 }
 
 //! Includes the selected lookup in the data if it is missing.
 void ValueListModel::includeSelectedLookupIfMissing( bool notify )
 {
+	// Cannot include / no need to include yet, the value list is not available.
+	if( m_valueList == 0 )
+		return;
+
 	// Add the lookup as value list item if the current listing does not include it.
-	QJsonValue& lookup = m_selectedLookup;
-	if( ! lookup.isNull() && lookup.isUndefined() )
+	Lookup lookup( m_selectedLookup );
+	if( ! lookup.isUndefined() )
 	{
 		// Add.
-		int lookupId = lookup.toObject()[ "ID" ].toDouble();
+		int lookupId = lookup.item();
 		int index = this->indexOf( lookupId );
 		if( index == -1 )
-			this->insertLookup( lookup, notify );
+			this->insertLookup( lookup.value(), notify );
 		Q_ASSERT( this->indexOf( lookupId ) != -1 );
 
 	}  // end if.
@@ -204,7 +245,7 @@ void ValueListModel::includeSelectedLookupIfMissing( bool notify )
 //! Gets the index of the item in the stored value list item or -1 if the item does not exist.
 int ValueListModel::indexOf( int id ) const
 {
-	// Search for the specified lookup and return the index if found.
+	// Search for the specified lookup and return the index if found.	
 	for( int i = 0; i < m_data.size(); i++ )
 	{
 		// Check if the current item is the one we are looking for.
@@ -215,14 +256,14 @@ int ValueListModel::indexOf( int id ) const
 
 	}  // end for
 
-	// The item was not found.
+	// The item was not found.	
 	return -1;
 }
 
 //! Inserts lookup to the value list.
 void ValueListModel::insertLookup( const QJsonValue& lookup, bool notify )
-{
-	// Search for position to insert the object.
+{	
+	// Search for position to insert the object.	
 	bool inserted = false;
 	QString lookupDislayValue = lookup.toObject()[ "DisplayValue" ].toString();
 	for( int before = 0; before < m_data.size(); before++ )
@@ -232,30 +273,34 @@ void ValueListModel::insertLookup( const QJsonValue& lookup, bool notify )
 		QString beforeDisplayValue = asObject[ "Name" ].toString();
 		if( lookupDislayValue.compare( beforeDisplayValue, Qt::CaseInsensitive ) < 0 )
 		{
-			// Make the insert.
+			// Make the insert.			
 			this->insertLookup( before, lookup, notify );
 			inserted = true;
+			break;
 
 		}  // end if
 
 	}  // end for.
 
-	// Append the value to the end of the value list if it was not already inserted.
+	// Append the value to the end of the value list if it was not already inserted.		
 	if( ! inserted )
-		this->insertLookup( this->m_data.size(), lookup, notify );
+		this->insertLookup( this->m_data.size(), lookup, notify );		
 }
 
 //! Inserts lookup to the value list to the specified position.
 void ValueListModel::insertLookup( int row, const QJsonValue& lookup, bool notify )
 {
+	// Cannot insert if value list is not yet available.
+	Q_CHECK_PTR( m_valueList );
+
 	// Construct the value list item based on the lookup.
-	QJsonObject lookupObject = lookup.toObject();
+	Lookup asLookup( lookup );
 	QJsonObject vlitemToInsert;
-	vlitemToInsert[ "DisplayID" ] = lookupObject[ "ID" ].toString();
+	vlitemToInsert[ "DisplayID" ] = QString( asLookup.item() );
 	vlitemToInsert[ "HasOwner" ] = false;
 	vlitemToInsert[ "HasParent" ] = false;
-	vlitemToInsert[ "ID" ] = lookupObject[ "ID" ];
-	vlitemToInsert[ "Name" ] = lookupObject[ "DisplayValue" ];
+	vlitemToInsert[ "ID" ] = asLookup.item();
+	vlitemToInsert[ "Name" ] = asLookup.displayValue();
 	vlitemToInsert[ "OwnerID" ] = 0;
 	vlitemToInsert[ "ParentID" ] = 0;
 	vlitemToInsert[ "ValueListID" ] = m_valueList->id();

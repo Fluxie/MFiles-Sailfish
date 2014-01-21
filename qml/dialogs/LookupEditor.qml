@@ -11,6 +11,7 @@ Dialog {
 	property string title
 	property VaultFront vault
 	property alias propertyValue: lookupModel.propertyValue
+	property TypedValueFilter filter
 
 	DialogHeader {
 
@@ -79,7 +80,7 @@ Dialog {
 				var valueListId = propertyDefinition.ValueList
 				var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
 												valueList: valueListId,
-												propertyDefinition: propertyValue.PropertyDef,
+												filter: lookupListing.filter,
 												vault: vault,
 												blockedLookups: blockedLookups,
 												selectedLookup: model.lookup

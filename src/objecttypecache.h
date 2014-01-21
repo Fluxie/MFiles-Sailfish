@@ -27,6 +27,7 @@
 #include "valuelistkey.h"
 
 // Forward declarations.
+class TypedValueFilter;
 class VaultCore;
 class ValueListCore;
 
@@ -55,7 +56,7 @@ public:
 	ValueListCore* list( int id ) const;
 
 	//! Gets value list.
-	ValueListCore* list( int id, int propertyDefinition );
+	ValueListCore* list( int id, const TypedValueFilter* filter );
 
 signals:
 
@@ -79,7 +80,7 @@ protected:
 private:
 
 	//! Requests value list.
-	ValueListCore* getNewValueListNts( int id, int propertyDefinition );
+	ValueListCore* getNewValueListNts( int id, int owner, const TypedValueFilter* filter );
 
 // Private data.
 private:

@@ -25,6 +25,7 @@
 #include <QByteArray>
 #include <QNetworkReply>
 
+#include "asyncfetch.h"
 #include "vaultcore.h"
 #include "mfwsrest.h"
 
@@ -35,7 +36,26 @@ StructureCacheBase::StructureCacheBase(
 ) :
 	CoreBase( parent, parent ),	
 	m_resource( resource ),
-	m_populated( false )
+	m_populated( false ),
+	m_nextCookie( 0 )
+{
+	// This object might have been already transferred to other thread than the one where it has been created.
+	if( immediateRefresh )
+		QMetaObject::invokeMethod( this, "requestRefresh", Qt::AutoConnection );
+}
+
+//! Constructor.
+StructureCacheBase::StructureCacheBase(
+	const QString& resource,  //!< The resource this cache caches. E.g /structure/classes
+	const QString& fetchOne,  //!< String format for fetching one item.
+	VaultCore* parent,  //!< Parent vault.
+	bool immediateRefresh/* = true*/  //!< True if the cache should be refreshed immediately.
+) :
+	CoreBase( parent, parent ),
+	m_resource( resource ),
+	m_fetchOne( fetchOne ),
+	m_populated( false ),
+	m_nextCookie( 0 )
 {
 	// This object might have been already transferred to other thread than the one where it has been created.
 	if( immediateRefresh )
@@ -46,22 +66,39 @@ StructureCacheBase::StructureCacheBase(
  * Gets item from the cache.
  *
  */
-QJsonValue StructureCacheBase::get( int id ) const
+AsyncFetch* StructureCacheBase::get( int id ) const
 {
 	QMutexLocker lock( &m_mutex );
+
+	// Construct the object for fetching.
+	int cookie = getNextCookieNts();
+	AsyncFetch* fetch = new AsyncFetch( cookie );
 
 	// Try searching for the requested item.
 	CACHE_MAPPER::const_iterator itr = m_cache.find( id );
 	if( itr != m_cache.end() )
 	{
-		// Found it, return the value.
-		return m_data[ itr.value() ];
+		// Found it, return the value.		
+		QJsonValue value = m_data[ itr.value() ];
+		fetch->itemFetched( cookie, value );
+	}
+	else if( ! m_fetchOne.isEmpty() )
+	{
+		// Make the necessary connections so that we wil
+		QObject::connect( this, &StructureCacheBase::itemFetched, fetch, &AsyncFetch::itemFetched );
+
+		// Make the fetch request.
+		QMetaObject::invokeMethod( const_cast< StructureCacheBase* >( this ), "fetchOneItem", Q_ARG( int, cookie ), Q_ARG( int, id ) );
 	}
 	else
 	{
-		// Not found, return null Json object.
-		return QJsonValue::Null;
-	}
+		// We cannot fetch the item because we do not know how.
+		fetch->reportError( cookie );
+
+	} // end if
+
+	// Return fetch descriptor.
+	return fetch;
 }
 
 //! Gets the values as a list.
@@ -153,4 +190,35 @@ void StructureCacheBase::setContentFrom( QNetworkReply* reply )
 	if( populatedStatusChanged )
 		emit populatedChanged();
 	emit refreshed();
+}
+
+//! Sets the cache content from the given network reply.
+void StructureCacheBase::fetchOneItem( int cookie, int id )
+{
+	qDebug( "fetchOneItem" );
+
+	// Request the retrieval of the item.
+	QString fetchResource =  m_fetchOne.arg( id );
+	QNetworkReply* reply = this->rest()->getJson( fetchResource );
+	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
+
+		// Parse the returned JSON.
+		QByteArray replyContent = reply->readAll();
+		QJsonDocument result = QJsonDocument::fromJson( replyContent );
+		qDebug( "fetchOneItem Reply" );
+		if( reply->error() != QNetworkReply::NoError )
+		{
+			qDebug( reply->errorString().toLatin1() );
+			return;  // We are using the automatic reporting of MfwsRest object. TODO.
+		}
+
+		// Parse the value from the result and inform that fetching the item has been completed.
+		QJsonValue value( result.object() );
+		QJsonObject asObject = value.toObject();
+		qDebug( QString( "Item %1 fetched." ).arg( asObject[ "ID" ].toDouble() ).toLatin1() );
+		emit itemFetched( cookie, value );
+
+	} );
+
+	// TODO: Cache the item.
 }

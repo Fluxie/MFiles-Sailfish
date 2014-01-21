@@ -43,6 +43,7 @@ Page {
 
 			dataFilter: PropertyValueModel.PropertyValuesForDisplay
 			objectVersion: objectData.version( propertyValues.latestVersion )
+			vault: propertyValues.vault
 		}
 
 		// Position
@@ -114,6 +115,7 @@ Page {
 				// Content
 				propertyDefinitionName: propertyDefinition ? propertyDefinition.Name : ""
 				propertyValue: model.propertyValue
+				filter: model.filter
 				vault: propertyValues.vault
 
 				// Update the model if necessary.

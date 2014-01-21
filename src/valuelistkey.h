@@ -21,35 +21,47 @@
 #ifndef VALUELISTKEY_H
 #define VALUELISTKEY_H
 
+#include "typedvaluefilter.h"
+
 class ValueListKey
 {
 public:
 
 	//! Constructor.
-	ValueListKey( int idIn, int propertyDefIn ) :
+	ValueListKey( int idIn, const TypedValueFilter* filterIn ) :
 		id( idIn ),
-		propertyDef( propertyDefIn )
+		filter( filterIn ? new TypedValueFilter( *filterIn ) : 0 )
 	{}
+
+	//! Destructor.
+	~ValueListKey() { if( filter ) filter->deleteLater(); }
 
 	//! Copy constructore.
 	explicit ValueListKey( const ValueListKey& key ) :
 		id( key.id ),
-		propertyDef( key.propertyDef )
+		filter( key.filter ? new TypedValueFilter( *key.filter ) : 0 )
 	{}
 
 	int id;
-	int propertyDef;
+	TypedValueFilter* filter;
 };
 
-inline bool operator==(const ValueListKey &left, const ValueListKey &right)
-{
+inline bool operator==( const ValueListKey &left, const ValueListKey &right )
+{	
+	// Check if one of the keys is missing the filter while the other is not.
+	if( ( left.filter == 0 && right.filter != 0 ) ||
+		( left.filter != 0 && right.filter == 0 ) )
+		return false;
+
+	// Make the equality comparison.
 	return left.id == right.id
-		   && left.propertyDef == right.propertyDef;
+		   && ( left.filter == right.filter ||  // This will be true if both are NULL
+				*left.filter == *right.filter );  // The possibility of other being NULL was checked earlier.
 }
 
 inline uint qHash(const ValueListKey &key)
 {
-	return qHash( key.id) ^ key.propertyDef;
+	return qHash( key.id ) ^ qHash( key.filter );
 }
 
 

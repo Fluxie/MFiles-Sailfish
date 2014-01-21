@@ -9,9 +9,9 @@ Dialog {
 	id: lookupSelector
 
 	property int valueList
-	property int propertyDefinition
+	property TypedValueFilter filter
 	property VaultFront vault
-	property variant valueListData: vault ? vault.valueList( valueList, propertyDefinition ) : null
+	property variant valueListData: vault && filter ? vault.valueList( valueList, filter ) : null
 	property alias blockedLookups: valueListModel.blockedLookups
 	property alias selectedLookup: valueListModel.selectedLookup
 
@@ -58,7 +58,7 @@ Dialog {
 			id: listItem
 
 			// Set highlight if presser or if selected.
-			highlighted: down || model.id === valueListModel.selectedLookup.Item
+			highlighted: down || ( valueListModel.selectedLookup ? model.id === valueListModel.selectedLookup.Item : false )
 			height: Theme.itemSizeExtraSmall
 
 			Label {

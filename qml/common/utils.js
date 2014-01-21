@@ -60,6 +60,28 @@ function deepCopy( obj ) {
 };
 
 /**
+  * Traces the contents of JSON object.
+  */
+function trace( obj ) {
+
+	// Check the trivial cases.
+	if( obj === null ) { console.log( "null" ); return null; }
+	if( obj === undefined ) { console.log( "undefined" ); return undefined; }
+
+	// Print based on the type.
+	if( obj instanceof Array ||
+		obj instanceof Object )
+	{
+		for( var field in obj ) { trace( field ); }
+	}
+	else
+	{
+		// Simple type.
+		console.log( obj );
+	}
+};
+
+/**
  * Merge missing properties from the defaults to the options
  *
  * @param {object} options Options to merge to

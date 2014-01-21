@@ -23,8 +23,10 @@
 
 #include <QAbstractListModel>
 #include <QHash>
+#include <QPointer>
 #include <QVariant>
 
+#include "typedvaluefilter.h"
 #include "valuelistfront.h"
 
 //! A model for displaying value list items.
@@ -51,6 +53,9 @@ public:
 	//! Returns the value list.
 	ValueListFront* valueList() { return m_valueList; }
 
+	//! The current filter.
+	const TypedValueFilter* filter() const { return m_filter.data(); }
+
 	//! The currently selected lookup.
 	QJsonValue selectedLookup() const { return m_selectedLookup; }
 
@@ -71,6 +76,9 @@ signals:
 	//! Signaled when the value list has changed.
 	void valueListChanged();
 
+	//! Signaled when the filter changes.
+	void filterChanged();
+
 	//! Signaled when the selected lookup changes.
 	void selectedLookupChanged();
 
@@ -84,6 +92,9 @@ public slots:
 
 	//! Sets the value list.
 	void setValueList( ValueListFront* valueList );
+
+	//! Sets the filter.
+	void setFilter( TypedValueFilter* filter );
 
 	//! Sets the currently selected lookup.
 	void setSelectedLookup( const QJsonValue& lookup );
@@ -125,6 +136,8 @@ private:
 private:
 
 	ValueListFront* m_valueList;  //!< The value list used to populate the model.
+	QPointer< TypedValueFilter > m_filter;  //!< Filter for fetching the lookups.
+
 	QJsonArray m_data;  //!< A cached copy of the value list item data.
 	QJsonValue m_selectedLookup;  //!< The lookup value that is currently selected.
 	QHash< int, QJsonValue > m_blockedLookups;  //!< A collection loops that should not be shown in the listing.

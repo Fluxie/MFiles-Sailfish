@@ -15,6 +15,7 @@ Loader {
 	property string propertyDefinitionName
 	property variant propertyValue
 	property VaultFront vault
+	property TypedValueFilter filter
 	property real minimumHeight: Theme.itemSizeMedium
 
 	// Signals

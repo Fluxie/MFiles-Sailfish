@@ -31,15 +31,18 @@
 #endif
 
 #include "appmonitor.h"
+#include "asyncfetch.h"
 #include "errormodel.h"
 #include "errorinfo.h"
 #include "hostcore.h"
 #include "integervalidator.h"
 #include "objectfront.h"
 #include "objectversionfront.h"
+#include "lazyownerinfo.h"
 #include "lookupmodel.h"
 #include "propertyvaluemodel.h"
 #include "realvalidator.h"
+#include "typedvaluefilter.h"
 #include "vaultfront.h"
 #include "valuelistmodel.h"
 #include "valuelistfront.h"
@@ -53,11 +56,14 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< AppMonitor >("mohari.sailfish", 1, 0, "AppMonitor");
 	qmlRegisterType< ErrorModel >("mohari.sailfish", 1, 0, "ErrorModel");
 	qmlRegisterType< LookupModel >("mohari.sailfish", 1, 0, "LookupModel");
+	qmlRegisterType< TypedValueFilter >("mohari.sailfish", 1, 0, "TypedValueFilter");
 	qmlRegisterType< PropertyValueModel >("mohari.sailfish", 1, 0, "PropertyValueModel");
 	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");
 	qmlRegisterType< RealValidator >("mohari.sailfish", 1, 0, "RealValidator");
+	qmlRegisterType< AsyncFetch >();
+	qmlRegisterType< LazyOwnerInfo >();
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
 	qmlRegisterType< ValueListFront >();

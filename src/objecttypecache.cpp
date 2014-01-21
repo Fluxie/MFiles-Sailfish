@@ -20,6 +20,7 @@
 
 #include "objecttypecache.h"
 
+#include "mfiles/objtype.h"
 #include "valuelistcore.h"
 
 ObjectTypeCache::ObjectTypeCache( VaultCore *parent ) :
@@ -33,12 +34,14 @@ ValueListCore* ObjectTypeCache::list( int id ) const
 	QMutexLocker lock( &m_mutex );
 
 	// Return the value list.
-	return m_valueLists[ ValueListKey( id, -1 ) ];
+	return m_valueLists[ ValueListKey( id, 0 ) ];
 }
 
 //! Gets value list.
-ValueListCore* ObjectTypeCache::list( int id, int propertyDefinition )
+ValueListCore* ObjectTypeCache::list( int id, const TypedValueFilter* filter )
 {
+	Q_ASSERT( filter->enabled() );
+
 	QMutexLocker lock( &m_mutex );
 
 	// Nothing return if not populated.
@@ -46,7 +49,7 @@ ValueListCore* ObjectTypeCache::list( int id, int propertyDefinition )
 		return 0;
 
 	// Search for the value list cached for this property definition.
-	ValueListKey key( id, propertyDefinition );
+	ValueListKey key( id, filter );
 	VALUELISTS::iterator itr = m_valueLists.find( key );
 	if( itr == m_valueLists.end() )
 	{
@@ -54,7 +57,8 @@ ValueListCore* ObjectTypeCache::list( int id, int propertyDefinition )
 		// Create a new one.
 
 		// Value list exists at all?
-		if( ! m_valueLists.contains( ValueListKey( id, -1 ) ) )
+		VALUELISTS::iterator itrPlain = m_valueLists.find(  ValueListKey( id, 0 ) );
+		if( itrPlain == m_valueLists.end() )
 		{
 			qDebug( QString( "Requested value list %1 was not found. %2 value lists available." )
 					.arg( id ).arg( m_valueLists.size() ).toLatin1() );
@@ -62,11 +66,14 @@ ValueListCore* ObjectTypeCache::list( int id, int propertyDefinition )
 		}
 
 		// Return new value list.
-		return getNewValueListNts( id, propertyDefinition );
+		qDebug( "getNewValueListNts" );
+		ValueListCore* plainValueList = itrPlain.value();
+		return getNewValueListNts( id, plainValueList->owner(), filter  );
 	}
 	else
 	{
-		// Return the value.
+		// Return the value
+		qDebug( "itr.value()" );
 		return itr.value();
 	}
 }
@@ -90,22 +97,20 @@ void ObjectTypeCache::populateSatelliteDataNts()
 	const QJsonArray& data = this->dataNts();
 	for( QJsonArray::const_iterator itr = data.constBegin(); itr != data.constEnd(); itr++ )
 	{
-		const QJsonValue& valuelist = *itr;
-		int id = valuelist.toObject()[ "ID" ].toDouble();
-		ValueListCore* core = new ValueListCore( vault(), id );
-		m_valueLists.insert( ValueListKey( id, -1 ), core );
+		ObjType valuelist( *itr );
+		ValueListCore* core = new ValueListCore( vault(), valuelist.id(), valuelist.owner() );
+		m_valueLists.insert( ValueListKey( core->id(), 0 ), core );
 
 	}  // end for
 }
 
 //! Requests value list.
-ValueListCore* ObjectTypeCache::getNewValueListNts( int id, int propertyDefinition )
+ValueListCore* ObjectTypeCache::getNewValueListNts( int id, int owner, const TypedValueFilter* filter )
 {
 	// Instantiate the new value list core for the property definition and return it.
-	qDebug( QString( "New value list, id: %1, property definition: %2" ).arg( id ).arg( propertyDefinition ).toLatin1() );	
-	ValueListCore* core = new ValueListCore( this->vault(), id, propertyDefinition );
+	ValueListCore* core = new ValueListCore( this->vault(), id, owner, filter );
 	QObject::connect( core, &ValueListCore::initialized, core, &ValueListCore::requestRefresh );
-	m_valueLists.insert( ValueListKey( id, propertyDefinition ), core );
+	m_valueLists.insert( ValueListKey( id, filter ), core );
 
 	// Return the core.
 	return core;

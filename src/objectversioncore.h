@@ -59,6 +59,9 @@ public:
 
 	//! Gets property values.
 	QJsonValue properties() const { QMutexLocker lock( &m_mtx ); return QJsonValue( m_properties ); }
+
+	//! Object version.
+	ObjVer objver() const  { QMutexLocker lock( &m_mtx ); return m_objver; }
 	
 signals:
 

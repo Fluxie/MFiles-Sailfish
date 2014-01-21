@@ -21,6 +21,9 @@
 #ifndef CLASSCACHE_H
 #define CLASSCACHE_H
 
+#include <QList>
+#include <QJsonArray>
+#include <QMultiHash>
 #include <QObject>
 
 #include "structurecachebase.h"
@@ -39,10 +42,27 @@ public:
 
 	//! Destructor.
 	virtual ~ClassCache() {}
+
+	//! Fetches the classes of the specified object type.
+	QList< int > classesOfObjectType( int objectType );
 	
 signals:
 	
 public slots:
+
+// Protected interface.
+protected:
+
+	//! Override this to clear the satellite data when the cache contents is cleared.
+	virtual void clearSatelliteDataNts();
+
+	//! Override this to populate satellite data that after the cache contens has been refreshed.
+	virtual void populateSatelliteDataNts();
+
+// Private data.
+private:
+
+	QMultiHash< int, int > m_classesByObjectType;  //!< Classes of the object type.
 
 };
 

@@ -106,6 +106,8 @@ void VaultCore::cacheRefreshed()
 				m_objectTypes->populated() &&
 				m_propertyDefinitions->populated() )
 		{
+			qDebug( "All caches populated." );
+
 			// All caches have been populated.
 			m_cachesPopulated = true;
 

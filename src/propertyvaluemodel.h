@@ -27,20 +27,17 @@
 
 // Forward declarations.
 class ObjectVersionFront;
+class PropertyValueOwnerResolver;
+class VaultFront;
 
 //! Model that displays the property values of an object.
 class PropertyValueModel : public QAbstractListModel
 {
-	//! The role id of the property definition id role.
-	static const int PropertyDefinitionIdRole;
-
-	//! The role id the property value role.
-	static const int PropertyValueRole;
-
 	Q_OBJECT
 	Q_ENUMS( DataFilter )
 	Q_PROPERTY( DataFilter dataFilter READ dataFilter WRITE setDataFilter NOTIFY dataFilterChanged )
 	Q_PROPERTY( ObjectVersionFront* objectVersion READ objectVersion WRITE setObjectVersion NOTIFY objectVersionChanged )
+	Q_PROPERTY( VaultFront* vault READ vault WRITE setVault NOTIFY vaultChanged )
 public:
 
 	enum DataFilter
@@ -51,6 +48,15 @@ public:
 		AllPropertyValues  //!< All property values are shown.
 	};
 
+	//! The role id of the property definition id role.
+	static const int PropertyDefinitionIdRole;
+
+	//! The role id the property value role.
+	static const int PropertyValueRole;
+
+	//! The role id the filter role.
+	static const int FilterRole;
+
 	explicit PropertyValueModel(QObject *parent = 0);
 
 	//! The data that is modelled by this model.
@@ -58,6 +64,12 @@ public:
 
 	//! Object version tied to this model.
 	ObjectVersionFront* objectVersion() const { return m_objectVersion; }
+
+	/**
+	 * @brief vault
+	 * @return Vault associated with this model.
+	 */
+	VaultFront* vault() const { return m_vault; }
 
 // Interface implementing the model.
 public:
@@ -85,6 +97,11 @@ signals:
 	//! The object version of the model has changed.
 	void objectVersionChanged();
 
+	/**
+	 * @brief vaultChanged is signaled when the vault associated with the property value model changes.
+	 */
+	void vaultChanged();
+
 public slots:
 
 	//! Sets the modelled data.
@@ -92,6 +109,19 @@ public slots:
 
 	//! Sets the object version for the model.
 	void setObjectVersion( ObjectVersionFront* objectVersion );
+
+	/**
+	 * @brief setVault
+	 * @param vault associated with the model.
+	 */
+	void setVault( VaultFront* vault );
+
+	/**
+	 * @brief suggestData
+	 * @param index The location of the new data.
+	 * @param propertyValue The new value for the location.
+	 */
+	void suggestData( const QModelIndex& index, QJsonValue propertyValue );
 
 	//! Refreshes the property values based on the current filter and object version.
 	void refreshPropertyValues();
@@ -117,12 +147,19 @@ private:
 	//! Returns data for property value role.
 	void forPropertyValue( const QModelIndex & index, QVariant& variant ) const;
 
+	//! Returns data for filter role.
+	void forFilter( const QModelIndex & index, QVariant& variant ) const;
+
 // Private data:
 private:
 
 	DataFilter m_filter;  //!< The type of the data modelled in this model.
 	ObjectVersionFront* m_objectVersion;  //!< The object version this model represents.
 	QJsonArray m_propertyValues;  //!< The property values shown in this model.
+
+	// Auxilary functions.
+	PropertyValueOwnerResolver* m_ownerResolver;  //!< Functionality for resolving the owner.
+	VaultFront* m_vault;
 
 };
 

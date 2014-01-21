@@ -27,6 +27,7 @@
 #include <QJsonValue>
 
 #include "objectcore.h"
+#include "objver.h"
 
 // Forward declarations.
 class ObjectVersionCore;
@@ -54,6 +55,13 @@ public:
 
 	//! Gets property values.
 	QJsonValue properties() const;
+
+
+// Public methods that are not exposed to QML.
+public:
+
+	//! Object version.
+	const ObjVer& objver() const;
 	
 signals:
 
@@ -74,6 +82,7 @@ public slots:
 // Private data.
 private:
 
+	ObjVer m_objVer;
 	QSharedPointer< ObjectCore > m_objectCore;
 	ObjectVersionCore* m_core;
 };

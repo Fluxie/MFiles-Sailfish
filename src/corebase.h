@@ -76,14 +76,17 @@ protected:
 	//! Accesses the vault.
 	VaultCore* vault() { return m_vault; }
 
+	//! Accesses the vault.
+	const VaultCore* vault() const { return m_vault; }
+
 	//! Accesses the MFWS REST API.
-	MfwsRest* rest();
+	MfwsRest* rest() const;
 
 // Private data.
 private:
 
 	VaultCore* m_vault;  //! Vault.
-	MfwsRest* m_rest;  //!< Access to M-Files REST API.
+	mutable MfwsRest* m_rest;  //!< Access to M-Files REST API.
 	State m_state;  //!< The state of the core.
 
 };

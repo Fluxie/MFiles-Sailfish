@@ -41,6 +41,8 @@ Page {
 		target : vault
 		onAllCachesPopulated : {
 
+			console.log( "Setting class name and object type name." );
+
 			// Update the names
 			var lvm = listView.model;
 			for(var i=0; i < lvm.count; i++) {

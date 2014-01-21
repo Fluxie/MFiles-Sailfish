@@ -46,19 +46,19 @@ public:
 	
 	//! Gets resources.
 	QNetworkReply* getJson(
-		QString& resource  //!< The name of the resource.
+		const QString& resource  //!< The name of the resource.
 	) const;
 
 	//! Posts resources.
 	QNetworkReply* postJson(
-		QString& resource,  //!< The name of the resource.
+		const QString& resource,  //!< The name of the resource.
 		const QJsonDocument& post  //!< The object to post.
 	) const;
 
 
 	//! Puts resource.
 	QNetworkReply* putJson(
-		QString& resource,  //!< The name of the resource.
+		const QString& resource,  //!< The name of the resource.
 		const QJsonDocument& put  //!< The value to post.
 	) const;
 

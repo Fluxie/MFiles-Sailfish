@@ -51,10 +51,12 @@ Column {
 				// Show the page.
 				var propertyDefinition = vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef )
 				var valueListId = propertyDefinition.ValueList
+				console.log( "About to display SelectLookups dialog.");
 				var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
 												valueList: valueListId,
 												propertyDefinition: propertyValue.PropertyDef,
 												vault: vault,
+												filter: typedValue.filter,
 												blockedLookups: blockedLookups,
 												selectedLookup: model.lookup
 											})
@@ -66,6 +68,40 @@ Column {
 				} );
 			}
 		}
+	}
+
+	// Item that is visible if there are no lookups to display.
+	BackgroundItem {
+
+		// Position
+		height: Theme.itemSizeExtraSmall
+
+		// Show only if no lookups.
+		visible: lookupModel.lookupCount == 0
+
+		// Action
+		onClicked: {			
+
+			// Show the page.
+			var propertyDefinition = vault.get( VaultFront.PropertyDefinition, propertyValue.PropertyDef )
+			var valueListId = propertyDefinition.ValueList
+			var dialog = pageStack.push("../dialogs/SelectLookups.qml", {
+											valueList: valueListId,
+											propertyDefinition: propertyValue.PropertyDef,
+											vault: vault,
+											filter: typedValue.filter,
+											blockedLookups: undefined,
+											selectedLookup: undefined
+										})
+			dialog.accepted.connect(function () {
+
+				// Submit the updated lookups.
+				var lookups = new Array( 1 );
+				lookups[ 0 ] = dialog.selectedLookup;
+				typedValue.submit( lookups );
+			} );
+		}
+
 	}
 
 	// Button for opening lookup listing.
@@ -87,8 +123,9 @@ Column {
 		onClicked: {
 			var listing = pageStack.push('../dialogs/LookupEditor.qml', {
 											 title: propertyDefinitionName,
-											 propertyValue: typedValue.propertyValue,
-											 vault: typedValue.vault
+											 propertyValue: typedValue.propertyValue,											 
+											 vault: typedValue.vault,
+											 filter: typedValue.filter
 										 })
 			listing.accepted.connect( function() {
 

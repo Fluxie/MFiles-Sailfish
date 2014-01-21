@@ -43,7 +43,7 @@ MfwsRest::~MfwsRest()
 
 //! Gets resources
 QNetworkReply* MfwsRest::getJson(
-	QString& resource  //!< The name of the resource.
+	const QString& resource  //!< The name of the resource.
 ) const
 {
 // 	QSslConfiguration config(QSslConfiguration::defaultConfiguration());
@@ -77,7 +77,7 @@ QNetworkReply* MfwsRest::getJson(
 
 //! Posts resources.
 QNetworkReply* MfwsRest::postJson(
-	QString& resource,  //!< The name of the resource.
+	const QString& resource,  //!< The name of the resource.
 	const QJsonDocument& post  //!< The value to post.
 ) const
 {
@@ -107,7 +107,7 @@ QNetworkReply* MfwsRest::postJson(
  * @return  Reply
  */
 QNetworkReply* MfwsRest::putJson(
-	QString& resource,  //!< The name of the resource.
+	const QString& resource,  //!< The name of the resource.
 	const QJsonDocument& put  //!< The value to post.
 ) const
 {
