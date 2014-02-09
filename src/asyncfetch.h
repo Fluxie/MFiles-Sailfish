@@ -26,11 +26,14 @@
 #include <QJsonValue>
 #include <QMetaMethod>
 #include <QObject>
+#include <QVector>
 
 class AsyncFetch : public QObject
-{	
+{
 	Q_OBJECT
 public:
+
+	typedef std::function< bool( const QJsonValue& ) > FILTER_T;
 
 	/**
 	 * @brief The State enum identifying the current state of the fetch operation.
@@ -58,13 +61,19 @@ public:
 	 * @brief value
 	 * @return Retrieves the values.
 	 */
-	QJsonArray values() const { return m_values; }
+	QJsonArray values() const;
 
 	/**
 	 * @brief state
 	 * @return State of the fetching.
 	 */
 	State state() const { return m_state; }
+
+	/**
+	 * @brief appendFilter Appends new filter to the filters.
+	 * @param filter Filter to append to the list of existing filters.
+	 */	
+	void appendFilter( FILTER_T filter ) { m_filters.push_back( FILTER_T( filter ) ); m_filteringUpToDate = false; }
 
 signals:
 
@@ -88,6 +97,13 @@ public slots:
 	void itemFetched( int cookie, const QJsonValue& value );
 
 	/**
+	 * @brief itemsFetched is signaled when fetching items for the whole list completes.
+	 * @param cookie The cookie that identifies the fetch request
+	 * @param values The fetched items.
+	 */
+	void itemsFetched( int cookie, const QJsonArray& values );
+
+	/**
 	 * @brief error
 	 * @param cookie The cookie that identifies the fetch request.
 	 */
@@ -102,12 +118,27 @@ protected:
 	 */
 	virtual void connectNotify( const QMetaMethod& signal );
 
+// Private interface.
+private:
+
+	/**
+	 * @brief applyFilter
+	 * @param values Values to be filtered.
+	 * @return Filtered values
+	 */
+	QJsonArray applyFilter( const QJsonArray& values ) const;
+
 // Private data.
 private:
 
 	State m_state;  //!< The state of the fetch operation.
 	int m_cookie;  //!< The cookie that identifies the fetch request.
 	QJsonArray m_values;  //!< The fetched value.
+
+	mutable bool m_filteringUpToDate;  //!< True when filtering of the values is up-to-date.
+	mutable QJsonArray m_filteredValues;  //!< Filtered values.
+
+	QVector< FILTER_T > m_filters;  //!< Filter function for filttering the accepted values.
 
 };
 

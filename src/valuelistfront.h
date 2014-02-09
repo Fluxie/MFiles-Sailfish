@@ -56,7 +56,7 @@ public:
 	);
 
 	//! Value list items.
-	Q_INVOKABLE virtual QJsonArray items();
+	Q_INVOKABLE virtual AsyncFetch* items();
 
 	//! Fetches the specified value list item.
 	Q_INVOKABLE AsyncFetch* item( int id );

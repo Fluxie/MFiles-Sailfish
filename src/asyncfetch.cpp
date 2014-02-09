@@ -24,7 +24,8 @@
 AsyncFetch::AsyncFetch( int cookie ) :
 	QObject( 0 ),
 	m_state( AsyncFetch::Fetching ),
-	m_cookie( cookie )
+	m_cookie( cookie ),
+	m_filteringUpToDate( false )
 {
 }
 
@@ -34,6 +35,14 @@ AsyncFetch::AsyncFetch( int cookie ) :
  */
 QJsonValue AsyncFetch::value() const
 {
+	// Filter if not done.
+	if( ! m_filteringUpToDate )
+	{
+		m_filteredValues = this->applyFilter( m_values );
+		m_filteringUpToDate = true;
+	}
+
+	// Return the value.
 	Q_ASSERT( m_values.size() <= 1 );
 	if( m_values.size() == 1 )
 	{
@@ -47,6 +56,18 @@ QJsonValue AsyncFetch::value() const
 	}
 }
 
+QJsonArray AsyncFetch::values() const
+{
+	// Filter if not done.
+	if( ! m_filteringUpToDate )
+	{
+		m_filteredValues = this->applyFilter( m_values );
+		m_filteringUpToDate = true;
+	}
+
+	return m_filteredValues;
+}
+
 void AsyncFetch::itemFetched( int cookie, const QJsonValue& value )
 {
 	// We are reciving notifications for all fetched items.
@@ -55,6 +76,7 @@ void AsyncFetch::itemFetched( int cookie, const QJsonValue& value )
 	{
 		// Store the value.
 		m_values.append( value );
+		m_filteringUpToDate = false;
 
 		// Fetch completed.
 		m_state = AsyncFetch::Finished;
@@ -64,6 +86,27 @@ void AsyncFetch::itemFetched( int cookie, const QJsonValue& value )
 	{
 		// With the current implementation this should never happen.
 		Q_ASSERT( false );
+
+	} // end if
+}
+
+void AsyncFetch::itemsFetched( int cookie, const QJsonArray& values )
+{
+	// We are reciving notifications for all fetched items.
+	// Only notify if the item was the one we were waiting for.
+	if( m_cookie == cookie && m_state == AsyncFetch::Fetching )
+	{
+		// Store the value.
+		m_values = values;
+		m_filteringUpToDate = false;
+
+		// Fetch completed.
+		m_state = AsyncFetch::Finished;
+		emit finished();
+	}
+	else
+	{
+		// With the current implementation this should never happen.
 
 	} // end if
 }
@@ -112,4 +155,30 @@ void AsyncFetch::connectNotify ( const QMetaMethod& signal )
 	{
 
 	}
+}
+
+QJsonArray AsyncFetch::applyFilter( const QJsonArray& values ) const
+{
+	// No need to filter?
+	if( m_filters.empty() )
+		return values;
+
+	// Filter the values if there are filters present.
+	QJsonArray filtered;
+	foreach( const QJsonValue& value, values )
+	{
+		// Check if the value is accepted.
+		bool accepted = true;
+		foreach( FILTER_T filter, m_filters )
+		{
+			if( ! filter( value ) )
+				accepted = false;
+		}
+
+		// Include the value.
+		if( accepted )
+			filtered.append( value );
+
+	}  // end foreach.
+	return filtered;
 }

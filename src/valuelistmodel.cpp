@@ -20,6 +20,7 @@
 
 #include "valuelistmodel.h"
 
+#include "asyncfetch.h"
 #include "mfiles/lookup.h"
 #include "mfiles/valuelistitem.h"
 
@@ -96,20 +97,24 @@ QHash< int,QByteArray > ValueListModel::roleNames() const
 //! Called when the reset of the model is required.
 void ValueListModel::resetFromList()
 {
-	qDebug( "Resetting model..." );
-	this->beginResetModel();
+	// Reset the values from the value list.
 	if( m_valueList )
 	{
-		qDebug( "Resetting model..." );
-		m_data = this->filterBlocked( m_valueList->items() );
-		qDebug( "Resetting model..." );
-		this->includeSelectedLookupIfMissing( false );
-		qDebug( "Resetting model..." );
+		// Fetch the items.
+		AsyncFetch* fetch = this->filterBlocked( m_valueList->items() );
+		fetch->setParent( this );
+		QObject::connect( fetch, &AsyncFetch::finished, [=]() {
+			fetch->deleteLater();
+
+			// Set the data.
+			this->setData( fetch->values() );
+		} );
 	}
 	else
-		m_data = QJsonArray();
-	qDebug( "Resetting model..." );
-	this->endResetModel();
+	{
+		// No value list available.
+		this->setData( QJsonArray() );
+	}
 }
 
 //! Sets the value list. This also resets the model.
@@ -121,24 +126,26 @@ void ValueListModel::setValueList( ValueListFront* valueList )
 	if( m_valueList == valueList )
 		return;  // Do nothing, as nothing has changed.	
 
-	// Changing the value list resets the model.
-	this->beginResetModel();	
+	// Disconnect the status changed signal of the previous value list.
+	if( m_valueList )
+		QObject::disconnect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
+
+	// Store the value list and items.
 	if( valueList != 0 )
 	{
+		// Store the value list.
 		m_valueList = valueList;
-		m_data = this->filterBlocked( m_valueList->items() );
 		QObject::connect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
+
+		// Reset data from the list.
+		this->resetFromList();
 	}
 	else
 	{
-		// Clear the previous data.
-		m_data = QJsonArray();
+		// Clear the previous value list.
+		m_valueList = 0;
+		this->setData( QJsonArray() );
 	}
-
-	// Include the selected lookup in the list if it is missing.
-	this->includeSelectedLookupIfMissing( false );	
-	emit valueListChanged();
-	this->endResetModel();
 }
 
 //! Sets the filter.
@@ -191,34 +198,29 @@ void ValueListModel::setBlockedLookups( const QJsonArray& blocked )
 }
 
 //! Returns an array of value list items without the blocked lookups.
-QJsonArray ValueListModel::filterBlocked( const QJsonArray& items ) const
+AsyncFetch* ValueListModel::filterBlocked( AsyncFetch* items ) const
 {
 	qDebug( "ValueListModel" );
 	// Filter the items if necessary.
-	QJsonArray filtered;
 	if( m_blockedLookups.empty() )
 	{
-		// No need to make a separate filterint.
-		filtered = items;
+		// No need to add a separate filter.
 	}
 	else
 	{
-		// Include only those items that are not filtered.
-		for( QJsonArray::const_iterator itr = items.constBegin(); itr != items.constEnd(); itr++ )
-		{
-			// Check if the item is blocked and include if not.
-			QJsonObject asObject = (*itr).toObject();
-			int id = asObject[ "ID" ].toDouble();
-			if( ! m_blockedLookups.contains( id ) )
-				filtered.push_back( (*itr) );
+		// Set filter that prevents blocked lookups.
+		items->appendFilter( [=]( const QJsonValue& input ) -> bool {
 
-		}  // end for
+			// Check if the current item should be blocked.
+			ValueListItem item( input );
+			bool blocked =  m_blockedLookups.contains( item.id() );
+			return ! blocked;
+
+		} );
 
 	}  // end if
 
-	// Return.
-	qDebug( "ValueListModel" );
-	return filtered;
+	return items;
 }
 
 //! Includes the selected lookup in the data if it is missing.
@@ -315,6 +317,20 @@ void ValueListModel::insertLookup( int row, const QJsonValue& lookup, bool notif
 		if( notify )
 			this->endInsertRows();
 	}
+}
+
+void ValueListModel::setData( const QJsonArray& data )
+{
+	this->beginResetModel();
+	{
+		// Store the data.
+		m_data = data;
+
+		// Include the selected lookup in the list if it is missing.
+		this->includeSelectedLookupIfMissing( false );
+		emit valueListChanged();
+	}
+	this->endResetModel();
 }
 
 //! Returns data for display.

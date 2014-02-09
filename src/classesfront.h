@@ -26,7 +26,7 @@ public:
 	);
 
 	//! Value list items.
-	Q_INVOKABLE virtual QJsonArray items();
+	Q_INVOKABLE virtual AsyncFetch* items();
 
 signals:
 

@@ -60,8 +60,11 @@ public:
 	//! Gets an item from the cache.
 	AsyncFetch* get( int id ) const;
 
-	//! Gets the values as a list.
-	QJsonArray list() const;
+	/**
+	 * @brief list
+	 * @return The values of the value list.
+	 */
+	AsyncFetch* list() const;
 
 	//! Is this cache populated?
 	bool populated() const { return m_populated; }
@@ -73,6 +76,13 @@ signals:
 
 	//! Signaled when fething of an item completes
 	void itemFetched( int cookie, const QJsonValue& value ) const;
+
+	/**
+	 * @brief itemsFetched is signaled when fetching items for the whole list completes.
+	 * @param cookie Cookie identifies the request
+	 * @param values The fetched items.
+	 */
+	void itemsFetched( int cookie, const QJsonArray& values ) const;
 
 	//! Signaled when cache has been refreshed.
 	void refreshed();
@@ -86,7 +96,7 @@ public slots:
 	void requestRefresh();
 
 	//! Sets the cache content from the given network reply.
-	void setContentFrom( QNetworkReply* reply );
+	void setContentFrom( int cookie, QNetworkReply* reply );
 
 	//! Requests one item to be fetched.
 	void fetchOneItem( int cookie, int id );
@@ -122,6 +132,12 @@ private:
 	 * @return Next cookie.
 	 */
 	int getNextCookieNts() const { return m_nextCookie++; }
+
+	/**
+	 * @brief requestRefresh Request refresh of the list.
+	 * @param cookie The cookie that identifies the quest.
+	 */
+	void requestRefreshWithCookie( int cookie );
 
 // Private data.
 private:

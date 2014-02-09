@@ -29,6 +29,9 @@
 #include "typedvaluefilter.h"
 #include "valuelistfront.h"
 
+// Forward declarations.
+class AsyncFetch;
+
 //! A model for displaying value list items.
 class ValueListModel : public QAbstractListModel
 {
@@ -106,7 +109,7 @@ public slots:
 private:
 
 	//! Returns an array of value list items without the blocked lookups.
-	QJsonArray filterBlocked( const QJsonArray& items ) const;
+	AsyncFetch* filterBlocked( AsyncFetch* items ) const;
 
 	//! Includes the selected lookup in the data if it is missing.
 	void includeSelectedLookupIfMissing( bool notify );
@@ -119,6 +122,12 @@ private:
 
 	//! Inserts lookup to the value list to the specified position.
 	void insertLookup( int row, const QJsonValue& lookup, bool notify );
+
+	/**
+	 * @brief setData
+	 * @param data The content for the value list.
+	 */
+	void setData( const QJsonArray& data );
 
 	//! Returns data for display.
 	QVariant forDisplay( const QModelIndex & index ) const;

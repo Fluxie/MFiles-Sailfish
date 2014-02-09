@@ -47,13 +47,13 @@ ValueListFront::ValueListFront(
 }
 
 //! Value list items.
-QJsonArray ValueListFront::items()
+AsyncFetch* ValueListFront::items()
 {
 	// Empty?
 	if( ! this->core() )
 	{
 		qCritical( "TODO: Report Error." );
-		return QJsonArray();
+		return 0;
 	}
 
 	// Fetch the core and return the value list.

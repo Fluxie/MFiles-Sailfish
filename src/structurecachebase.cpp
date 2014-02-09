@@ -101,13 +101,32 @@ AsyncFetch* StructureCacheBase::get( int id ) const
 	return fetch;
 }
 
-//! Gets the values as a list.
-QJsonArray StructureCacheBase::list() const
+AsyncFetch* StructureCacheBase::list() const
 {
 	QMutexLocker lock( &m_mutex );
 
-	// Return the list.
-	return m_data;
+	// Construct the object for fetching.
+	int cookie = getNextCookieNts();
+	AsyncFetch* fetch = new AsyncFetch( cookie );
+
+	// Return items from the cache if we are populated
+	// Otherwise star refresh.
+	if( this->populated() )
+	{
+		// Found it, return the value.
+		fetch->itemsFetched( cookie, m_data );
+	}
+	else
+	{
+		// Make the necessary connections so that AsyncFetch receives the items.
+		QObject::connect( this, &StructureCacheBase::itemsFetched, fetch, &AsyncFetch::itemsFetched );
+
+		// Make the refresh request.
+		QMetaObject::invokeMethod( const_cast< StructureCacheBase* >( this ), "requestRefreshWithCookie", Q_ARG( int, cookie ) );
+	}
+
+	// Return fetch descriptor.
+	return fetch;
 }
 
 //! Populates the cache.
@@ -117,14 +136,20 @@ void StructureCacheBase::requestRefresh()
 	if( ! this->isInitialized() )
 		qCritical( "StructureCacheBase: requestRefresh without initialization." );
 
-	// Request the refresh.
-	QNetworkReply* reply = this->rest()->getJson( m_resource );
-	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
-		this->setContentFrom( reply ); } );
+	// Get cookie.
+	int cookie;
+	{
+		QMutexLocker lock( &m_mutex );
+
+		cookie = this->getNextCookieNts();
+	}
+
+	// Delegate.
+	this->requestRefreshWithCookie( cookie );
 }
 
 //! Sets the cache content from the given network reply.
-void StructureCacheBase::setContentFrom( QNetworkReply* reply )
+void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 {
 	// Parse the returned JSON.
 	QByteArray replyContent = reply->readAll();
@@ -134,6 +159,7 @@ void StructureCacheBase::setContentFrom( QNetworkReply* reply )
 
 	// Populate the cache.
 	bool populatedStatusChanged = false;
+	QJsonArray copyOfData;
 	{
 		QMutexLocker lock( &m_mutex );
 
@@ -151,7 +177,10 @@ void StructureCacheBase::setContentFrom( QNetworkReply* reply )
 			QJsonObject asObject = result.object();
 			QJsonValue asValue = asObject[ "Items" ];
 			if( asValue.isArray() )
+			{
 				m_data = asValue.toArray();
+				copyOfData = m_data;
+			}
 			else
 				qCritical( QString( "Unable to parse results. Raw dump %1." ).arg( asObject.keys().join( '; ' ) ).toLatin1() );
 		}
@@ -159,6 +188,7 @@ void StructureCacheBase::setContentFrom( QNetworkReply* reply )
 		{
 			// The resulting data is an array.
 			m_data = result.array();
+			copyOfData = m_data;
 		}
 		else
 		{
@@ -190,6 +220,7 @@ void StructureCacheBase::setContentFrom( QNetworkReply* reply )
 	if( populatedStatusChanged )
 		emit populatedChanged();
 	emit refreshed();
+	emit itemsFetched( cookie, copyOfData );  // TODO: Process error.
 }
 
 //! Sets the cache content from the given network reply.
@@ -221,4 +252,12 @@ void StructureCacheBase::fetchOneItem( int cookie, int id )
 	} );
 
 	// TODO: Cache the item.
+}
+
+void StructureCacheBase::requestRefreshWithCookie( int cookie )
+{
+	// Request the refresh.
+	QNetworkReply* reply = this->rest()->getJson( m_resource );
+	QObject::connect( reply, &QNetworkReply::finished,  [=]() {
+		this->setContentFrom( cookie, reply ); } );
 }

@@ -1,7 +1,9 @@
 #include "classesfront.h"
 
+#include "asyncfetch.h"
 #include "classcache.h"
 #include "mfilesconstants.h"
+#include "mfiles/valuelistitem.h"
 #include "vaultcore.h"
 
 ClassesFront::ClassesFront(
@@ -22,33 +24,30 @@ ClassesFront::ClassesFront(
 }
 
 //! Value list items.
-QJsonArray ClassesFront::items()
+AsyncFetch* ClassesFront::items()
 {
 	// Fetch items from the base class.
-	QJsonArray items = ValueListFront::items();
-	QJsonArray acceptedItems;
+	AsyncFetch* items = ValueListFront::items();
+
 	if( MFilesConstants::AllObjectTypes != m_objectType	)
 	{
-		// Fetching classes of a specific object type.
-		// Accept only them.
-		foreach( QJsonValue item, items )
-		{
-			// Include the classes that are meant for our object type in the accepted items.
-			QJsonObject asObject = item.toObject();
-			int id = asObject[ "ID" ].toDouble();
-			if( m_classes.contains( id ) )
-				acceptedItems.push_back( item );
-		}
+		// Set the filter.
+		items->appendFilter( [=]( const QJsonValue& input ) -> bool {
+
+			// Accept only classes of a specific object type.
+			ValueListItem item( input );
+			return m_classes.contains( item.id() );
+
+		} );
 	}
 	else
 	{
-		// Fetching classes of all object types.
-		acceptedItems = items;
+		// No need to apply a separate filter.
 
 	}  // end if.
 
-	// Return the accepted items.
-	return acceptedItems;
+	// Return the items.
+	return items;
 }
 
 //! Refreshes the available classes from the vault.
