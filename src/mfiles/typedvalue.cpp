@@ -24,6 +24,12 @@
 
 #include <QJsonArray>
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 TypedValue::TypedValue( const QJsonValue& typedValue ) :
 	MFilesTypeCapsule( typedValue )
 {
@@ -47,7 +53,7 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 	switch ( dataType )
 	{
 	// Single-select.
-	case MFilesConstants::SingleSelectLookup :
+	case MFiles::Constants::SingleSelectLookup :
 	{
 		typedValue[ "Lookup" ] = lookup.value();
 		typedValue[ "Value" ] = lookup.value();
@@ -55,7 +61,7 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 	}
 
 	// Multi-select
-	case MFilesConstants::MultiSelectLookup :
+	case MFiles::Constants::MultiSelectLookup :
 	{
 		QJsonArray lookups;
 		lookups.push_back( lookup.value() );
@@ -135,7 +141,7 @@ void TypedValue::setMultiSelectLookup( const QJsonArray& lookups )
 {
 	// Get reference to the internal typed value variable and set the values.
 	QJsonObject& typedValue = this->object();
-	typedValue[ "DataType" ] = MFilesConstants::MultiSelectLookup;
+	typedValue[ "DataType" ] = MFiles::Constants::MultiSelectLookup;
 	typedValue[ "HasValue" ] = lookups.size() != 0;
 	typedValue[ "DisplayValue" ] = QString( "Demo" );
 	typedValue[ "Lookups" ] = lookups;
@@ -155,7 +161,7 @@ bool TypedValue::dropLookupsExcept( const QSet< int > allowedLookups )
 	switch ( this->dataType() )
 	{
 	// Single-select.
-	case MFilesConstants::SingleSelectLookup :
+	case MFiles::Constants::SingleSelectLookup :
 	{
 		// Drop the only lookup if not included in allowedLookups.
 		Lookup lookup( typedValue[ "Lookup" ] );
@@ -172,7 +178,7 @@ bool TypedValue::dropLookupsExcept( const QSet< int > allowedLookups )
 	}
 
 	// Multi-select
-	case MFilesConstants::MultiSelectLookup:
+	case MFiles::Constants::MultiSelectLookup:
 	{
 		// Get current lookups and drop all those lookup values that are not allowed.
 		// Then set them back to this typed value.
@@ -206,4 +212,6 @@ bool TypedValue::dropLookupsExcept( const QSet< int > allowedLookups )
 	}
 
 	return somethingDropped;
+}
+
 }

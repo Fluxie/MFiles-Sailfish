@@ -22,6 +22,12 @@
 #include "ownerproperty.h"
 #include "mfilesconstants.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 PropertyDef::PropertyDef( const QJsonValue& propertyDef ) :
 	MFilesTypeCapsule( propertyDef )
 {
@@ -38,7 +44,7 @@ bool PropertyDef::isValidOwnerFor( const PropertyDef& subItemRepresentative ) co
 	// We only check that if the filtering settings specified in subItemRepresentative make
 	// us a potential owner fo the subItemRepresentative property definition.
 	OwnerProperty subOwnerProperty( subItemRepresentative.ownerPropertyDef() );
-	if( subOwnerProperty.id() == MFilesConstants::AutomaticFiltering ||
+	if( subOwnerProperty.id() == MFiles::Constants::AutomaticFiltering ||
 		subOwnerProperty.id() == this->id() )
 	{
 		// Automatic filtering was specified or we are the designated owner property.
@@ -52,4 +58,6 @@ bool PropertyDef::isValidOwnerFor( const PropertyDef& subItemRepresentative ) co
 		qDebug( "isValidOwnerFor");
 		return false;
 	}
+}
+
 }

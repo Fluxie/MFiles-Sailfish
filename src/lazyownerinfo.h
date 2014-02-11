@@ -101,7 +101,7 @@ inline uint qHash( const LazyOwnerInfo* ownerInfo )
 {
 	if( ownerInfo == 0 )
 		return 0;
-	uint hash = qHash( TypedValue( ownerInfo->ownerInfo() ) );
+	uint hash = qHash( MFiles::TypedValue( ownerInfo->ownerInfo() ) );
 	return hash;
 }
 

@@ -35,7 +35,7 @@ QList< int > ClassCache::classesOfObjectType( int objectType )
 	QMutexLocker lock( &m_mutex );
 
 	// Should not request for classes of all object types via this method.
-	Q_ASSERT( objectType != MFilesConstants::AllObjectTypes );
+	Q_ASSERT( objectType != MFiles::Constants::AllObjectTypes );
 
 	// Return the classes of the given object type.
 	QList< int > classes = m_classesByObjectType.values( objectType );

@@ -20,6 +20,12 @@
 
 #include "propertyvalue.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 PropertyValue::PropertyValue( const QJsonValue& propertyValue ) :
 	MFilesTypeCapsule( propertyValue )
 {
@@ -30,4 +36,6 @@ PropertyValue::PropertyValue( int propertyDefId, const TypedValue& typedValue )
 	QJsonObject& propertyValue = this->object();
 	propertyValue[ "PropertyDef" ] = propertyDefId;
 	propertyValue[ "TypedValue" ] = typedValue.value();
+}
+
 }

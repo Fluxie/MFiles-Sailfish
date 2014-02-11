@@ -27,6 +27,12 @@
 #include "mfilestypecapsule.h"
 
 /**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
+/**
  * @brief The Lookup class
  */
 class Lookup : public MFilesTypeCapsule
@@ -49,8 +55,9 @@ public:
 
 };
 
+}
 
-inline uint qHash( const Lookup& lookup )
+inline uint qHash( const MFiles::Lookup& lookup )
 {
 	uint hash = lookup.item();
 	return hash;

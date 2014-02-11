@@ -145,7 +145,7 @@ bool PropertyValueListModel::setData( const QModelIndex &index, const QVariant &
 	}
 
 	// The value denoted by the index has changed. Update it with the new value and signal the change.
-	PropertyValue asPropertyValue( newValue );
+	MFiles::PropertyValue asPropertyValue( newValue );
 	qDebug( QString( "Update property value, Has value %1" ).arg( asPropertyValue.typedValue().hasValue() ).toLatin1() );
 	m_propertyValues[ index.row() ] = newValue;
 	QVector< int > changedRoles;

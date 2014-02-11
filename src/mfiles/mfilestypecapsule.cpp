@@ -20,7 +20,15 @@
 
 #include "mfilestypecapsule.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 MFilesTypeCapsule::MFilesTypeCapsule( const QJsonValue& value ) :
 	m_object( value.toObject() )
 {
+}
+
 }

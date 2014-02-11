@@ -20,7 +20,15 @@
 
 #include "ownerproperty.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 OwnerProperty::OwnerProperty( const QJsonValue& ownerProperty ) :
 	MFilesTypeCapsule( ownerProperty )
 {
+}
+
 }

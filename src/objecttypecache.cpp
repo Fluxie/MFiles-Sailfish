@@ -97,7 +97,7 @@ void ObjectTypeCache::populateSatelliteDataNts()
 	const QJsonArray& data = this->dataNts();
 	for( QJsonArray::const_iterator itr = data.constBegin(); itr != data.constEnd(); itr++ )
 	{
-		ObjType valuelist( *itr );
+		MFiles::ObjType valuelist( *itr );
 		ValueListCore* core = new ValueListCore( vault(), valuelist.id(), valuelist.owner() );
 		m_valueLists.insert( ValueListKey( core->id(), 0 ), core );
 

@@ -25,6 +25,12 @@
 #include <QJsonValue>
 
 /**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
+/**
  * @brief The MFilesTypeCapsule class
  *
  * This class encapsulates JSON object representing M-Files REST API type.
@@ -82,5 +88,7 @@ private:
 
 	QJsonObject m_object;
 };
+
+}
 
 #endif // MFILESTYPECAPSULE_H

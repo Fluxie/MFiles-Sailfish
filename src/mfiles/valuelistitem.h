@@ -24,6 +24,12 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 class ValueListItem
 {
 public:
@@ -76,5 +82,7 @@ private:
 
 	QJsonObject m_valueListItem;
 };
+
+}
 
 #endif // VALUELISTITEM_H

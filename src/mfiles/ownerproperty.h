@@ -25,6 +25,12 @@
 
 #include "mfilestypecapsule.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 class OwnerProperty : public MFilesTypeCapsule
 {
 public:
@@ -46,5 +52,7 @@ public:
 	 */
 	bool isRelationFiltering() const { Q_ASSERT( this->contains( "IsRelationFiltering" ) ); return this->object()[ "IsRelationFiltering" ].toBool(); }
 };
+
+}
 
 #endif // OWNERPROPERTY_H

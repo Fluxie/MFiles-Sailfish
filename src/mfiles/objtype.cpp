@@ -20,7 +20,15 @@
 
 #include "objtype.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 ObjType::ObjType( const QJsonValue& valueList ) :
 	MFilesTypeCapsule( valueList )
 {
+}
+
 }

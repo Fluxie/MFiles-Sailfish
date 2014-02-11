@@ -212,7 +212,7 @@ AsyncFetch* ValueListItemListModel::filterBlocked( AsyncFetch* items ) const
 		items->appendFilter( [=]( const QJsonValue& input ) -> bool {
 
 			// Check if the current item should be blocked.
-			ValueListItem item( input );
+			MFiles::ValueListItem item( input );
 			bool blocked =  m_blockedLookups.contains( item.id() );
 			return ! blocked;
 
@@ -231,7 +231,7 @@ void ValueListItemListModel::includeSelectedLookupIfMissing( bool notify )
 		return;
 
 	// Add the lookup as value list item if the current listing does not include it.
-	Lookup lookup( m_selectedLookup );
+	MFiles::Lookup lookup( m_selectedLookup );
 	if( ! lookup.isUndefined() )
 	{
 		// Add.
@@ -296,7 +296,7 @@ void ValueListItemListModel::insertLookup( int row, const QJsonValue& lookup, bo
 	Q_CHECK_PTR( m_valueList );
 
 	// Construct the value list item based on the lookup.
-	Lookup asLookup( lookup );
+	MFiles::Lookup asLookup( lookup );
 	QJsonObject vlitemToInsert;
 	vlitemToInsert[ "DisplayID" ] = QString( asLookup.item() );
 	vlitemToInsert[ "HasOwner" ] = false;

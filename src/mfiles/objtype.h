@@ -23,6 +23,12 @@
 
 #include "mfilestypecapsule.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 class ObjType : public MFilesTypeCapsule
 {
 public:
@@ -50,5 +56,7 @@ public:
 	 */
 	int owner() const { Q_ASSERT( this->object().contains( "Owner" ) ); return this->object()[ "Owner" ].toDouble(); }
 };
+
+}
 
 #endif // VALUELIST_H

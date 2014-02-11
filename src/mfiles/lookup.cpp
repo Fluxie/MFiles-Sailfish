@@ -20,7 +20,15 @@
 
 #include "lookup.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 Lookup::Lookup( const QJsonValue& lookup  ) :
 	MFilesTypeCapsule( lookup )
 {
+}
+
 }

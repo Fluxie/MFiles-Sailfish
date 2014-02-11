@@ -187,7 +187,7 @@ ValueListFront* VaultFront::valueList(
 	// Instantiate new front.
 	qDebug( "Instantiating value list front." );
 	ValueListFront* front = 0;
-	int objectType = MFilesConstants::AllObjectTypes;  // All object types.
+	int objectType = MFiles::Constants::AllObjectTypes;  // All object types.
 	if( filter && filter->enabled() )
 		objectType = filter->objectType();
 	switch( id )

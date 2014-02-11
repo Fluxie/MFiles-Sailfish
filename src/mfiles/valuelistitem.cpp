@@ -20,6 +20,12 @@
 
 #include "valuelistitem.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 ValueListItem::ValueListItem( const QJsonValue& valueListItem ) :
 	m_valueListItem( valueListItem.toObject() )
 {
@@ -39,4 +45,6 @@ QJsonValue ValueListItem::toLookup() const
 
 	// Return the lookup.
 	return QJsonValue( lookup );
+}
+
 }

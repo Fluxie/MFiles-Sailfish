@@ -103,7 +103,7 @@ inline uint qHash( const TypedValueFilter* key )
 {
 	if( key == 0 )
 		return 0;
-	uint hash = key->propertyDef() ^ key->objectType() ^ qHash( TypedValue( key->ownerInfo() ) );
+	uint hash = key->propertyDef() ^ key->objectType() ^ qHash( MFiles::TypedValue( key->ownerInfo() ) );
 	return key->enabled() ? hash : ~hash;
 }
 

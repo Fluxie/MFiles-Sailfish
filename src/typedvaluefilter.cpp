@@ -41,7 +41,7 @@ QJsonValue TypedValueFilter::ownerInfo() const
 	{
 		// Construct the empty ownership info in similar manner than what is done in PropertyValueOWnerResolver::ownershipInfo.
 		QJsonArray noLookups;
-		TypedValue empty( noLookups );
+		MFiles::TypedValue empty( noLookups );
 		return empty.value();
 	}
 }

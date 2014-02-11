@@ -51,9 +51,9 @@ QJsonValue PropertyValueOwnerResolver::ownershipInfo( const QModelIndex& index )
 		// Collect all lookups from this owner.		
 		QModelIndex ownerIndex = m_model->index( ownerPropertyLocation );		
 		QVariant ownerData = m_model->data( ownerIndex, PropertyValueListModel::PropertyValueRole );
-		PropertyValue owner( ownerData.toJsonValue() );
+		MFiles::PropertyValue owner( ownerData.toJsonValue() );
 		QJsonArray ownerLookups = owner.typedValue().asLookups();
-		foreach( Lookup lookup, ownerLookups )
+		foreach( MFiles::Lookup lookup, ownerLookups )
 		{			
 			ownerLookupsAll.push_back( lookup.value() );
 
@@ -62,7 +62,7 @@ QJsonValue PropertyValueOwnerResolver::ownershipInfo( const QModelIndex& index )
 	}  // end foreach
 
 	// Construct and return a typed value based on the owner lookups.
-	TypedValue ownerValue( ownerLookupsAll );
+	MFiles::TypedValue ownerValue( ownerLookupsAll );
 	return ownerValue.value();
 }
 
@@ -91,12 +91,12 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 
 	// Get the new value of the data.
 	QVariant changed = m_model->data( topLeft, PropertyValueListModel::PropertyValueRole );
-	PropertyValue propertyValue( changed.toJsonValue() );
+	MFiles::PropertyValue propertyValue( changed.toJsonValue() );
 
 
 	// Read the lookup values of the changed item.
 	// It will be reui
-	TypedValue typedValue = propertyValue.typedValue();
+	MFiles::TypedValue typedValue = propertyValue.typedValue();
 	int dataType = typedValue.dataType();
 	QSet< int > ids;
 	switch( dataType )
@@ -106,7 +106,7 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	{
 		if( typedValue.hasValue() )
 		{
-			Lookup singleLookup = typedValue.lookup();
+			MFiles::Lookup singleLookup = typedValue.lookup();
 			ids.insert( singleLookup.item() );
 		}
 		break;
@@ -121,7 +121,7 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 			QJsonArray lookups = typedValue[ "Lookups" ].toArray();
 			foreach( QJsonValue lookupValue, lookups )
 			{
-				Lookup lookup( lookupValue );
+				MFiles::Lookup lookup( lookupValue );
 				ids.insert( lookup.item() );
 			}
 		}
@@ -162,7 +162,7 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 				return;
 
 			QList< int > ownerPropertyLocations = m_ownerLocationsBySubListLocation.values( row );
-			ValueListItem valueListItem( fetchSubItem->value() );
+			MFiles::ValueListItem valueListItem( fetchSubItem->value() );
 			int ownerId = valueListItem.ownerId();
 			foreach( int ownerPropertyLocation, ownerPropertyLocations )
 			{
@@ -227,18 +227,18 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 	for( int row = 0; row < m_model->rowCount(); row++ )
 	{
 		// Check if the
-		PropertyValue propertyValue( m_model->data( m_model->index( row ), PropertyValueListModel::PropertyValueRole ).toJsonValue() );
+		MFiles::PropertyValue propertyValue( m_model->data( m_model->index( row ), PropertyValueListModel::PropertyValueRole ).toJsonValue() );
 		propertyValuesByRow.insert( propertyValue.propertyDef(), row );  // Store the location of the property definition.
 		int dataType = propertyValue.typedValue().dataType();
 		if( dataType == 9  || dataType == 10 )
 		{
 			// This property value is based on a value list.
 			// Does this value list have an owner?
-			PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, propertyValue.propertyDef() ) );
+			MFiles::PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, propertyValue.propertyDef() ) );
 			Q_ASSERT( propertyDef.basedOnValueList() );
 			propertyDefsByRow.insert( row, propertyDef.value() );
 			rowsOfValueList.insert( propertyDef.valueList(), row );  // Store thw row where this value list is located.
-			ObjType objtype( m_vault->get( VaultFront::ObjectType, propertyDef.valueList() ) );
+			MFiles::ObjType objtype( m_vault->get( VaultFront::ObjectType, propertyDef.valueList() ) );
 			if( objtype.hasOwner() )
 			{
 				// Store thw owner information
@@ -274,7 +274,7 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 			// the property value listing starting from the current property value.
 			// We track this location by starting iterating from the first owner until we reach the position of the
 			// owner that matches the description above.
-			PropertyDef subItemPropertyDef( propertyDefsByRow.value( subListLocation ) );
+			MFiles::PropertyDef subItemPropertyDef( propertyDefsByRow.value( subListLocation ) );
 			Q_ASSERT( subItemPropertyDef.basedOnValueList() );
 			QList< int >::const_iterator ownerCandidateLocation = ownerLocations.constBegin();
 			for( QList< int >::const_iterator ownerCandidateSeeker = ownerLocations.constBegin();
@@ -282,7 +282,7 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 			{
 				// Break the search after we have found the first valid owner that is
 				// after the subitem in the property value listing.
-				PropertyDef ownerCandidatePropertyDef( propertyDefsByRow.value( *ownerCandidateSeeker ) );
+				MFiles::PropertyDef ownerCandidatePropertyDef( propertyDefsByRow.value( *ownerCandidateSeeker ) );
 				Q_ASSERT( ownerCandidatePropertyDef.basedOnValueList() );
 				if( (*ownerCandidateSeeker) > subListLocation &&
 					ownerCandidatePropertyDef.isValidOwnerFor( subItemPropertyDef ) )
@@ -294,7 +294,7 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 			}  // end if
 
 			// Check if we ended up at the correct position.
-			PropertyDef ownerCandidatePropertyDef( propertyDefsByRow.value( *ownerCandidateLocation ) );
+			MFiles::PropertyDef ownerCandidatePropertyDef( propertyDefsByRow.value( *ownerCandidateLocation ) );
 			Q_ASSERT( ownerCandidatePropertyDef.basedOnValueList() );
 			if( ownerCandidatePropertyDef.isValidOwnerFor( subItemPropertyDef ) )
 			{
@@ -316,13 +316,13 @@ void PropertyValueOwnerResolver::tryAutoFillOwnerLocation( int ownerLocationVers
 	// if it has not been set.
 	QModelIndex ownerIndex = m_model->index( ownerPropertyLocation );
 	QVariant owner = m_model->data( ownerIndex, PropertyValueListModel::PropertyValueRole );
-	PropertyValue ownerValue( owner.toJsonValue() );
+	MFiles::PropertyValue ownerValue( owner.toJsonValue() );
 	if( ! ownerValue.hasValue() )
 	{
 		// The owner is not specified, we can select it automatically based on the selected value.
 
 		// First we get the item id of the owner which can be obtained by fetching the value list item of
-		PropertyDef ownerPropertyDef = m_vault->get( VaultFront::PropertyDefinition, ownerValue.propertyDef() );
+		MFiles::PropertyDef ownerPropertyDef = m_vault->get( VaultFront::PropertyDefinition, ownerValue.propertyDef() );
 		Q_ASSERT( ownerPropertyDef.basedOnValueList() );
 		TypedValueFilter* ownerFilter = qvariant_cast< TypedValueFilter* >( m_model->data( ownerIndex, PropertyValueListModel::FilterRole ) );
 		ownerFilter->deleteLater();
@@ -337,13 +337,13 @@ void PropertyValueOwnerResolver::tryAutoFillOwnerLocation( int ownerLocationVers
 				return;
 
 			// Get the owner value.
-			ValueListItem newOwnerAsItem = ValueListItem( fetchOwner->value() );
+			MFiles::ValueListItem newOwnerAsItem = MFiles::ValueListItem( fetchOwner->value() );
 
 			// Construct lookup based on the owner item and set it to the owner value.
-			Lookup newOwnerAsLookup( newOwnerAsItem.toLookup() );
+			MFiles::Lookup newOwnerAsLookup( newOwnerAsItem.toLookup() );
 			Q_ASSERT( ! newOwnerAsLookup.displayValue().isEmpty() );
-			TypedValue newOwnerAsTypedValue( ownerPropertyDef.dataType(), newOwnerAsLookup );
-			PropertyValue newOwner( propertyDef, newOwnerAsTypedValue );
+			MFiles::TypedValue newOwnerAsTypedValue( ownerPropertyDef.dataType(), newOwnerAsLookup );
+			MFiles::PropertyValue newOwner( propertyDef, newOwnerAsTypedValue );
 
 			// Signal that the owner should be changed.
 			Q_ASSERT( newOwner.typedValue().hasValue() );

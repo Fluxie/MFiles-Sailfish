@@ -30,6 +30,12 @@
 #include "mfilestypecapsule.h"
 
 /**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
+/**
  * @brief The TypedValue class
  */
 class TypedValue : public MFilesTypeCapsule
@@ -90,12 +96,14 @@ public:
 
 };
 
-inline uint qHash( const TypedValue& typedValue )
+}
+
+inline uint qHash( const MFiles::TypedValue& typedValue )
 {
 	uint hash = typedValue.dataType();
 	hash = typedValue.hasValue() ? ~hash : hash;
 	qDebug( "TypedValue hash" );
-	foreach( Lookup lookup, typedValue.asLookups() )
+	foreach( MFiles::Lookup lookup, typedValue.asLookups() )
 	{
 		qDebug( "Lookup for hash." );
 		hash ^= qHash( lookup );

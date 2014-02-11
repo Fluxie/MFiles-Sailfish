@@ -70,12 +70,12 @@ QString ValueListCore::getResource( bool allItems, int valueList, int owner, con
 		resource = QString( "/valuelists/%1/items/%2?page" ).arg( valueList ).arg( "%1" );
 	if( filter->propertyDef() != TypedValueFilter::Undefined )
 		resource.append( QString( "&propertydef=%1" ).arg( filter->propertyDef() ) );
-	TypedValue ownerInfo( filter->ownerInfo() );
+	MFiles::TypedValue ownerInfo( filter->ownerInfo() );
 	if( ! ownerInfo.isUndefined() && ownerInfo.hasValue() )
 	{
 		qDebug( "Constructirg owner filter" );
 		QString items;
-		foreach( Lookup lookup, ownerInfo.asLookups() )
+		foreach( MFiles::Lookup lookup, ownerInfo.asLookups() )
 		{
 			// Add separater if there are already items.
 			if( ! items.isEmpty() )

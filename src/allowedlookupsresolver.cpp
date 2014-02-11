@@ -35,9 +35,9 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 		return;  // Other than changes to the property value do not affect ownership information.
 
 	// Fetch the current value and abort resolution if the property isn't lookup.
-	PropertyValue currentValue( m_model->data( topLeft, PropertyValueListModel::PropertyValueRole ).toJsonValue() );
-	if( currentValue.typedValue().dataType() != MFilesConstants::MultiSelectLookup &&
-		currentValue.typedValue().dataType() != MFilesConstants::SingleSelectLookup  )
+	MFiles::PropertyValue currentValue( m_model->data( topLeft, PropertyValueListModel::PropertyValueRole ).toJsonValue() );
+	if( currentValue.typedValue().dataType() != MFiles::Constants::MultiSelectLookup &&
+		currentValue.typedValue().dataType() != MFiles::Constants::SingleSelectLookup  )
 		return;
 
 	// Fetch the allowed values using the new filter.
@@ -55,9 +55,9 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 AsyncFetch* AllowedLookupsResolver::fetchAllowedItems( const QModelIndex& currentValueIndex, const QJsonValue& currentValue )
 {
 	// Get the value list id, contrstruct appropriate typed value filter and then fetch the values.
-	PropertyValue asPropertyValue( currentValue );
+	MFiles::PropertyValue asPropertyValue( currentValue );
 	QSet< int > currentLookupIds = asPropertyValue.typedValue().getLookupIds();
-	PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, asPropertyValue.propertyDef() ) );
+	MFiles::PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, asPropertyValue.propertyDef() ) );
 	Q_ASSERT( propertyDef.basedOnValueList() );
 	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( currentValueIndex, PropertyValueListModel::FilterRole ) );
 	filter->deleteLater();
@@ -67,7 +67,7 @@ AsyncFetch* AllowedLookupsResolver::fetchAllowedItems( const QModelIndex& curren
 	fetchAvailable->appendFilter( [=]( const QJsonValue& input )->bool {
 
 		// Include only current values.
-		ValueListItem item( input );
+		MFiles::ValueListItem item( input );
 		return currentLookupIds.contains( item.id() );
 
 	} );
@@ -79,19 +79,19 @@ void AllowedLookupsResolver::resolveValidity( const QJsonArray& allowedItems, co
 {
 	// Convert the allowed value list items to a set.
 	QSet< int > allowedItemIds;
-	foreach( ValueListItem item, allowedItems )
+	foreach( MFiles::ValueListItem item, allowedItems )
 	{
 		allowedItemIds.insert( item.id() );
 	}
 
 	// Remove all values from the lookup that were not returned
 	// and then signal update if something was dropped.
-	PropertyValue asPropertyValue( currentValue );
-	TypedValue updatedTypedValue( asPropertyValue.typedValue().value() );
+	MFiles::PropertyValue asPropertyValue( currentValue );
+	MFiles::TypedValue updatedTypedValue( asPropertyValue.typedValue().value() );
 	if( updatedTypedValue.dropLookupsExcept( allowedItemIds ) )
 	{
 		// Update the value.
-		PropertyValue updatedValue( asPropertyValue.propertyDef(), updatedTypedValue );
+		MFiles::PropertyValue updatedValue( asPropertyValue.propertyDef(), updatedTypedValue );
 		emit allowedValueResolved( index, updatedValue.value() );
 	}
 }

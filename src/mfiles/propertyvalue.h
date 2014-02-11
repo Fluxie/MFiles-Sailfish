@@ -28,6 +28,12 @@
 #include "typedvalue.h"
 
 /**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
+/**
  * @brief The PropertyValue class
  */
 class PropertyValue : public MFilesTypeCapsule
@@ -57,5 +63,7 @@ public:
 	TypedValue typedValue() const { return TypedValue( this->object()[ "TypedValue" ] ); }
 
 };
+
+}
 
 #endif // PROPERTYVALUE_H

@@ -29,13 +29,13 @@ AsyncFetch* ClassesFront::items()
 	// Fetch items from the base class.
 	AsyncFetch* items = ValueListFront::items();
 
-	if( MFilesConstants::AllObjectTypes != m_objectType	)
+	if( MFiles::Constants::AllObjectTypes != m_objectType	)
 	{
 		// Set the filter.
 		items->appendFilter( [=]( const QJsonValue& input ) -> bool {
 
 			// Accept only classes of a specific object type.
-			ValueListItem item( input );
+			MFiles::ValueListItem item( input );
 			return m_classes.contains( item.id() );
 
 		} );
@@ -54,7 +54,7 @@ AsyncFetch* ClassesFront::items()
 void ClassesFront::refreshClasses()
 {
 	// Get the classes of the object type we represent.
-	if( MFilesConstants::AllObjectTypes != m_objectType	)
+	if( MFiles::Constants::AllObjectTypes != m_objectType	)
 	{
 		// Collect the classes of the specified object type.
 		m_classes.clear();

@@ -26,6 +26,12 @@
 
 #include "mfilestypecapsule.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 class PropertyDef : public MFilesTypeCapsule
 {
 public:
@@ -69,5 +75,7 @@ public:
 	bool isValidOwnerFor( const PropertyDef& subItemRepresentative ) const;
 
 };
+
+}
 
 #endif // PROPERTYDEF_H

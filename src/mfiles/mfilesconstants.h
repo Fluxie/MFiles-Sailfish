@@ -1,11 +1,18 @@
 #ifndef MFILESCONSTANTS_H
 #define MFILESCONSTANTS_H
 
-/** Various constants related to M-Files.
- *
+/**
+ * Namespace for M-Files types.
  */
-namespace MFilesConstants
+namespace MFiles
 {
+
+/**
+ * Various constants related to M-Files.
+ */
+namespace Constants
+{
+
 	//! A special value indicating all object types.
 	static const int AllObjectTypes = -2;
 
@@ -22,6 +29,8 @@ namespace MFilesConstants
 		SingleSelectLookup = 9,
 		MultiSelectLookup = 10,
 	};
+
+}
 
 }
 
