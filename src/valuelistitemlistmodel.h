@@ -18,8 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef VALUELISTMODEL_H
-#define VALUELISTMODEL_H
+#ifndef VALUELISTItemListMODEL_H
+#define VALUELISTItemListMODEL_H
 
 #include <QAbstractListModel>
 #include <QHash>
@@ -33,7 +33,7 @@
 class AsyncFetch;
 
 //! A model for displaying value list items.
-class ValueListModel : public QAbstractListModel
+class ValueListItemListModel : public QAbstractListModel
 {
 	//! The role id the lookup role.
 	static const int LookupRole;
@@ -48,7 +48,7 @@ class ValueListModel : public QAbstractListModel
 public:
 
 	//! Constructor
-	explicit ValueListModel();
+	explicit ValueListItemListModel();
 
 // Interface for the model.
 public:
@@ -153,4 +153,4 @@ private:
 
 };
 
-#endif // VALUELISTMODEL_H
+#endif // VALUELISTItemListMODEL_H

@@ -5,19 +5,19 @@
 #include "mfiles/propertyvalue.h"
 #include "mfiles/valuelistitem.h"
 #include "mfilesconstants.h"
-#include "propertyvaluemodel.h"
+#include "propertyvaluelistmodel.h"
 #include "typedvaluefilter.h"
 #include "valuelistfront.h"
 #include "vaultfront.h"
 
-AllowedLookupsResolver::AllowedLookupsResolver( PropertyValueModel* parent, VaultFront* vault  ) :
+AllowedLookupsResolver::AllowedLookupsResolver( PropertyValueListModel* parent, VaultFront* vault  ) :
 	QObject( parent ),
 	m_model( parent ),
 	m_vault( vault )
 {
 	// Connect signals.
-	QObject::connect( parent, &PropertyValueModel::dataChanged, this, &AllowedLookupsResolver::requestValueResolution );
-	QObject::connect( this, &AllowedLookupsResolver::allowedValueResolved, parent, &PropertyValueModel::suggestData );
+	QObject::connect( parent, &PropertyValueListModel::dataChanged, this, &AllowedLookupsResolver::requestValueResolution );
+	QObject::connect( this, &AllowedLookupsResolver::allowedValueResolved, parent, &PropertyValueListModel::suggestData );
 }
 
 void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int> &roles )
@@ -28,14 +28,14 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 	bool filterChanged = roles.size() == 0;
 	foreach( int role, roles )
 	{
-		if( role == PropertyValueModel::FilterRole )
+		if( role == PropertyValueListModel::FilterRole )
 			filterChanged = true;
 	}
 	if( ! filterChanged )
 		return;  // Other than changes to the property value do not affect ownership information.
 
 	// Fetch the current value and abort resolution if the property isn't lookup.
-	PropertyValue currentValue( m_model->data( topLeft, PropertyValueModel::PropertyValueRole ).toJsonValue() );
+	PropertyValue currentValue( m_model->data( topLeft, PropertyValueListModel::PropertyValueRole ).toJsonValue() );
 	if( currentValue.typedValue().dataType() != MFilesConstants::MultiSelectLookup &&
 		currentValue.typedValue().dataType() != MFilesConstants::SingleSelectLookup  )
 		return;
@@ -59,7 +59,7 @@ AsyncFetch* AllowedLookupsResolver::fetchAllowedItems( const QModelIndex& curren
 	QSet< int > currentLookupIds = asPropertyValue.typedValue().getLookupIds();
 	PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, asPropertyValue.propertyDef() ) );
 	Q_ASSERT( propertyDef.basedOnValueList() );
-	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( currentValueIndex, PropertyValueModel::FilterRole ) );
+	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( currentValueIndex, PropertyValueListModel::FilterRole ) );
 	filter->deleteLater();
 	ValueListFront* valueList = m_vault->valueList( propertyDef.valueList() , filter );
 	AsyncFetch* fetchAvailable = valueList->items();

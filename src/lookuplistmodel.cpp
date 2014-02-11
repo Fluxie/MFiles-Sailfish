@@ -18,14 +18,14 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "lookupmodel.h"
+#include "lookuplistmodel.h"
 
 #include <QJsonObject>
 
 //! The role id of the lookup role.
-const int LookupModel::LookupRole = Qt::UserRole;
+const int LookupListModel::LookupRole = Qt::UserRole;
 
-LookupModel::LookupModel(QObject *parent) :
+LookupListModel::LookupListModel(QObject *parent) :
 	QAbstractListModel(parent),
 	m_rowLimit( 0 ),
 	m_dataType( 0 )
@@ -33,7 +33,7 @@ LookupModel::LookupModel(QObject *parent) :
 }
 
 //! Returns the number of rows under the given parent.
-int LookupModel::rowCount( const QModelIndex& ) const
+int LookupListModel::rowCount( const QModelIndex& ) const
 {
 	// Report the row count.
 	int rowCount = m_lookups.size();
@@ -43,7 +43,7 @@ int LookupModel::rowCount( const QModelIndex& ) const
 }
 
 //! Returns the data stored under the given role for the item referred to by the index.
-QVariant LookupModel::data( const QModelIndex& index, int role ) const
+QVariant LookupListModel::data( const QModelIndex& index, int role ) const
 {
 	// Return the role.
 	QVariant data;
@@ -58,7 +58,7 @@ QVariant LookupModel::data( const QModelIndex& index, int role ) const
 		break;
 
 	// Lookup role.
-	case LookupModel::LookupRole :
+	case LookupListModel::LookupRole :
 		this->forLookup( index, data );
 		break;
 
@@ -69,7 +69,7 @@ QVariant LookupModel::data( const QModelIndex& index, int role ) const
 }
 
 //! Flags.
-Qt::ItemFlags LookupModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags LookupListModel::flags( const QModelIndex &index ) const
 {
 
 	if (!index.isValid())
@@ -79,10 +79,10 @@ Qt::ItemFlags LookupModel::flags( const QModelIndex &index ) const
 }
 
 //! Sets the data.
-bool LookupModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool LookupListModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
 	// Skip setting any data if we do not have any values to show.
-	if( role != LookupModel::LookupRole )
+	if( role != LookupListModel::LookupRole )
 		return false;
 	if( ! index.isValid() )
 		return false;
@@ -116,19 +116,19 @@ bool LookupModel::setData( const QModelIndex &index, const QVariant &value, int 
 //! Role names.
 //! Note: The documentation claims that we should call setRoleNames to specify the roles.
 //! However, this function no longer exists and roleNAmes has been made virtula.
-QHash< int, QByteArray > LookupModel::roleNames() const
+QHash< int, QByteArray > LookupListModel::roleNames() const
 {
 	// Construct QHash to describe the roles and return it.
 	// TODO: Should we reset the original roles too here?
 	QHash< int, QByteArray > roles;
 	roles.insert( Qt::DisplayRole, QString( "display" ).toLatin1() );
 	roles.insert( Qt::DecorationRole, QString( "decoration" ).toLatin1() );
-	roles.insert( LookupModel::LookupRole, QString( "lookup" ).toLatin1() );
+	roles.insert( LookupListModel::LookupRole, QString( "lookup" ).toLatin1() );
 	return roles;
 }
 
 //! Sets the maximum number of rows to display.
-void LookupModel::setRowLimit( int rowLimit )
+void LookupListModel::setRowLimit( int rowLimit )
 {
 	// Skip if nothing is changing.
 	if( m_rowLimit == rowLimit )
@@ -146,7 +146,7 @@ void LookupModel::setRowLimit( int rowLimit )
 }
 
 //! Sets property value.
-void LookupModel::setPropertyValue( const QJsonValue propertyValue )
+void LookupListModel::setPropertyValue( const QJsonValue propertyValue )
 {
 	// Don't update if the property value has not changed.
 	if( m_propertyValue == propertyValue )
@@ -197,7 +197,7 @@ void LookupModel::setPropertyValue( const QJsonValue propertyValue )
 }
 
 //! Updates the property value from the current lookups.
-void LookupModel::updatePropertyValueFromLookups()
+void LookupListModel::updatePropertyValueFromLookups()
 {
 	// Make the update.
 	QJsonObject pvAsObject = m_propertyValue.toObject();
@@ -230,7 +230,7 @@ void LookupModel::updatePropertyValueFromLookups()
 }
 
 //! Returns data for display.
-void LookupModel::forDisplay( const QModelIndex & index, QVariant& variant ) const
+void LookupListModel::forDisplay( const QModelIndex & index, QVariant& variant ) const
 {
 	// Set the value.
 	QJsonObject asObject = m_lookups[ index.row() ].toObject();
@@ -238,13 +238,13 @@ void LookupModel::forDisplay( const QModelIndex & index, QVariant& variant ) con
 }
 
 //! Returns data for decoration.
-void LookupModel::forDecoration( const QModelIndex & index, QVariant& variant ) const
+void LookupListModel::forDecoration( const QModelIndex & index, QVariant& variant ) const
 {
 	// Nothing.
 }
 
 //! Returns data for lookup.
-void LookupModel::forLookup( const QModelIndex & index, QVariant& variant ) const
+void LookupListModel::forLookup( const QModelIndex & index, QVariant& variant ) const
 {
 	variant.setValue( m_lookups[ index.row() ] );
 }

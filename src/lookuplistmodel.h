@@ -18,15 +18,15 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LOOKUPMODEL_H
-#define LOOKUPMODEL_H
+#ifndef LOOKUPListMODEL_H
+#define LOOKUPListMODEL_H
 
 #include <QAbstractListModel>
 #include <QHash>
 #include <QJsonArray>
 #include <QJsonValue>
 
-class LookupModel : public QAbstractListModel
+class LookupListModel : public QAbstractListModel
 {
 	//! The role id of the lookup role.
 	static const int LookupRole;
@@ -38,7 +38,7 @@ class LookupModel : public QAbstractListModel
 public:
 
 	//! Initializes the lookup model.
-	explicit LookupModel(QObject *parent = 0);
+	explicit LookupListModel(QObject *parent = 0);
 
 	//! Maximum number of lookups to display.
 	int rowLimit() const { return m_rowLimit; }
@@ -114,4 +114,4 @@ private:
 
 };
 
-#endif // LOOKUPMODEL_H
+#endif // LOOKUPListMODEL_H

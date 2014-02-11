@@ -18,27 +18,27 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "valuelistmodel.h"
+#include "valuelistitemlistmodel.h"
 
 #include "asyncfetch.h"
 #include "mfiles/lookup.h"
 #include "mfiles/valuelistitem.h"
 
 //! The role id the lookup role.
-const int ValueListModel::LookupRole = Qt::UserRole;
+const int ValueListItemListModel::LookupRole = Qt::UserRole;
 
 //! The role id the id role.
-const int ValueListModel::IdRole = Qt::UserRole + 1;
+const int ValueListItemListModel::IdRole = Qt::UserRole + 1;
 
-ValueListModel::ValueListModel() :
+ValueListItemListModel::ValueListItemListModel() :
 	QAbstractListModel(),
 	m_valueList( 0 )
 {
-	qDebug( "ValueListModel constructed." );
+	qDebug( "ValueListItemListModel constructed." );
 }
 
 //! Blocked lookups
-QJsonArray ValueListModel::blockedLookups() const
+QJsonArray ValueListItemListModel::blockedLookups() const
 {
 	// Collect and return the blocked lookups.
 	QJsonArray blocked;
@@ -51,7 +51,7 @@ QJsonArray ValueListModel::blockedLookups() const
 }
 
 //! Returns the number of rows under the given parent.
-int ValueListModel::rowCount( const QModelIndex& parent ) const
+int ValueListItemListModel::rowCount( const QModelIndex& parent ) const
 {
 	// Report the row count.
 	int rowCount = m_data.size();
@@ -59,7 +59,7 @@ int ValueListModel::rowCount( const QModelIndex& parent ) const
 }
 
 //! Returns the data stored under the given role for the item referred to by the index.
-QVariant ValueListModel::data( const QModelIndex& index, int role ) const
+QVariant ValueListItemListModel::data( const QModelIndex& index, int role ) const
 {
 	switch( role )
 	{
@@ -69,10 +69,10 @@ QVariant ValueListModel::data( const QModelIndex& index, int role ) const
 	case Qt::DecorationRole :
 		return forDecoration( index );
 
-	case ValueListModel::LookupRole :
+	case ValueListItemListModel::LookupRole :
 		return forLookup( index );
 
-	case ValueListModel::IdRole :
+	case ValueListItemListModel::IdRole :
 		return forId( index );
 
 	default:
@@ -82,20 +82,20 @@ QVariant ValueListModel::data( const QModelIndex& index, int role ) const
 }
 
 //! Role names. Note: The documentation claims that we should call setRoleNames to specify the roles. However, this function no longer exists and roleNAmes has been made virtula.
-QHash< int,QByteArray > ValueListModel::roleNames() const
+QHash< int,QByteArray > ValueListItemListModel::roleNames() const
 {
 	// Construct QHash to describe the roles and return it.
 	// TODO: Should we reset the original roles too here?
 	QHash< int, QByteArray > roles;
 	roles.insert( Qt::DisplayRole, QString( "display" ).toLatin1() );
 	roles.insert( Qt::DecorationRole, QString( "decoration" ).toLatin1() );
-	roles.insert( ValueListModel::LookupRole, QString( "lookup" ).toLatin1() );
-	roles.insert( ValueListModel::IdRole, QString( "id" ).toLatin1() );
+	roles.insert( ValueListItemListModel::LookupRole, QString( "lookup" ).toLatin1() );
+	roles.insert( ValueListItemListModel::IdRole, QString( "id" ).toLatin1() );
 	return roles;
 }
 
 //! Called when the reset of the model is required.
-void ValueListModel::resetFromList()
+void ValueListItemListModel::resetFromList()
 {
 	// Reset the values from the value list.
 	if( m_valueList )
@@ -118,7 +118,7 @@ void ValueListModel::resetFromList()
 }
 
 //! Sets the value list. This also resets the model.
-void ValueListModel::setValueList( ValueListFront* valueList )
+void ValueListItemListModel::setValueList( ValueListFront* valueList )
 {
 	// Sanity check.
 	if( m_valueList != 0 )
@@ -128,14 +128,14 @@ void ValueListModel::setValueList( ValueListFront* valueList )
 
 	// Disconnect the status changed signal of the previous value list.
 	if( m_valueList )
-		QObject::disconnect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
+		QObject::disconnect( m_valueList, &ValueListFront::statusChanged, this, &ValueListItemListModel::resetFromList );
 
 	// Store the value list and items.
 	if( valueList != 0 )
 	{
 		// Store the value list.
 		m_valueList = valueList;
-		QObject::connect( m_valueList, &ValueListFront::statusChanged, this, &ValueListModel::resetFromList );
+		QObject::connect( m_valueList, &ValueListFront::statusChanged, this, &ValueListItemListModel::resetFromList );
 
 		// Reset data from the list.
 		this->resetFromList();
@@ -149,9 +149,9 @@ void ValueListModel::setValueList( ValueListFront* valueList )
 }
 
 //! Sets the filter.
-void ValueListModel::setFilter( TypedValueFilter* filter )
+void ValueListItemListModel::setFilter( TypedValueFilter* filter )
 {
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 	// Skip if the filter isn't changed.
 	if( m_filter == filter )
 		return;
@@ -161,13 +161,13 @@ void ValueListModel::setFilter( TypedValueFilter* filter )
 	this->resetFromList();
 	emit filterChanged();
 
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 }
 
 //! Sets the currently selected lookup.
-void ValueListModel::setSelectedLookup( const QJsonValue& lookup )
+void ValueListItemListModel::setSelectedLookup( const QJsonValue& lookup )
 {
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 	// Skip if the lookup does not change.
 	if( m_selectedLookup == lookup )
 		return;
@@ -176,13 +176,13 @@ void ValueListModel::setSelectedLookup( const QJsonValue& lookup )
 	m_selectedLookup = lookup;
 	this->includeSelectedLookupIfMissing( true );
 	emit selectedLookupChanged();
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 }
 
 //! Sets the blocked lookups.
-void ValueListModel::setBlockedLookups( const QJsonArray& blocked )
+void ValueListItemListModel::setBlockedLookups( const QJsonArray& blocked )
 {
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 	// Set the blocked lookups and construct a blocking list from them.
 	m_blockedLookups.clear();
 	for( QJsonArray::const_iterator itr = blocked.constBegin(); itr != blocked.constEnd(); itr++ )
@@ -194,13 +194,13 @@ void ValueListModel::setBlockedLookups( const QJsonArray& blocked )
 	}	
 	this->resetFromList(); // Reset after blocking.	
 	emit blockedLookupsChanged();
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 }
 
 //! Returns an array of value list items without the blocked lookups.
-AsyncFetch* ValueListModel::filterBlocked( AsyncFetch* items ) const
+AsyncFetch* ValueListItemListModel::filterBlocked( AsyncFetch* items ) const
 {
-	qDebug( "ValueListModel" );
+	qDebug( "ValueListItemListModel" );
 	// Filter the items if necessary.
 	if( m_blockedLookups.empty() )
 	{
@@ -224,7 +224,7 @@ AsyncFetch* ValueListModel::filterBlocked( AsyncFetch* items ) const
 }
 
 //! Includes the selected lookup in the data if it is missing.
-void ValueListModel::includeSelectedLookupIfMissing( bool notify )
+void ValueListItemListModel::includeSelectedLookupIfMissing( bool notify )
 {
 	// Cannot include / no need to include yet, the value list is not available.
 	if( m_valueList == 0 )
@@ -245,7 +245,7 @@ void ValueListModel::includeSelectedLookupIfMissing( bool notify )
 }
 
 //! Gets the index of the item in the stored value list item or -1 if the item does not exist.
-int ValueListModel::indexOf( int id ) const
+int ValueListItemListModel::indexOf( int id ) const
 {
 	// Search for the specified lookup and return the index if found.	
 	for( int i = 0; i < m_data.size(); i++ )
@@ -263,7 +263,7 @@ int ValueListModel::indexOf( int id ) const
 }
 
 //! Inserts lookup to the value list.
-void ValueListModel::insertLookup( const QJsonValue& lookup, bool notify )
+void ValueListItemListModel::insertLookup( const QJsonValue& lookup, bool notify )
 {	
 	// Search for position to insert the object.	
 	bool inserted = false;
@@ -290,7 +290,7 @@ void ValueListModel::insertLookup( const QJsonValue& lookup, bool notify )
 }
 
 //! Inserts lookup to the value list to the specified position.
-void ValueListModel::insertLookup( int row, const QJsonValue& lookup, bool notify )
+void ValueListItemListModel::insertLookup( int row, const QJsonValue& lookup, bool notify )
 {
 	// Cannot insert if value list is not yet available.
 	Q_CHECK_PTR( m_valueList );
@@ -319,7 +319,7 @@ void ValueListModel::insertLookup( int row, const QJsonValue& lookup, bool notif
 	}
 }
 
-void ValueListModel::setData( const QJsonArray& data )
+void ValueListItemListModel::setData( const QJsonArray& data )
 {
 	this->beginResetModel();
 	{
@@ -334,7 +334,7 @@ void ValueListModel::setData( const QJsonArray& data )
 }
 
 //! Returns data for display.
-QVariant ValueListModel::forDisplay( const QModelIndex & index ) const
+QVariant ValueListItemListModel::forDisplay( const QModelIndex & index ) const
 {
 	QJsonValue asValue = m_data.at( index.row() );
 	QString text = asValue.toObject()[ "Name" ].toString();
@@ -342,14 +342,14 @@ QVariant ValueListModel::forDisplay( const QModelIndex & index ) const
 }
 
 //! Returns data for decoration.
-QVariant ValueListModel::forDecoration( const QModelIndex & index ) const
+QVariant ValueListItemListModel::forDecoration( const QModelIndex & index ) const
 {
 	qDebug( "Decoration role" );
 	return QVariant();
 }
 
 //! Returns data for lookup.
-QVariant ValueListModel::forLookup( const QModelIndex & index ) const
+QVariant ValueListItemListModel::forLookup( const QModelIndex & index ) const
 {
 	// Construct lookup based on the value list item denoted by the index.
 	QJsonObject vlitem = m_data[ index.row() ].toObject();
@@ -365,7 +365,7 @@ QVariant ValueListModel::forLookup( const QModelIndex & index ) const
 }
 
 //! Returns data for Id.
-QVariant ValueListModel::forId( const QModelIndex & index ) const
+QVariant ValueListItemListModel::forId( const QModelIndex & index ) const
 {
 	int id = m_data[ index.row() ].toObject()[ "ID" ].toDouble();
 	return QVariant( id );

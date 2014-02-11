@@ -39,12 +39,12 @@
 #include "objectfront.h"
 #include "objectversionfront.h"
 #include "lazyownerinfo.h"
-#include "lookupmodel.h"
-#include "propertyvaluemodel.h"
+#include "lookuplistmodel.h"
+#include "propertyvaluelistmodel.h"
 #include "realvalidator.h"
 #include "typedvaluefilter.h"
 #include "vaultfront.h"
-#include "valuelistmodel.h"
+#include "valuelistitemlistmodel.h"
 #include "valuelistfront.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])

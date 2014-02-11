@@ -31,15 +31,12 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/integervalidator.cpp \
     src/valuelistcore.cpp \
     src/valuelistfront.cpp \
-    src/valuelistmodel.cpp \
     src/frontbase.cpp \
     src/corebase.cpp \
     src/appmonitor.cpp \
     src/errorinfo.cpp \
     src/errorlayer.cpp \
     src/errormodel.cpp \
-    src/propertyvaluemodel.cpp \
-    src/lookupmodel.cpp \
     src/typedvaluefilter.cpp \
     src/classesfront.cpp \
     src/propertyvalueownerresolver.cpp \
@@ -53,7 +50,10 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/asyncfetch.cpp \
     src/lazyownerinfo.cpp \
     src/mfiles/ownerproperty.cpp \
-    src/allowedlookupsresolver.cpp
+    src/allowedlookupsresolver.cpp \
+    src/lookuplistmodel.cpp \
+    src/valuelistitemlistmodel.cpp \
+    src/propertyvaluelistmodel.cpp
 HEADERS += src/objecttypecache.h \
     src/hostcore.h \
     src/vaultcore.h \
@@ -73,7 +73,6 @@ HEADERS += src/objecttypecache.h \
     src/integervalidator.h \
     src/valuelistcore.h \
     src/valuelistfront.h \
-    src/valuelistmodel.h \
     src/valuelistkey.h \
     src/frontbase.h \
     src/corebase.h \
@@ -81,8 +80,6 @@ HEADERS += src/objecttypecache.h \
     src/errorinfo.h \
     src/errorlayer.h \
     src/errormodel.h \
-    src/propertyvaluemodel.h \
-    src/lookupmodel.h \
     src/typedvaluefilter.h \
     src/classesfront.h \
     src/mfilesconstants.h \
@@ -97,7 +94,10 @@ HEADERS += src/objecttypecache.h \
     src/asyncfetch.h \
     src/lazyownerinfo.h \
     src/mfiles/ownerproperty.h \
-    src/allowedlookupsresolver.h
+    src/allowedlookupsresolver.h \
+    src/lookuplistmodel.h \
+    src/valuelistitemlistmodel.h \
+    src/propertyvaluelistmodel.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

@@ -7,7 +7,7 @@
 #include <QHash>
 
 #include "asyncfetch.h"
-#include "propertyvaluemodel.h"
+#include "propertyvaluelistmodel.h"
 #include "mfiles/objtype.h"
 #include "mfiles/propertydef.h"
 #include "mfiles/propertyvalue.h"
@@ -18,7 +18,7 @@
 #include "vaultfront.h"
 
 PropertyValueOwnerResolver::PropertyValueOwnerResolver(
-		PropertyValueModel* parent,
+		PropertyValueListModel* parent,
 		VaultFront* vault
 ) :
 	QObject( parent ),
@@ -27,11 +27,11 @@ PropertyValueOwnerResolver::PropertyValueOwnerResolver(
 	m_ownerLocationVersion( 0 )
 {
 	// Connect signals.
-	QObject::connect( parent, &PropertyValueModel::dataChanged, this, &PropertyValueOwnerResolver::requestOwnerResolution );
-	QObject::connect( parent, &PropertyValueModel::dataChanged, this, &PropertyValueOwnerResolver::requestOwnershipInfoResolution );
-	QObject::connect( parent, &PropertyValueModel::modelReset, this, &PropertyValueOwnerResolver::refreshOwnershipInfo );
-	QObject::connect( this, &PropertyValueOwnerResolver::ownerDetermined, parent, &PropertyValueModel::suggestData );
-	QObject::connect( this, &PropertyValueOwnerResolver::ownershipInfoChanged, parent, &PropertyValueModel::dataChanged );
+	QObject::connect( parent, &PropertyValueListModel::dataChanged, this, &PropertyValueOwnerResolver::requestOwnerResolution );
+	QObject::connect( parent, &PropertyValueListModel::dataChanged, this, &PropertyValueOwnerResolver::requestOwnershipInfoResolution );
+	QObject::connect( parent, &PropertyValueListModel::modelReset, this, &PropertyValueOwnerResolver::refreshOwnershipInfo );
+	QObject::connect( this, &PropertyValueOwnerResolver::ownerDetermined, parent, &PropertyValueListModel::suggestData );
+	QObject::connect( this, &PropertyValueOwnerResolver::ownershipInfoChanged, parent, &PropertyValueListModel::dataChanged );
 }
 
 //! Requests the owner of the specified item.
@@ -50,7 +50,7 @@ QJsonValue PropertyValueOwnerResolver::ownershipInfo( const QModelIndex& index )
 	{
 		// Collect all lookups from this owner.		
 		QModelIndex ownerIndex = m_model->index( ownerPropertyLocation );		
-		QVariant ownerData = m_model->data( ownerIndex, PropertyValueModel::PropertyValueRole );
+		QVariant ownerData = m_model->data( ownerIndex, PropertyValueListModel::PropertyValueRole );
 		PropertyValue owner( ownerData.toJsonValue() );
 		QJsonArray ownerLookups = owner.typedValue().asLookups();
 		foreach( Lookup lookup, ownerLookups )
@@ -83,14 +83,14 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	bool propertyValueChanged = roles.size() == 0;
 	foreach( int role, roles )
 	{
-		if( role == PropertyValueModel::PropertyValueRole )
+		if( role == PropertyValueListModel::PropertyValueRole )
 			propertyValueChanged = true;
 	}
 	if( ! propertyValueChanged )
 		return;  // Other than changes to the property value do not affect owners.
 
 	// Get the new value of the data.
-	QVariant changed = m_model->data( topLeft, PropertyValueModel::PropertyValueRole );
+	QVariant changed = m_model->data( topLeft, PropertyValueListModel::PropertyValueRole );
 	PropertyValue propertyValue( changed.toJsonValue() );
 
 
@@ -140,7 +140,7 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	QJsonValue propertyDef = m_vault->get( VaultFront::PropertyDefinition, propertyDefId );
 	Q_ASSERT( propertyDef.toObject()[ "BasedOnValueList" ].toBool() );
 	int valueListId = propertyDef.toObject()[ "ValueList" ].toDouble();
-	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( topLeft, PropertyValueModel::FilterRole ) );
+	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( topLeft, PropertyValueListModel::FilterRole ) );
 	filter->deleteLater();
 	ValueListFront* valueList = m_vault->valueList( valueListId, filter );	
 	AsyncFetch* fetchSubItem = 0;
@@ -193,7 +193,7 @@ void PropertyValueOwnerResolver::requestOwnershipInfoResolution( const QModelInd
 	bool propertyValueChanged = roles.size() == 0;
 	foreach( int role, roles )
 	{
-		if( role == PropertyValueModel::PropertyValueRole )
+		if( role == PropertyValueListModel::PropertyValueRole )
 			propertyValueChanged = true;
 	}
 	if( ! propertyValueChanged )
@@ -204,7 +204,7 @@ void PropertyValueOwnerResolver::requestOwnershipInfoResolution( const QModelInd
 	// or if it is sufficient to just update the typed value filter.
 	QList< int > subItems = m_subItemLocationByOwnerLocation.values( topLeft.row() );
 	QVector< int > modifiedRoles;
-	modifiedRoles.push_back( PropertyValueModel::FilterRole );
+	modifiedRoles.push_back( PropertyValueListModel::FilterRole );
 	foreach( int subItemRow, subItems )
 	{
 		// Emit the change.
@@ -227,7 +227,7 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 	for( int row = 0; row < m_model->rowCount(); row++ )
 	{
 		// Check if the
-		PropertyValue propertyValue( m_model->data( m_model->index( row ), PropertyValueModel::PropertyValueRole ).toJsonValue() );
+		PropertyValue propertyValue( m_model->data( m_model->index( row ), PropertyValueListModel::PropertyValueRole ).toJsonValue() );
 		propertyValuesByRow.insert( propertyValue.propertyDef(), row );  // Store the location of the property definition.
 		int dataType = propertyValue.typedValue().dataType();
 		if( dataType == 9  || dataType == 10 )
@@ -315,7 +315,7 @@ void PropertyValueOwnerResolver::tryAutoFillOwnerLocation( int ownerLocationVers
 	// Resolve the possible owner value and try automatically filling the owner
 	// if it has not been set.
 	QModelIndex ownerIndex = m_model->index( ownerPropertyLocation );
-	QVariant owner = m_model->data( ownerIndex, PropertyValueModel::PropertyValueRole );
+	QVariant owner = m_model->data( ownerIndex, PropertyValueListModel::PropertyValueRole );
 	PropertyValue ownerValue( owner.toJsonValue() );
 	if( ! ownerValue.hasValue() )
 	{
@@ -324,7 +324,7 @@ void PropertyValueOwnerResolver::tryAutoFillOwnerLocation( int ownerLocationVers
 		// First we get the item id of the owner which can be obtained by fetching the value list item of
 		PropertyDef ownerPropertyDef = m_vault->get( VaultFront::PropertyDefinition, ownerValue.propertyDef() );
 		Q_ASSERT( ownerPropertyDef.basedOnValueList() );
-		TypedValueFilter* ownerFilter = qvariant_cast< TypedValueFilter* >( m_model->data( ownerIndex, PropertyValueModel::FilterRole ) );
+		TypedValueFilter* ownerFilter = qvariant_cast< TypedValueFilter* >( m_model->data( ownerIndex, PropertyValueListModel::FilterRole ) );
 		ownerFilter->deleteLater();
 		ValueListFront* ownerValueList = m_vault->valueList( ownerPropertyDef.valueList(), ownerFilter );
 		AsyncFetch* fetchOwner = ownerValueList->item( ownerId );

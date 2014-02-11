@@ -18,8 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROPERTYVALUEMODEL_H
-#define PROPERTYVALUEMODEL_H
+#ifndef PROPERTYVALUEListMODEL_H
+#define PROPERTYVALUEListMODEL_H
 
 #include <QAbstractListModel>
 #include <QByteArray>
@@ -32,7 +32,7 @@ class PropertyValueOwnerResolver;
 class VaultFront;
 
 //! Model that displays the property values of an object.
-class PropertyValueModel : public QAbstractListModel
+class PropertyValueListModel : public QAbstractListModel
 {
 	Q_OBJECT
 	Q_ENUMS( DataFilter )
@@ -58,7 +58,7 @@ public:
 	//! The role id the filter role.
 	static const int FilterRole;
 
-	explicit PropertyValueModel(QObject *parent = 0);
+	explicit PropertyValueListModel(QObject *parent = 0);
 
 	//! The data that is modelled by this model.
 	DataFilter dataFilter() const { return m_filter; }
@@ -168,4 +168,4 @@ private:
 
 };
 
-#endif // PROPERTYVALUEMODEL_H
+#endif // PROPERTYVALUEListMODEL_H
