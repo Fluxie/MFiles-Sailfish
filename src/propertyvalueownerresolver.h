@@ -7,7 +7,7 @@
 #include <QObject>
 
 // Forward declarations.
-class PropertyValueModel;
+class PropertyValueListModel;
 class VaultFront;
 
 /**
@@ -22,7 +22,7 @@ public:
 
 	//! Initializes new Property value owner resolver.
 	explicit PropertyValueOwnerResolver(
-			PropertyValueModel* parent,
+			PropertyValueListModel* parent,
 			VaultFront* vault
 	);
 
@@ -81,7 +81,7 @@ private:
 // Private data.
 private:
 
-	PropertyValueModel* m_model;  //!< The model that owns this resolver.
+	PropertyValueListModel* m_model;  //!< The model that owns this resolver.
 	VaultFront* m_vault;
 
 	int m_ownerLocationVersion;  //!< The version of owner location mapping. This version is incremented when the owner location map is refreshed.

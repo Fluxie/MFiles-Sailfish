@@ -12,14 +12,14 @@ Dialog {
 	property TypedValueFilter filter
 	property VaultFront vault
 	property variant valueListData: vault && filter ? vault.valueList( valueList, filter ) : null
-	property alias blockedLookups: valueListModel.blockedLookups
-	property alias selectedLookup: valueListModel.selectedLookup
+	property alias blockedLookups: valueListItemListModel.blockedLookups
+	property alias selectedLookup: valueListItemListModel.selectedLookup
 
 	DialogHeader {
 
 		id: header
 
-		acceptText: valueListModel.selectedLookup ? valueListModel.selectedLookup.DisplayValue : ''
+		acceptText: valueListItemListModel.selectedLookup ? valueListItemListModel.selectedLookup.DisplayValue : ''
 	}
 
 	SilicaListView {
@@ -32,9 +32,9 @@ Dialog {
 		anchors.bottom: parent.bottom
 		anchors.leftMargin: Theme.paddingLarge
 
-		model: ValueListModel {
+		model: ValueListItemListModel {
 
-			id: valueListModel
+			id: valueListItemListModel
 
 			valueList: valueListData ? valueListData : null
 		}
@@ -58,7 +58,7 @@ Dialog {
 			id: listItem
 
 			// Set highlight if presser or if selected.
-			highlighted: down || ( valueListModel.selectedLookup ? model.id === valueListModel.selectedLookup.Item : false )
+			highlighted: down || ( valueListItemListModel.selectedLookup ? model.id === valueListItemListModel.selectedLookup.Item : false )
 			height: Theme.itemSizeExtraSmall
 
 			Label {
@@ -71,7 +71,7 @@ Dialog {
 			}
 
 			// Select the clicked lookup
-			onClicked: valueListModel.selectedLookup = model.lookup
+			onClicked: valueListItemListModel.selectedLookup = model.lookup
 		}
 	}
 }

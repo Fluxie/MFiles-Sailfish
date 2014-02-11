@@ -39,9 +39,9 @@ Page {
 
 		id: propertyValueList
 
-		model: PropertyValueModel {
+		model: PropertyValueListModel {
 
-			dataFilter: PropertyValueModel.PropertyValuesForDisplay
+			dataFilter: PropertyValueListModel.PropertyValuesForDisplay
 			objectVersion: objectData.version( propertyValues.latestVersion )
 			vault: propertyValues.vault
 		}

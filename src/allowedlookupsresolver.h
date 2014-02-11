@@ -6,7 +6,7 @@
 
 // Forward declarations.
 class AsyncFetch;
-class PropertyValueModel;
+class PropertyValueListModel;
 class TypedValueFilter;
 class VaultFront;
 
@@ -23,7 +23,7 @@ public:
 	 * @param parent The parent model hosting this resolver.
 	 * @param vault Reference to the vault.
 	 */
-	explicit AllowedLookupsResolver( PropertyValueModel* parent, VaultFront* vault );
+	explicit AllowedLookupsResolver( PropertyValueListModel* parent, VaultFront* vault );
 
 signals:
 
@@ -53,7 +53,7 @@ private:
 // Private data.
 private:
 
-	PropertyValueModel* m_model;  //!< The model that owns this resolver.
+	PropertyValueListModel* m_model;  //!< The model that owns this resolver.
 	VaultFront* m_vault;
 
 };

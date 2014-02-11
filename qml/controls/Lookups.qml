@@ -17,9 +17,9 @@ Column {
 	Repeater {
 		id: content
 
-		model: LookupModel {
+		model: LookupListModel {
 
-			id: lookupModel
+			id: lookupListModel
 
 			rowLimit: 2
 			propertyValue: typedValue.propertyValue
@@ -64,7 +64,7 @@ Column {
 
 					// Submit the updated lookups.
 					model.lookup = dialog.selectedLookup
-					typedValue.submit( lookupModel.propertyValue.TypedValue.Lookups );
+					typedValue.submit( lookupListModel.propertyValue.TypedValue.Lookups );
 				} );
 			}
 		}
@@ -77,7 +77,7 @@ Column {
 		height: Theme.itemSizeExtraSmall
 
 		// Show only if no lookups.
-		visible: lookupModel.lookupCount == 0
+		visible: lookupListModel.lookupCount == 0
 
 		// Action
 		onClicked: {			
@@ -113,8 +113,8 @@ Column {
 		anchors.horizontalCenter: parent.horizontalCenter
 
 		// Visibility
-		visible: lookupModel.lookupCount > lookupModel.rowLimit
-		enabled: lookupModel.lookupCount > lookupModel.rowLimit
+		visible: lookupListModel.lookupCount > lookupListModel.rowLimit
+		enabled: lookupListModel.lookupCount > lookupListModel.rowLimit
 
 		// Content
 		text: "More"

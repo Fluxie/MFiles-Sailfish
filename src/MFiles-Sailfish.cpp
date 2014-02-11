@@ -55,10 +55,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	// Register C++ classes as QML types.	
 	qmlRegisterType< AppMonitor >("mohari.sailfish", 1, 0, "AppMonitor");
 	qmlRegisterType< ErrorModel >("mohari.sailfish", 1, 0, "ErrorModel");
-	qmlRegisterType< LookupModel >("mohari.sailfish", 1, 0, "LookupModel");
+	qmlRegisterType< LookupListModel >("mohari.sailfish", 1, 0, "LookupListModel");
 	qmlRegisterType< TypedValueFilter >("mohari.sailfish", 1, 0, "TypedValueFilter");
-	qmlRegisterType< PropertyValueModel >("mohari.sailfish", 1, 0, "PropertyValueModel");
-	qmlRegisterType< ValueListModel >("mohari.sailfish", 1, 0, "ValueListModel");
+	qmlRegisterType< PropertyValueListModel >("mohari.sailfish", 1, 0, "PropertyValueListModel");
+	qmlRegisterType< ValueListItemListModel >("mohari.sailfish", 1, 0, "ValueListItemListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");
 	qmlRegisterType< RealValidator >("mohari.sailfish", 1, 0, "RealValidator");

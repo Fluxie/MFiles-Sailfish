@@ -10,7 +10,7 @@ Dialog {
 
 	property string title
 	property VaultFront vault
-	property alias propertyValue: lookupModel.propertyValue
+	property alias propertyValue: lookupListModel.propertyValue
 	property TypedValueFilter filter
 
 	DialogHeader {
@@ -38,8 +38,8 @@ Dialog {
 
 
 
-		model: LookupModel {
-			id: lookupModel
+		model: LookupListModel {
+			id: lookupListModel
 		}
 
 		// Placeholder for empty list view.

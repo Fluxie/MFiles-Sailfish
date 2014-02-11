@@ -10,7 +10,7 @@ Page {
 
 	property string title
 	property VaultFront vault
-	property alias propertyValue: lookupModel.propertyValue
+	property alias propertyValue: lookupListModel.propertyValue
 
 	// Declare list view that displays the property values.
 	SilicaListView {
@@ -33,8 +33,8 @@ Page {
 		anchors.right: parent.right
 		anchors.bottom: parent.bottom
 
-		model: LookupModel {
-			id: lookupModel
+		model: LookupListModel {
+			id: lookupListModel
 		}
 
 		// Placeholder for empty list view.
