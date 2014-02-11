@@ -20,6 +20,12 @@
 
 #include "objid.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 ObjID::ObjID( int type, int id ) :
 	m_type( type ),
 	m_id( id )
@@ -80,4 +86,6 @@ bool ObjID::operator==(
 	bool equal = ( ! ( ( *this ) < rightSide ) ) &&
 					( ! ( rightSide < ( *this ) ) );
 	return equal;
+}
+
 }

@@ -32,7 +32,7 @@
 #include "objectcore.h"
 #include "vaultcore.h"
 
-ObjectVersionCore::ObjectVersionCore( ObjectCore *parent, ObjVer objver ) :
+ObjectVersionCore::ObjectVersionCore( ObjectCore *parent, MFiles::ObjVer objver ) :
 	CoreBase( parent->vault(), parent ),
 	m_owner( parent ),
 	m_objver( objver )

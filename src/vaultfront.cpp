@@ -135,21 +135,21 @@ ObjectFront* VaultFront::object(
 	{
 		// This is an ObjectVersion Json object.
 		QJsonValue objverJson = objectInfo[ "ObjVer" ];
-		ObjVer objver( objverJson.toObject() );
+		MFiles::ObjVer objver( objverJson.toObject() );
 		front = this->newFront( objver.objId() );
 	}
 	else if( objectInfo.find( QString( "Type" ) ) != objectInfo.end() &&
 			 objectInfo.find( QString( "Version" ) ) == objectInfo.end() )
 	{
 		// This is ObjID Json object.
-		ObjID objid( objectInfo );
+		MFiles::ObjID objid( objectInfo );
 		front = this->newFront( objid );
 	}
 	else if( objectInfo.find( QString( "Type" ) ) != objectInfo.end() &&
 			 objectInfo.find( QString( "Version" ) ) != objectInfo.end() )
 	{
 		// This is ObjVer Json object.
-		ObjVer objver( objectInfo );
+		MFiles::ObjVer objver( objectInfo );
 		front = this->newFront( objver.objId() );
 	}
 	else
@@ -232,7 +232,7 @@ void VaultFront::objectChanged(	const QJsonValue& objectInfo )
 
 
 //! Gets new object front for the given object version.
-ObjectFront* VaultFront::newFront( const ObjID& objid )
+ObjectFront* VaultFront::newFront( const MFiles::ObjID& objid )
 {
 	// Create a new front for the given object core.
 	QSharedPointer< ObjectCore > core = m_core->objects()->object( objid );

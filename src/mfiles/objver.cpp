@@ -20,6 +20,12 @@
 
 #include "objver.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 //! Initializes new ObjVer object from the given Json object.
 ObjVer::ObjVer(
 	const QJsonObject& json
@@ -86,4 +92,6 @@ bool ObjVer::operator==(
 	bool equal = ( ! ( ( *this ) < rightSide ) ) &&
 					( ! ( rightSide < ( *this ) ) );
 	return equal;
+}
+
 }

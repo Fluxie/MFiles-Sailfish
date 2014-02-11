@@ -47,7 +47,7 @@ public slots:
 
 	//! Establishes new object core for the given object version.
 	QSharedPointer< ObjectCore > object(
-		const ObjID& id
+		const MFiles::ObjID& id
 	);
 	
 // Private data.
@@ -57,7 +57,7 @@ private:
 	VaultCore* m_vault;
 
 	mutable QMutex m_lock;
-	QCache< ObjID, QSharedPointer< ObjectCore > > m_cache;  //!< Cache of objects.
+	QCache< MFiles::ObjID, QSharedPointer< ObjectCore > > m_cache;  //!< Cache of objects.
 };
 
 #endif // OBJECTCACHE_H

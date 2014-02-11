@@ -47,7 +47,7 @@ QJsonValue ObjectVersionFront::propertiesForDisplay() const { return m_core->pro
 QJsonValue ObjectVersionFront::properties() const { return m_core->properties(); }
 
 //! Object version.
-const ObjVer& ObjectVersionFront::objver() const
+const MFiles::ObjVer& ObjectVersionFront::objver() const
 {
 	//! Return the version info.
 	return m_objVer;

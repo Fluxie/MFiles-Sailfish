@@ -25,6 +25,12 @@
 
 #include "objid.h"
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 class ObjVer
 {
 // Public interface.
@@ -77,6 +83,8 @@ private:
 inline unsigned int qHash(const ObjVer &key, unsigned int seed)
 {
 	return key.type() ^ seed ^ key.id() ^ key.version();
+}
+
 }
 
 

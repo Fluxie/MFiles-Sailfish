@@ -61,7 +61,7 @@ public:
 public:
 
 	//! Object version.
-	const ObjVer& objver() const;
+	const MFiles::ObjVer& objver() const;
 	
 signals:
 
@@ -82,7 +82,7 @@ public slots:
 // Private data.
 private:
 
-	ObjVer m_objVer;
+	MFiles::ObjVer m_objVer;
 	QSharedPointer< ObjectCore > m_objectCore;
 	ObjectVersionCore* m_core;
 };

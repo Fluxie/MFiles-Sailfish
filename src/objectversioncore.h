@@ -42,7 +42,7 @@ public:
 	//! Initializes the ObjectVersionCore
 	explicit ObjectVersionCore(
 		ObjectCore *parent,
-		ObjVer objver
+		MFiles::ObjVer objver
 	);
 
 	//! Initializes the ObjectVersionCore
@@ -61,7 +61,7 @@ public:
 	QJsonValue properties() const { QMutexLocker lock( &m_mtx ); return QJsonValue( m_properties ); }
 
 	//! Object version.
-	ObjVer objver() const  { QMutexLocker lock( &m_mtx ); return m_objver; }
+	MFiles::ObjVer objver() const  { QMutexLocker lock( &m_mtx ); return m_objver; }
 	
 signals:
 
@@ -130,7 +130,7 @@ private:
 private:
 
 	ObjectCore* m_owner;  //!< Object that owns this verision
-	ObjVer m_objver;  //!< Object version.
+	MFiles::ObjVer m_objver;  //!< Object version.
 
 	mutable QMutex m_mtx;
 	QJsonObject m_objectVersion;  //!< The basic object version data.

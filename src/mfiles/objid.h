@@ -23,6 +23,12 @@
 
 #include <QJsonObject>
 
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
+{
+
 //! C++ representation of ObjID.
 class ObjID
 {
@@ -73,5 +79,15 @@ inline unsigned int qHash(const ObjID &key, unsigned int seed)
 {
 	return seed ^ key.type() ^ key.id();
 }
+
+//! Hash function impelemntation for ObjVer
+inline unsigned int qHash( const ObjID &key )
+{
+	return key.type() ^ key.id();
+}
+
+
+}
+
 
 #endif // OBJID_H

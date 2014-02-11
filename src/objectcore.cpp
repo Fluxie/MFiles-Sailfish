@@ -29,7 +29,7 @@
 #include "mfwsrest.h"
 #include "vaultcore.h"
 
-ObjectCore::ObjectCore( VaultCore* vault, ObjID id ) :
+ObjectCore::ObjectCore( VaultCore* vault, MFiles::ObjID id ) :
 	CoreBase( vault, 0 ),
 	m_id( id ),
 	m_latestKnownVersion( -1 ),
@@ -84,7 +84,7 @@ ObjectVersionCore* ObjectCore::version(
 	else if( version.isObject() )
 	{
 		// Parse from the ObjVer.
-		ObjVer specificVersion( version.toObject() );
+		MFiles::ObjVer specificVersion( version.toObject() );
 		if( specificVersion.objId() != m_id )
 		{
 			qCritical( "Invalid specific version." );
@@ -163,7 +163,7 @@ void ObjectCore::versionAvailable( QNetworkReply* reply, bool latest )
 		}  // end if
 
 		// Create and cache the version core.
-		ObjVer objver( m_id, version );
+		MFiles::ObjVer objver( m_id, version );
 		ObjectVersionCore* versionCore = new ObjectVersionCore( this, objver );
 		versionCore->setProperties( properties );
 		if( ! propertiesForDisplay.empty() )
@@ -193,7 +193,7 @@ ObjectVersionCore* ObjectCore::getCore( int version )
 	else
 	{
 		// This version has not been cached previously.
-		ObjVer objver( m_id, version );
+		MFiles::ObjVer objver( m_id, version );
 		ObjectVersionCore* versionCore = new ObjectVersionCore( this, objver );
 		m_versions.insert( objver.version(), versionCore );
 		return versionCore;

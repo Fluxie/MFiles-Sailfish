@@ -48,7 +48,7 @@ private:
 public:
 
 	//! Initializes new ObjectCore.
-	explicit ObjectCore( VaultCore* vault, ObjID id );
+	explicit ObjectCore( VaultCore* vault, MFiles::ObjID id );
 
 	//! Latest version.
 	int latestVersion() const { QMutexLocker lock( &m_mtx ); return m_latestKnownVersion; }
@@ -86,7 +86,7 @@ private:
 	friend class ObjectVersionCore;
 
 	// Variables that are never updated.	
-	ObjID m_id;  //!< The id of this object.
+	MFiles::ObjID m_id;  //!< The id of this object.
 
 	mutable QMutex m_mtx;  //!< Mutex that protects this object.
 	int m_latestKnownVersion;  //!< The latest known object version.

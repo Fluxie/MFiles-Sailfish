@@ -34,7 +34,7 @@ ObjectCache::ObjectCache( VaultCore* parent ) :
 
 //! Establishes new object core for the given object version.
 QSharedPointer< ObjectCore > ObjectCache::object(
-	const ObjID& id
+	const MFiles::ObjID& id
 )
 {
 	// Protect access.

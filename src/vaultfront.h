@@ -28,7 +28,7 @@
 #include "typedvaluefilter.h"
 
 // Forward declarations.
-class ObjID;
+namespace MFiles { class ObjID; }
 class ObjectFront;
 class ValueListFront;
 class VaultCore;
@@ -127,7 +127,7 @@ public slots:
 private:
 
 	//! Gets new object front for the given object id.
-	ObjectFront* newFront( const ObjID& objid );
+	ObjectFront* newFront( const MFiles::ObjID& objid );
 	
 // Private data
 private:
