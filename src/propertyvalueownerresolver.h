@@ -47,7 +47,7 @@ signals:
 	 * @param index
 	 * @param propertyValue New owner.
 	 */
-	void ownerDetermined( const QModelIndex& owner, QJsonValue propertyValue );
+	void ownerDetermined( const QModelIndex& owner, const QJsonValue& propertyValue );
 
 	/**
 	 * @brief Signaled when the ownership information of the item is changed.

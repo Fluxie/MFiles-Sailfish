@@ -5,7 +5,9 @@
 #include <QObject>
 
 // Forward declarations.
+class AsyncFetch;
 class PropertyValueModel;
+class TypedValueFilter;
 class VaultFront;
 
 /**
@@ -25,6 +27,13 @@ public:
 
 signals:
 
+	/**
+	 * @brief allowedValueResolved Signaled when the allowed value has changed an a new value has been resolved.
+	 * @param index The location of the value
+	 * @param propertyValue New value
+	 */
+	void allowedValueResolved( const QModelIndex& owner, const QJsonValue& propertyValue  );
+
 public slots:
 
 	/**
@@ -33,6 +42,13 @@ public slots:
 	 * @param bottomRight
 	 */
 	void requestValueResolution( const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int> &roles = QVector<int>() );
+
+// Private interface.
+private:
+
+	AsyncFetch* fetchAllowedItems( const QModelIndex& currentValueInded, const QJsonValue& currentValue  );
+
+	void resolveValidity( const QJsonArray& allowedItems, const QModelIndex& index, const QJsonValue& currentValue );
 
 // Private data.
 private:

@@ -20,7 +20,7 @@ Loader {
 
 	// Signals
 	// Signaled when the property value selection as been submitted/accepted.
-	signal accepted	
+	signal accepted( variant updatedPropertyValue )
 
 	// Updates the control when the property value changes.
 	onPropertyValueChanged: {
@@ -46,7 +46,6 @@ Loader {
 		// Update the property value.
 		var newPropertyValue = Utils.deepCopy( typedValue.propertyValue );
 		Logic.setTypedValue( newPropertyValue.TypedValue, newValue );
-		typedValue.propertyValue = newPropertyValue
-		accepted()  // Signal.
+		accepted( newPropertyValue )  // Signal.
 	}
 }

@@ -3,6 +3,7 @@
 #include "asyncfetch.h"
 #include "mfiles/propertydef.h"
 #include "mfiles/propertyvalue.h"
+#include "mfiles/valuelistitem.h"
 #include "mfilesconstants.h"
 #include "propertyvaluemodel.h"
 #include "typedvaluefilter.h"
@@ -15,6 +16,8 @@ AllowedLookupsResolver::AllowedLookupsResolver( PropertyValueModel* parent, Vaul
 	m_vault( vault )
 {
 	// Connect signals.
+	QObject::connect( parent, &PropertyValueModel::dataChanged, this, &AllowedLookupsResolver::requestValueResolution );
+	QObject::connect( this, &AllowedLookupsResolver::allowedValueResolved, parent, &PropertyValueModel::suggestData );
 }
 
 void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int> &roles )
@@ -33,23 +36,62 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 
 	// Fetch the current value and abort resolution if the property isn't lookup.
 	PropertyValue currentValue( m_model->data( topLeft, PropertyValueModel::PropertyValueRole ).toJsonValue() );
-	if( currentValue.typedValue().dataType() != MFilesConstants::MultiSelectLookup ||
+	if( currentValue.typedValue().dataType() != MFilesConstants::MultiSelectLookup &&
 		currentValue.typedValue().dataType() != MFilesConstants::SingleSelectLookup  )
 		return;
 
 	// Fetch the allowed values using the new filter.
-	PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, currentValue.propertyDef() ) );
-	Q_ASSERT( propertyDef.basedOnValueList() );
-	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( topLeft, PropertyValueModel::FilterRole ) );
-	filter->deleteLater();
-	ValueListFront* valueList = m_vault->valueList( propertyDef.valueList(), filter );
-	AsyncFetch* fetchAvailable = valueList->availableItems( currentValue.typedValue().getLookupIds() );
-	QObject::connect( fetchAvailable, &AsyncFetch::finished,  [=]() {
+	AsyncFetch* fetchAllowed = this->fetchAllowedItems( topLeft, currentValue.value() );
 
-		// Check which of the current values are allowed and update the value if necessary.
-		QJsonArray allowedValues = fetchAvailable->values();
-		Q_ASSERT( false );
+	// Resolve the validity.
+	QObject::connect( fetchAllowed, &AsyncFetch::finished, [=]() mutable {
+		fetchAllowed->deleteLater();
+
+		QJsonArray values = fetchAllowed->values();
+		this->resolveValidity( values, topLeft, currentValue.value() );
+	} );
+}
+
+AsyncFetch* AllowedLookupsResolver::fetchAllowedItems( const QModelIndex& currentValueIndex, const QJsonValue& currentValue )
+{
+	// Get the value list id, contrstruct appropriate typed value filter and then fetch the values.
+	PropertyValue asPropertyValue( currentValue );
+	QSet< int > currentLookupIds = asPropertyValue.typedValue().getLookupIds();
+	PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, asPropertyValue.propertyDef() ) );
+	Q_ASSERT( propertyDef.basedOnValueList() );
+	TypedValueFilter* filter = qvariant_cast< TypedValueFilter* >( m_model->data( currentValueIndex, PropertyValueModel::FilterRole ) );
+	filter->deleteLater();
+	ValueListFront* valueList = m_vault->valueList( propertyDef.valueList() , filter );
+	AsyncFetch* fetchAvailable = valueList->items();
+	fetchAvailable->setParent( this );
+	fetchAvailable->appendFilter( [=]( const QJsonValue& input )->bool {
+
+		// Include only current values.
+		ValueListItem item( input );
+		return currentLookupIds.contains( item.id() );
 
 	} );
 
+	return fetchAvailable;
+}
+
+void AllowedLookupsResolver::resolveValidity( const QJsonArray& allowedItems, const QModelIndex& index, const QJsonValue& currentValue )
+{
+	// Convert the allowed value list items to a set.
+	QSet< int > allowedItemIds;
+	foreach( ValueListItem item, allowedItems )
+	{
+		allowedItemIds.insert( item.id() );
+	}
+
+	// Remove all values from the lookup that were not returned
+	// and then signal update if something was dropped.
+	PropertyValue asPropertyValue( currentValue );
+	TypedValue updatedTypedValue( asPropertyValue.typedValue().value() );
+	if( updatedTypedValue.dropLookupsExcept( allowedItemIds ) )
+	{
+		// Update the value.
+		PropertyValue updatedValue( asPropertyValue.propertyDef(), updatedTypedValue );
+		emit allowedValueResolved( index, updatedValue.value() );
+	}
 }

@@ -51,13 +51,6 @@ public:
 	int id() const { return m_valueList; }
 
 	/**
-	 * @brief availableItems fetches all the specified items that are currently available.
-	 * @param ids A collection of ids of items that are fetched.
-	 * @return All specified value list items that are available.
-	 */
-	AsyncFetch* availableItems( const QSet< int > ids );
-
-	/**
 	 * @brief owner value list
 	 * @return Id of the owner value list.
 	 */

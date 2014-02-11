@@ -101,6 +101,13 @@ public slots:
 	//! Requests one item to be fetched.
 	void fetchOneItem( int cookie, int id );
 
+	/**
+	 * @brief requestRefresh Request refresh of the list.
+	 * @param cookie The cookie that identifies the quest.
+	 */
+	void requestRefreshWithCookie( int cookie );
+
+
 // Protected interface.
 protected:
 
@@ -132,12 +139,6 @@ private:
 	 * @return Next cookie.
 	 */
 	int getNextCookieNts() const { return m_nextCookie++; }
-
-	/**
-	 * @brief requestRefresh Request refresh of the list.
-	 * @param cookie The cookie that identifies the quest.
-	 */
-	void requestRefreshWithCookie( int cookie );
 
 // Private data.
 private:

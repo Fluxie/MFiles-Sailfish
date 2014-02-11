@@ -57,14 +57,6 @@ ValueListCore::~ValueListCore()
 	delete m_filter;
 }
 
-AsyncFetch* ValueListCore::availableItems( const QSet< int > ids )
-{
-	// First check which values are already cached and then fetch the rest.
-	// Though limit the number of separately fetched items to 10.	
-	Q_ASSERT( false );
-	return 0;
-}
-
 //! Gets resource for fetching the relevant value list items.
 QString ValueListCore::getResource( bool allItems, int valueList, int owner, const TypedValueFilter* filter )
 {

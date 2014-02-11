@@ -119,7 +119,7 @@ Page {
 				vault: propertyValues.vault
 
 				// Update the model if necessary.
-				onAccepted: model.propertyValue = typedValue.propertyValue
+				onAccepted: model.propertyValue = updatedPropertyValue
 
 			}  // end TypedValue
 		}

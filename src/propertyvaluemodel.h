@@ -26,6 +26,7 @@
 #include <QJsonArray>
 
 // Forward declarations.
+class AllowedLookupsResolver;
 class ObjectVersionFront;
 class PropertyValueOwnerResolver;
 class VaultFront;
@@ -121,7 +122,7 @@ public slots:
 	 * @param index The location of the new data.
 	 * @param propertyValue The new value for the location.
 	 */
-	void suggestData( const QModelIndex& index, QJsonValue propertyValue );
+	void suggestData( const QModelIndex& index, const QJsonValue& propertyValue );
 
 	//! Refreshes the property values based on the current filter and object version.
 	void refreshPropertyValues();
@@ -134,6 +135,9 @@ public slots:
 
 // Private interface.
 private:
+
+	//! Refreshes the property values based on the current filter and object version.
+	void refreshPropertyValuesImpl();
 
 	//! Returns data for display.
 	void forDisplay( const QModelIndex & index, QVariant& variant ) const;
@@ -159,6 +163,7 @@ private:
 
 	// Auxilary functions.
 	PropertyValueOwnerResolver* m_ownerResolver;  //!< Functionality for resolving the owner.
+	AllowedLookupsResolver* m_allowedLookupsResolvers;  //!< Functionality for resolving the allowed lookup values based on the current filter.
 	VaultFront* m_vault;
 
 };

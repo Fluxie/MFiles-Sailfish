@@ -39,7 +39,7 @@ public:
 	/**
 	 * @brief Initializes new typed value.
 	 */
-	TypedValue( QJsonValue typedValue );
+	TypedValue( const QJsonValue& typedValue );
 
 	/**
 	 * @brief Initializes a new lookup based typed value
@@ -74,6 +74,19 @@ public:
 	 * @return A collection of lookup ids.
 	 */
 	QSet< int > getLookupIds();
+
+	/**
+	 * @brief dropLookupsExcept Drops all lookups from this typed value that are not in the specified set.
+	 * @param allowedLookups Ids of lookups that are allowed.
+	 * @return Returns true if something was dropped.
+	 */
+	bool dropLookupsExcept( const QSet< int > allowedLookups );
+
+	/**
+	 * @brief setMultiSelectLookup Sets lookups.
+	 * @param lookups Lookup values.
+	 */
+	void setMultiSelectLookup( const QJsonArray& lookups );
 
 };
 

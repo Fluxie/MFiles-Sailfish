@@ -23,10 +23,13 @@
 #include <QHash>
 #include <QVariantMap>
 
+#include "allowedlookupsresolver.h"
 #include "objectversionfront.h"
 #include "objver.h"
 #include "propertyvalueownerresolver.h"
 #include "typedvaluefilter.h"
+#include "mfiles/propertyvalue.h"
+#include "mfiles/typedvalue.h"
 
 
 //! The role id of the property definition id role.
@@ -94,9 +97,7 @@ QVariant PropertyValueModel::data( const QModelIndex& index, int role ) const
 //! Flags.
 Qt::ItemFlags PropertyValueModel::flags( const QModelIndex &index ) const
 {
-
-	if (!index.isValid())
-		 return Qt::ItemIsEnabled;
+	Q_ASSERT( index.isValid() );
 
 	 return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
@@ -130,6 +131,7 @@ bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &valu
 	else
 	{
 		// TODO: Report error.
+		Q_ASSERT( false );
 		qCritical( value.typeName() );
 		return false;
 	}
@@ -137,14 +139,20 @@ bool PropertyValueModel::setData( const QModelIndex &index, const QVariant &valu
 	// Check if the value has changed.
 	const QJsonValue& previousValue = m_propertyValues[ index.row() ];
 	if( previousValue == newValue )
+	{
+		qDebug( "Value was not updated." );
 		return false;
+	}
 
 	// The value denoted by the index has changed. Update it with the new value and signal the change.
-	qDebug( "Updating property value model data." );
+	PropertyValue asPropertyValue( newValue );
+	qDebug( QString( "Update property value, Has value %1" ).arg( asPropertyValue.typedValue().hasValue() ).toLatin1() );
 	m_propertyValues[ index.row() ] = newValue;
 	QVector< int > changedRoles;
 	changedRoles.push_back( PropertyValueModel::PropertyValueRole );
-	emit dataChanged( index, index, changedRoles );
+	changedRoles.push_back( Qt::DisplayRole );
+	QModelIndex refreshedIndex = this->index( index.row() );
+	emit dataChanged( refreshedIndex, refreshedIndex, changedRoles );
 	return true;
 }
 
@@ -204,7 +212,7 @@ void PropertyValueModel::setDataFilter( DataFilter filter )
 	{
 		// Select the property values we want to show based on the filter.
 		m_filter = filter;
-		this->refreshPropertyValues();
+		this->refreshPropertyValuesImpl();
 	}
 	this->endResetModel();
 
@@ -241,7 +249,7 @@ void PropertyValueModel::setObjectVersion( ObjectVersionFront* objectVersion )
 		}
 
 		// Refresh.
-		this->refreshPropertyValues();
+		this->refreshPropertyValuesImpl();
 	}
 	this->endResetModel();
 
@@ -259,7 +267,7 @@ void PropertyValueModel::setVault( VaultFront* vault )
 	this->beginResetModel();
 	{
 		m_vault = vault;
-		this->refreshPropertyValues();
+		this->refreshPropertyValuesImpl();
 	}
 	this->endResetModel();
 	emit vaultChanged();
@@ -270,8 +278,10 @@ void PropertyValueModel::setVault( VaultFront* vault )
  * @param index The location of the new data.
  * @param propertyValue The new value for the location.
  */
-void PropertyValueModel::suggestData( const QModelIndex& index, QJsonValue propertyValue )
+void PropertyValueModel::suggestData( const QModelIndex& index, const QJsonValue& propertyValue )
 {
+	Q_ASSERT( index.isValid() );
+
 	// Delegate.
 	this->setData( index, QVariant( propertyValue ), PropertyValueModel::PropertyValueRole );
 }
@@ -321,16 +331,22 @@ void PropertyValueModel::forFilter( const QModelIndex & index, QVariant& variant
 	variant.setValue( filter );
 }
 
-//! Refreshes the property values based on the current filter and object version.
+
 void PropertyValueModel::refreshPropertyValues()
+{
+	this->beginResetModel();
+	{
+		this->refreshPropertyValuesImpl();
+	}
+	this->endResetModel();
+}
+
+//! Refreshes the property values based on the current filter and object version.
+void PropertyValueModel::refreshPropertyValuesImpl()
 {
 	// Skip if object version or vault are still unavailable.
 	if( m_objectVersion == 0 || m_vault == 0 )
 		return;
-
-	// Establish owner resolved if still unavailable.
-	if( m_ownerResolver == 0 )
-		m_ownerResolver = new PropertyValueOwnerResolver( this, m_vault );
 
 	// Select the values we want to show based on the filter and then
 	// fetch the appropriate values from the object version.
@@ -345,5 +361,14 @@ void PropertyValueModel::refreshPropertyValues()
 		qCritical( "TODO: Report error" );
 		break;
 	}
+
+	// Establish owner resolved if still unavailable.
+	if( m_ownerResolver == 0 )
+	{
+		m_ownerResolver = new PropertyValueOwnerResolver( this, m_vault );
+		m_ownerResolver->refreshOwnershipInfo();
+	}
+	if( m_allowedLookupsResolvers == 0 )
+		m_allowedLookupsResolvers = new AllowedLookupsResolver( this, m_vault );
 }
 

@@ -197,7 +197,7 @@ function setTypedValue( typedValue, value ) {
 function selectImplicitHeightForMSLookup( lookups )
 {
 	// Exit if empty.
-	if( ! lookups )
+	if( ! lookups || lookups.length === 0 )
 		return Silica.Theme.itemSizeExtraSmall;
 
 	var itemsShown = lookups.length;

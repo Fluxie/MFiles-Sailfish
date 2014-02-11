@@ -76,20 +76,6 @@ AsyncFetch* ValueListFront::item( int id )
 	return core->get( id );
 }
 
-AsyncFetch* ValueListFront::availableItems( const QSet< int > ids )
-{
-	// Empty?
-	if( ! this->core() )
-	{
-		qCritical( "TODO: Report Error." );
-		return 0;
-	}
-
-	// Fetch the core and return the fetch operation.
-	ValueListCore* core = this->valueList();
-	return core->availableItems( ids );
-}
-
 //! Status.
 ValueListFront::Status ValueListFront::status()
 {

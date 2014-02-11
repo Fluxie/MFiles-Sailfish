@@ -20,9 +20,11 @@
 
 #include "typedvalue.h"
 
+#include "../mfilesconstants.h"
+
 #include <QJsonArray>
 
-TypedValue::TypedValue( QJsonValue typedValue ) :
+TypedValue::TypedValue( const QJsonValue& typedValue ) :
 	MFilesTypeCapsule( typedValue )
 {
 }
@@ -45,7 +47,7 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 	switch ( dataType )
 	{
 	// Single-select.
-	case 9:
+	case MFilesConstants::SingleSelectLookup :
 	{
 		typedValue[ "Lookup" ] = lookup.value();
 		typedValue[ "Value" ] = lookup.value();
@@ -53,7 +55,7 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 	}
 
 	// Multi-select
-	case 10:
+	case MFilesConstants::MultiSelectLookup :
 	{
 		QJsonArray lookups;
 		lookups.push_back( lookup.value() );
@@ -71,16 +73,8 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 
 TypedValue::TypedValue( const QJsonArray& lookups )
 {
-	// Get reference to the internal typed value variable and set the values.
-	QJsonObject& typedValue = this->object();
-	typedValue[ "DataType" ] = 10;
-	typedValue[ "HasValue" ] = lookups.size() != 0;
-	typedValue[ "DisplayValue" ] = QString( "Demo" );
-	typedValue[ "Lookups" ] = lookups;
-	typedValue[ "Value" ] = lookups;
-	qDebug( QString( "TypedValue, hasValue %1, DisplayValue %2, Lookup count %3" ).arg( this->hasValue() ).arg( "TODO" ).arg( lookups.count() ).toLatin1() );
-	Q_ASSERT( this->hasValue() || lookups.count() == 0 );
-	Q_ASSERT( this->asLookups().count() == lookups.count() );
+	// Delegate.
+	this->setMultiSelectLookup( lookups );
 }
 
 /**
@@ -97,7 +91,6 @@ QJsonArray TypedValue::asLookups() const
 	// Single-select.
 	case 9:
 	{
-		qDebug( "Single lookup" );
 		lookups.push_back( this->object()[ "Lookup" ] );
 		break;
 	}
@@ -105,10 +98,8 @@ QJsonArray TypedValue::asLookups() const
 	// Multi-select
 	case 10:
 	{
-		qDebug( "Multi lookups" );
 		foreach( Lookup lookup, this->object()[ "Lookups" ].toArray() )
 		{
-			qDebug( "Multi lookup" );
 			lookups.push_back( lookup.value() );
 		}
 		break;
@@ -138,4 +129,81 @@ QSet< int > TypedValue::getLookupIds()
 		lookupIds.insert( lookup.item() );
 	}
 	return lookupIds;
+}
+
+void TypedValue::setMultiSelectLookup( const QJsonArray& lookups )
+{
+	// Get reference to the internal typed value variable and set the values.
+	QJsonObject& typedValue = this->object();
+	typedValue[ "DataType" ] = MFilesConstants::MultiSelectLookup;
+	typedValue[ "HasValue" ] = lookups.size() != 0;
+	typedValue[ "DisplayValue" ] = QString( "Demo" );
+	typedValue[ "Lookups" ] = lookups;
+	typedValue[ "Value" ] = lookups;
+	Q_ASSERT( this->hasValue() || lookups.count() == 0 );
+	Q_ASSERT( this->asLookups().count() == lookups.count() );
+}
+
+bool TypedValue::dropLookupsExcept( const QSet< int > allowedLookups )
+{
+	// Stop if we do not have a value.
+	if( ! this->hasValue() )
+		return false;
+
+	bool somethingDropped = false;
+	QJsonObject& typedValue = this->object();
+	switch ( this->dataType() )
+	{
+	// Single-select.
+	case MFilesConstants::SingleSelectLookup :
+	{
+		// Drop the only lookup if not included in allowedLookups.
+		Lookup lookup( typedValue[ "Lookup" ] );
+		if( ! allowedLookups.contains( lookup.item() ) )
+		{
+			// The lookup value should be dropped.
+			somethingDropped = true;
+			typedValue[ "Lookup" ] = QJsonValue::Null;
+			typedValue[ "Value" ] = QJsonValue::Null;
+			typedValue[ "DisplayValue" ] = QString( "" );
+			typedValue[ "HasValue" ] = false;
+		}
+		break;
+	}
+
+	// Multi-select
+	case MFilesConstants::MultiSelectLookup:
+	{
+		// Get current lookups and drop all those lookup values that are not allowed.
+		// Then set them back to this typed value.
+		QJsonArray lookups = typedValue[ "Lookups" ].toArray();
+		for( QJsonArray::iterator itr = lookups.begin();
+			 itr != lookups.end();  )
+		{
+			// Discard all lookups that are not allowed.
+			Lookup lookup( *itr );
+			if( allowedLookups.contains( lookup.item() ) )
+			{
+				// This lookup is allowed.
+				itr++;
+			}
+			else
+			{
+				// This lookup is not allowed. Erase it.
+				somethingDropped = true;
+				itr = lookups.erase( itr );
+			}
+
+		}
+		this->setMultiSelectLookup( lookups );
+		break;
+	}
+
+	// Unexpected data type.
+	default:
+		qCritical( "TODO: Report error." );
+		break;
+	}
+
+	return somethingDropped;
 }

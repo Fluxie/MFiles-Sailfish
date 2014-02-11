@@ -56,7 +56,6 @@ QJsonValue PropertyValueOwnerResolver::ownershipInfo( const QModelIndex& index )
 		foreach( Lookup lookup, ownerLookups )
 		{			
 			ownerLookupsAll.push_back( lookup.value() );
-			qDebug( "Ownerlookup included.");
 
 		}  // end foreach		
 
@@ -105,8 +104,11 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	// Single-select lookup.
 	case 9:
 	{
-		Lookup singleLookup = typedValue.lookup();
-		ids.insert( singleLookup.item() );
+		if( typedValue.hasValue() )
+		{
+			Lookup singleLookup = typedValue.lookup();
+			ids.insert( singleLookup.item() );
+		}
 		break;
 	}
 
@@ -114,11 +116,14 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	case 10:
 	{
 		// Collect the ids of multi-select lookups.
-		QJsonArray lookups = typedValue[ "Lookups" ].toArray();
-		foreach( QJsonValue lookupValue, lookups )
+		if( typedValue.hasValue() )
 		{
-			Lookup lookup( lookupValue );
-			ids.insert( lookup.item() );
+			QJsonArray lookups = typedValue[ "Lookups" ].toArray();
+			foreach( QJsonValue lookupValue, lookups )
+			{
+				Lookup lookup( lookupValue );
+				ids.insert( lookup.item() );
+			}
 		}
 		break;
 	}
@@ -127,6 +132,8 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	default:
 		return;
 	};
+	if( ids.size() != 1 )
+		return;  // Cannot resolve anything with lookup count other than 1.
 
 	// Get the property definition describin this property value.
 	int propertyDefId = propertyValue.propertyDef();
@@ -137,7 +144,7 @@ void PropertyValueOwnerResolver::requestOwnerResolution( const QModelIndex& topL
 	filter->deleteLater();
 	ValueListFront* valueList = m_vault->valueList( valueListId, filter );	
 	AsyncFetch* fetchSubItem = 0;
-	if( ids.size() == 1 )	
+	if( ids.size() == 1 )
 		fetchSubItem = valueList->item( *ids.begin() );
 
 	// Determine the owners we should automatically fill.
