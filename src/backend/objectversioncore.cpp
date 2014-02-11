@@ -28,7 +28,7 @@
 #include <QThread>
 #include <QtAlgorithms>
 
-#include "mfwsrest.h"
+#include "../mfwsrest.h"
 #include "objectcore.h"
 #include "vaultcore.h"
 

@@ -26,7 +26,7 @@
 #include <QJsonObject>
 #include <QSharedPointer>
 
-#include "objectcore.h"
+#include "backend/objectcore.h"
 
 // Forward declarations.
 class ObjectVersionFront;

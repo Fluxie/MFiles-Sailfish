@@ -18,55 +18,46 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HOSTCORE_H
-#define HOSTCORE_H
+#ifndef OBJECTCACHE_H
+#define OBJECTCACHE_H
 
-#include <QThread>
+#include <QObject>
+#include <QMutex>
+#include <QCache>
+#include <QSharedPointer>
 
-#include "errorinfo.h"
+#include "../mfiles/objid.h"
+#include "objectcore.h"
 
 // Forward declarations.
-class AppMonitor;
 class VaultCore;
 
-class HostCore : public QThread
+//! Cache for ObjectCores
+class ObjectCache : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
 
-	//! Constructor.
-	explicit HostCore( AppMonitor* monitor );
-
-	//! Returns Host instance.
-	static HostCore* instance();
-    
+	//! Initializes new object cache.
+	explicit ObjectCache( VaultCore* parent );
+	
 signals:
-
-	//! Signaled when an error occurss within the application.
-	void error( const ErrorInfo& error );
-    
+	
 public slots:
 
-	//! Prepares vault.
-	VaultCore* prepareVault(
-		const QString& url,
-		const QString& authentication
+	//! Establishes new object core for the given object version.
+	QSharedPointer< ObjectCore > object(
+		const MFiles::ObjID& id
 	);
-
-	//! Reports an error somewhere within the application.
-	void reportError( const ErrorInfo& error );
-
-// Private interface.
-private:
-
-	//! Implementation.
-	virtual void run();
-
+	
 // Private data.
 private:
 
-	AppMonitor* m_monitor;  //!< Global application monitor.
+	//! Constant data.
+	VaultCore* m_vault;
 
+	mutable QMutex m_lock;
+	QCache< MFiles::ObjID, QSharedPointer< ObjectCore > > m_cache;  //!< Cache of objects.
 };
 
-#endif // HOSTCORE_H
+#endif // OBJECTCACHE_H

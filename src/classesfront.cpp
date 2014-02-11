@@ -1,10 +1,10 @@
 #include "classesfront.h"
 
-#include "asyncfetch.h"
-#include "classcache.h"
+#include "backend/asyncfetch.h"
+#include "backend/classcache.h"
 #include "mfiles/mfilesconstants.h"
 #include "mfiles/valuelistitem.h"
-#include "vaultcore.h"
+#include "backend/vaultcore.h"
 
 ClassesFront::ClassesFront(
 	VaultCore* vault,  //!< Vault.

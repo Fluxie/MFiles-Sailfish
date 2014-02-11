@@ -27,7 +27,7 @@
 #include "objectversionfront.h"
 #include "mfiles/objver.h"
 #include "propertyvalueownerresolver.h"
-#include "typedvaluefilter.h"
+#include "backend/typedvaluefilter.h"
 #include "mfiles/propertyvalue.h"
 #include "mfiles/typedvalue.h"
 

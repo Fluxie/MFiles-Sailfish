@@ -26,7 +26,7 @@
 #include <QThread>
 
 #include "objectversioncore.h"
-#include "mfwsrest.h"
+#include "../mfwsrest.h"
 #include "vaultcore.h"
 
 ObjectCore::ObjectCore( VaultCore* vault, MFiles::ObjID id ) :

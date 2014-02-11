@@ -25,7 +25,7 @@
 #include <QModelIndex>
 #include <QObject>
 
-#include "mfiles/typedvalue.h"
+#include "../mfiles/typedvalue.h"
 
 // Forward declarations.
 class PropertyValueOwnerResolver;

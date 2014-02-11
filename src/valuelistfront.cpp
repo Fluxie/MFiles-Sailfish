@@ -21,9 +21,9 @@
 #include "valuelistfront.h"
 
 
-#include "objecttypecache.h"
-#include "valuelistcore.h"
-#include "vaultcore.h"
+#include "backend/objecttypecache.h"
+#include "backend/valuelistcore.h"
+#include "backend/vaultcore.h"
 
 ValueListFront::ValueListFront(
 	VaultCore* vault,  //!< Vault.

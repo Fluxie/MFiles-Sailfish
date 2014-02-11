@@ -20,7 +20,7 @@
 
 #include "objecttypecache.h"
 
-#include "mfiles/objtype.h"
+#include "../mfiles/objtype.h"
 #include "valuelistcore.h"
 
 ObjectTypeCache::ObjectTypeCache( VaultCore *parent ) :

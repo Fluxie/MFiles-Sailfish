@@ -20,7 +20,7 @@
 
 #include "objectversionfront.h"
 
-#include "objectversioncore.h"
+#include "backend/objectversioncore.h"
 
 ObjectVersionFront::ObjectVersionFront(
 		QSharedPointer< ObjectCore >& objectCore,

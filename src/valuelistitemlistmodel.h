@@ -26,7 +26,7 @@
 #include <QPointer>
 #include <QVariant>
 
-#include "typedvaluefilter.h"
+#include "backend/typedvaluefilter.h"
 #include "valuelistfront.h"
 
 // Forward declarations.

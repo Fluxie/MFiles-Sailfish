@@ -1,12 +1,12 @@
 #include "allowedlookupsresolver.h"
 
-#include "asyncfetch.h"
+#include "backend/asyncfetch.h"
 #include "mfiles/propertydef.h"
 #include "mfiles/propertyvalue.h"
 #include "mfiles/valuelistitem.h"
 #include "mfiles/mfilesconstants.h"
 #include "propertyvaluelistmodel.h"
-#include "typedvaluefilter.h"
+#include "backend/typedvaluefilter.h"
 #include "valuelistfront.h"
 #include "vaultfront.h"
 

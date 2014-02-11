@@ -20,7 +20,7 @@
 
 #include "corebase.h"
 
-#include "mfwsrest.h"
+#include "../mfwsrest.h"
 #include "vaultcore.h"
 
 #include <QThread>

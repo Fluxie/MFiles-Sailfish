@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "mfiles/typedvalue.h"
+#include "../mfiles/typedvalue.h"
 #include "lazyownerinfo.h"
 
 /**

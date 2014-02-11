@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QNetworkReply>
 
-#include "errorinfo.h"
+#include "../errorinfo.h"
 
 // Forward declarations.
 class MfwsRest;

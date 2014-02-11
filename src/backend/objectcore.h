@@ -27,7 +27,7 @@
 #include <QMutex>
 
 #include "corebase.h"
-#include "mfiles/objid.h"
+#include "../mfiles/objid.h"
 
 // Forward declarations.
 class ObjectVersionCore;

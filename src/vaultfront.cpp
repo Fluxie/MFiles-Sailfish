@@ -24,19 +24,19 @@
 #include <QQmlEngine>
 
 #include "appmonitor.h"
-#include "asyncfetch.h"
+#include "backend/asyncfetch.h"
 #include "classesfront.h"
 #include "errorinfo.h"
-#include "hostcore.h"
+#include "backend/hostcore.h"
 #include "mfiles/mfilesconstants.h"
-#include "vaultcore.h"
-#include "classcache.h"
-#include "objecttypecache.h"
-#include "objectcache.h"
+#include "backend/vaultcore.h"
+#include "backend/classcache.h"
+#include "backend/objecttypecache.h"
+#include "backend/objectcache.h"
 #include "objectfront.h"
 #include "mfiles/objver.h"
-#include "propertydefcache.h"
-#include "valuelistcore.h"
+#include "backend/propertydefcache.h"
+#include "backend/valuelistcore.h"
 #include "valuelistfront.h"
 
 VaultFront::VaultFront(QObject *parent) :

@@ -27,7 +27,7 @@
 
 #include "asyncfetch.h"
 #include "vaultcore.h"
-#include "mfwsrest.h"
+#include "../mfwsrest.h"
 
 StructureCacheBase::StructureCacheBase(
 	const QString& resource,  //!< The resource this cache caches. E.g /structure/classes

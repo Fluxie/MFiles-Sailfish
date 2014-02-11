@@ -18,8 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "mfiles/lookup.h"
-#include "mfiles/typedvalue.h"
+#include "../mfiles/lookup.h"
+#include "../mfiles/typedvalue.h"
 
 #include "valuelistcore.h"
 

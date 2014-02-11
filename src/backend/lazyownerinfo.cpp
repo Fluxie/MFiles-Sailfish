@@ -20,7 +20,7 @@
 
 #include "lazyownerinfo.h"
 
-#include "propertyvalueownerresolver.h"
+#include "../propertyvalueownerresolver.h"
 
 LazyOwnerInfo::LazyOwnerInfo( const QModelIndex& subItem, PropertyValueOwnerResolver* resolver ) :
 	QObject( 0 ),

@@ -26,7 +26,7 @@
 #include <QJsonArray>
 #include <QJsonValue>
 
-#include "objectcore.h"
+#include "backend/objectcore.h"
 #include "mfiles/objver.h"
 
 // Forward declarations.

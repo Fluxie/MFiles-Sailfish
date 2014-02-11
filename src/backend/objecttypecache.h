@@ -50,7 +50,7 @@ public:
 	explicit ObjectTypeCache( VaultCore *parent = 0 );
 
 	//! Destructor.
-	~ObjectTypeCache() {}
+	virtual ~ObjectTypeCache() {}
 
 	//! Gets value list.
 	ValueListCore* list( int id ) const;

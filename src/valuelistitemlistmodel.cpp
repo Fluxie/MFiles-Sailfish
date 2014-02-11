@@ -20,7 +20,7 @@
 
 #include "valuelistitemlistmodel.h"
 
-#include "asyncfetch.h"
+#include "backend/asyncfetch.h"
 #include "mfiles/lookup.h"
 #include "mfiles/valuelistitem.h"
 

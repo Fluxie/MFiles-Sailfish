@@ -12,32 +12,32 @@ CONFIG += sailfishapp
 CONFIG += c++11
 
 SOURCES += src/MFiles-Sailfish.cpp \
-    src/objecttypecache.cpp \
-    src/hostcore.cpp \
-    src/vaultcore.cpp \
-    src/classcache.cpp \
+    src/backend/objecttypecache.cpp \
+    src/backend/hostcore.cpp \
+    src/backend/vaultcore.cpp \
+    src/backend/classcache.cpp \
     src/mfwsrest.cpp \
-    src/structurecachebase.cpp \
-    src/propertydefcache.cpp \
+    src/backend/structurecachebase.cpp \
+    src/backend/propertydefcache.cpp \
     src/objectfront.cpp \
-    src/objectcore.cpp \
+    src/backend/objectcore.cpp \
     src/vaultfront.cpp \
     src/mfiles/objver.cpp \
-    src/objectcache.cpp \
+    src/backend/objectcache.cpp \
     src/mfiles/objid.cpp \
-    src/objectversioncore.cpp \
+    src/backend/objectversioncore.cpp \
     src/objectversionfront.cpp \
     src/realvalidator.cpp \
     src/integervalidator.cpp \
-    src/valuelistcore.cpp \
+    src/backend/valuelistcore.cpp \
     src/valuelistfront.cpp \
     src/frontbase.cpp \
-    src/corebase.cpp \
+    src/backend/corebase.cpp \
     src/appmonitor.cpp \
     src/errorinfo.cpp \
     src/errorlayer.cpp \
     src/errormodel.cpp \
-    src/typedvaluefilter.cpp \
+    src/backend/typedvaluefilter.cpp \
     src/classesfront.cpp \
     src/propertyvalueownerresolver.cpp \
     src/mfiles/propertyvalue.cpp \
@@ -47,40 +47,40 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/mfiles/propertydef.cpp \
     src/mfiles/mfilestypecapsule.cpp \
     src/mfiles/objtype.cpp \
-    src/asyncfetch.cpp \
-    src/lazyownerinfo.cpp \
+    src/backend/asyncfetch.cpp \
+    src/backend/lazyownerinfo.cpp \
     src/mfiles/ownerproperty.cpp \
     src/allowedlookupsresolver.cpp \
     src/lookuplistmodel.cpp \
     src/valuelistitemlistmodel.cpp \
     src/propertyvaluelistmodel.cpp
-HEADERS += src/objecttypecache.h \
-    src/hostcore.h \
-    src/vaultcore.h \
-    src/classcache.h \
+HEADERS += src/backend/objecttypecache.h \
+    src/backend/hostcore.h \
+    src/backend/vaultcore.h \
+    src/backend/classcache.h \
     src/mfwsrest.h \
-    src/structurecachebase.h \
-    src/propertydefcache.h \
+    src/backend/structurecachebase.h \
+    src/backend/propertydefcache.h \
     src/objectfront.h \
-    src/objectcore.h \
+    src/backend/objectcore.h \
     src/vaultfront.h \
     src/mfiles/objver.h \
-    src/objectcache.h \
+    src/backend/objectcache.h \
     src/mfiles/objid.h \
-    src/objectversioncore.h \
+    src/backend/objectversioncore.h \
     src/objectversionfront.h \
     src/realvalidator.h \
     src/integervalidator.h \
-    src/valuelistcore.h \
+    src/backend/valuelistcore.h \
     src/valuelistfront.h \
-    src/valuelistkey.h \
+    src/backend/valuelistkey.h \
     src/frontbase.h \
-    src/corebase.h \
+    src/backend/corebase.h \
     src/appmonitor.h \
     src/errorinfo.h \
     src/errorlayer.h \
     src/errormodel.h \
-    src/typedvaluefilter.h \
+    src/backend/typedvaluefilter.h \
     src/classesfront.h \
     src/propertyvalueownerresolver.h \
     src/mfiles/propertyvalue.h \
@@ -90,8 +90,8 @@ HEADERS += src/objecttypecache.h \
     src/mfiles/propertydef.h \
     src/mfiles/mfilestypecapsule.h \
     src/mfiles/objtype.h \
-    src/asyncfetch.h \
-    src/lazyownerinfo.h \
+    src/backend/asyncfetch.h \
+    src/backend/lazyownerinfo.h \
     src/mfiles/ownerproperty.h \
     src/allowedlookupsresolver.h \
     src/lookuplistmodel.h \
