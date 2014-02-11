@@ -28,7 +28,7 @@
 #include <QMutex>
 
 #include "corebase.h"
-#include "objver.h"
+#include "mfiles/objver.h"
 
 // Forward declarations.
 class MfwsRest;

@@ -26,7 +26,7 @@
 #include <QCache>
 #include <QSharedPointer>
 
-#include "objid.h"
+#include "mfiles/objid.h"
 #include "objectcore.h"
 
 // Forward declarations.

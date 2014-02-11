@@ -22,9 +22,9 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/objectfront.cpp \
     src/objectcore.cpp \
     src/vaultfront.cpp \
-    src/objver.cpp \
+    src/mfiles/objver.cpp \
     src/objectcache.cpp \
-    src/objid.cpp \
+    src/mfiles/objid.cpp \
     src/objectversioncore.cpp \
     src/objectversionfront.cpp \
     src/realvalidator.cpp \
@@ -64,9 +64,9 @@ HEADERS += src/objecttypecache.h \
     src/objectfront.h \
     src/objectcore.h \
     src/vaultfront.h \
-    src/objver.h \
+    src/mfiles/objver.h \
     src/objectcache.h \
-    src/objid.h \
+    src/mfiles/objid.h \
     src/objectversioncore.h \
     src/objectversionfront.h \
     src/realvalidator.h \
