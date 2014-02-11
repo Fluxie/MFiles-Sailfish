@@ -20,7 +20,7 @@
 
 #include "propertydef.h"
 #include "ownerproperty.h"
-#include "../mfilesconstants.h"
+#include "mfilesconstants.h"
 
 PropertyDef::PropertyDef( const QJsonValue& propertyDef ) :
 	MFilesTypeCapsule( propertyDef )

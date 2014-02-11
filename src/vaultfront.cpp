@@ -28,7 +28,7 @@
 #include "classesfront.h"
 #include "errorinfo.h"
 #include "hostcore.h"
-#include "mfilesconstants.h"
+#include "mfiles/mfilesconstants.h"
 #include "vaultcore.h"
 #include "classcache.h"
 #include "objecttypecache.h"

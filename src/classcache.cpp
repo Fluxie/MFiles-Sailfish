@@ -20,7 +20,7 @@
 
 #include "classcache.h"
 
-#include "mfilesconstants.h"
+#include "mfiles/mfilesconstants.h"
 
 ClassCache::ClassCache( VaultCore* parent ) :
 	StructureCacheBase( "/structure/classes", parent )

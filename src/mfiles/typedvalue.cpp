@@ -20,7 +20,7 @@
 
 #include "typedvalue.h"
 
-#include "../mfilesconstants.h"
+#include "mfilesconstants.h"
 
 #include <QJsonArray>
 

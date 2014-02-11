@@ -82,7 +82,6 @@ HEADERS += src/objecttypecache.h \
     src/errormodel.h \
     src/typedvaluefilter.h \
     src/classesfront.h \
-    src/mfilesconstants.h \
     src/propertyvalueownerresolver.h \
     src/mfiles/propertyvalue.h \
     src/mfiles/typedvalue.h \
@@ -97,7 +96,8 @@ HEADERS += src/objecttypecache.h \
     src/allowedlookupsresolver.h \
     src/lookuplistmodel.h \
     src/valuelistitemlistmodel.h \
-    src/propertyvaluelistmodel.h
+    src/propertyvaluelistmodel.h \
+    src/mfiles/mfilesconstants.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

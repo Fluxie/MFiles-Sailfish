@@ -4,7 +4,7 @@
 #include "mfiles/propertydef.h"
 #include "mfiles/propertyvalue.h"
 #include "mfiles/valuelistitem.h"
-#include "mfilesconstants.h"
+#include "mfiles/mfilesconstants.h"
 #include "propertyvaluelistmodel.h"
 #include "typedvaluefilter.h"
 #include "valuelistfront.h"
