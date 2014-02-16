@@ -30,10 +30,10 @@
 #include <QtQuick>
 #endif
 
-#include "appmonitor.h"
+#include "errors/appmonitor.h"
 #include "backend/asyncfetch.h"
-#include "errormodel.h"
-#include "errorinfo.h"
+#include "errors/errormodel.h"
+#include "errors/errorinfo.h"
 #include "backend/hostcore.h"
 #include "integervalidator.h"
 #include "objectfront.h"

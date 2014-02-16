@@ -23,7 +23,7 @@
 
 #include <QThread>
 
-#include "../errorinfo.h"
+#include "../errors/errorinfo.h"
 
 // Forward declarations.
 class AppMonitor;

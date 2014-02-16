@@ -23,10 +23,10 @@
 #include <QJsonValue>
 #include <QQmlEngine>
 
-#include "appmonitor.h"
+#include "errors/appmonitor.h"
 #include "backend/asyncfetch.h"
 #include "classesfront.h"
-#include "errorinfo.h"
+#include "errors/errorinfo.h"
 #include "backend/hostcore.h"
 #include "mfiles/mfilesconstants.h"
 #include "backend/vaultcore.h"

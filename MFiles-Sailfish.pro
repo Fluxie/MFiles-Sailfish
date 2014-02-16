@@ -33,10 +33,10 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/valuelistfront.cpp \
     src/frontbase.cpp \
     src/backend/corebase.cpp \
-    src/appmonitor.cpp \
-    src/errorinfo.cpp \
-    src/errorlayer.cpp \
-    src/errormodel.cpp \
+    src/errors/appmonitor.cpp \
+    src/errors/errorinfo.cpp \
+    src/errors/errorlayer.cpp \
+    src/errors/errormodel.cpp \
     src/backend/typedvaluefilter.cpp \
     src/classesfront.cpp \
     src/propertyvalueownerresolver.cpp \
@@ -76,10 +76,10 @@ HEADERS += src/backend/objecttypecache.h \
     src/backend/valuelistkey.h \
     src/frontbase.h \
     src/backend/corebase.h \
-    src/appmonitor.h \
-    src/errorinfo.h \
-    src/errorlayer.h \
-    src/errormodel.h \
+    src/errors/appmonitor.h \
+    src/errors/errorinfo.h \
+    src/errors/errorlayer.h \
+    src/errors/errormodel.h \
     src/backend/typedvaluefilter.h \
     src/classesfront.h \
     src/propertyvalueownerresolver.h \

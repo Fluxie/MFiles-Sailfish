@@ -19,7 +19,7 @@
  */
 
 #include "hostcore.h"
-#include "../appmonitor.h"
+#include "../errors/appmonitor.h"
 #include "vaultcore.h"
 
 #include <QEventLoop>

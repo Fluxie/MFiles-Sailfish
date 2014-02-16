@@ -25,7 +25,7 @@
 #include <QMutex>
 #include <QNetworkReply>
 
-#include "../errorinfo.h"
+#include "../errors/errorinfo.h"
 
 // Forward declarations.
 class ClassCache;
