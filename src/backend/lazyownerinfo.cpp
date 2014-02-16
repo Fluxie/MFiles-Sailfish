@@ -20,15 +20,12 @@
 
 #include "lazyownerinfo.h"
 
-#include "../propertyvalueownerresolver.h"
 
-LazyOwnerInfo::LazyOwnerInfo( const QModelIndex& subItem, PropertyValueOwnerResolver* resolver ) :
+LazyOwnerInfo::LazyOwnerInfo( RESOLVER_T ownerInfoResolver  ) :
 	QObject( 0 ),
-	m_subItem( subItem ),
-	m_resolver( resolver ),
+	m_ownerInfoResolver( ownerInfoResolver ),
 	m_cached( false )
-{	
-	Q_CHECK_PTR( m_resolver );
+{
 }
 
 /**
@@ -37,12 +34,10 @@ LazyOwnerInfo::LazyOwnerInfo( const QModelIndex& subItem, PropertyValueOwnerReso
  */
 LazyOwnerInfo::LazyOwnerInfo( const LazyOwnerInfo& source, QObject* parent ) :
 	QObject( parent ),
-	m_subItem( source.m_subItem ),
-	m_resolver( source.m_resolver ),
+	m_ownerInfoResolver( source.m_ownerInfoResolver ),
 	m_cached( source.m_cached ),
 	m_cachedOwnership( source.m_cachedOwnership )
 {
-	Q_CHECK_PTR( m_resolver );
 }
 
 /**
@@ -52,11 +47,11 @@ LazyOwnerInfo::LazyOwnerInfo( const LazyOwnerInfo& source, QObject* parent ) :
 QJsonValue LazyOwnerInfo::ownerInfo() const
 {
 	// Resolve the owner information if it is not cached already.
-	if( ! m_cached && m_subItem.isValid() )
+	if( ! m_cached )
 	{
 		// Not cached, ask from resolver.
-		m_cachedOwnership = m_resolver->ownershipInfo( m_subItem );
-		m_cached = true;
+		m_cachedOwnership = m_ownerInfoResolver();
+		m_cached = ! m_cachedOwnership.isNull() && ! m_cachedOwnership.isUndefined();
 	}
 	else if( ! m_cached )
 	{

@@ -21,11 +21,11 @@ TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef )
 }
 
 //! Initializes new typed value filter for property definition.
-TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef, const QModelIndex& index, PropertyValueOwnerResolver* resolver )
+TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver )
 {
 	// Create the filter and return it.
 	TypedValueFilter* filter = forPropertyDefinition( propertyDef );
-	filter->m_ownerInfo = new LazyOwnerInfo( index, resolver );
+	filter->m_ownerInfo = new LazyOwnerInfo( ownerInfoResolver );
 	return filter;
 }
 

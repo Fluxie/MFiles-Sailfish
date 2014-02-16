@@ -22,13 +22,9 @@
 #define LAZYOWNERINFO_H
 
 #include <QJsonValue>
-#include <QModelIndex>
 #include <QObject>
 
 #include "../mfiles/typedvalue.h"
-
-// Forward declarations.
-class PropertyValueOwnerResolver;
 
 /**
  * @brief The LazyOwnerInfo class represents all owner values of one property value.
@@ -42,10 +38,15 @@ class LazyOwnerInfo : public QObject
 public:
 
 	/**
+	 * @brief RESOLVER_T definition for function for resolving Json values.
+	 */
+	typedef std::function< QJsonValue() > RESOLVER_T;
+
+	/**
 	 * @brief LazyOwnerInfo
 	 * @param parent
 	 */
-	explicit LazyOwnerInfo( const QModelIndex& subItem, PropertyValueOwnerResolver* resolver );
+	explicit LazyOwnerInfo( RESOLVER_T ownerInfoResolver );
 
 	/**
 	 * @brief Constructs a copy of LazyOwnerInfo object.
@@ -85,8 +86,7 @@ public slots:
 
 private:
 
-	QModelIndex m_subItem;  //!< The item of which ownership information this object represents.
-	PropertyValueOwnerResolver* m_resolver;  //!< Owner resolved from which the owner information is actually requested.
+	RESOLVER_T m_ownerInfoResolver;  //!< Function for resolving the owner info.
 	mutable bool m_cached;  //!< Set to true after the ownership information has been cached.
 	mutable QJsonValue m_cachedOwnership;  //!< The ownership information is store here for faster access after it is requested the first time.
 

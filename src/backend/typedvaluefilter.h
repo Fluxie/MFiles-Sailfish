@@ -47,7 +47,7 @@ public:
 	 * @param resolver The owner resolver that will be used to determine the ownership info.
 	 * @return TypedValueFilter
 	 */
-	static TypedValueFilter* forPropertyDefinition( int propertyDef, const QModelIndex& index, PropertyValueOwnerResolver* resolver );
+	static TypedValueFilter* forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver );
 
 	//! Is this filter enabled?
 	bool enabled() const { return m_enabled; }
