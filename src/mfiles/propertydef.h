@@ -51,31 +51,31 @@ public:
 	 * @brief Gets the property definition id.
 	 * @return Id of the property definition.
 	 */
-	int id() const { return this->object()[ "ID" ].toDouble(); }
+	int id() const { return this->property( "ID" ).toDouble(); }
 
 	/**
 	 * @brief Gets the data type of the property definition.
 	 * @return Data type of the property definition.
 	 */
-	int dataType() const { return this->object()[ "DataType" ].toDouble(); }
+	int dataType() const { return this->property( "DataType" ).toDouble(); }
 
 	/**
 	 * @brief Checks is this PropertyDef based on a value list.
 	 * @return True if the property definition is based on a value list.
 	 */
-	bool basedOnValueList() const { return this->object()[ "BasedOnValueList" ].toBool(); }
+	bool basedOnValueList() const { return this->property( "BasedOnValueList" ).toBool(); }
 
 	/**
 	 * @brief Gets the value list this property definition represents.
 	 * @return The id of the value list this property definition represents.
 	 */
-	int valueList() const { Q_ASSERT( this->object().contains( "ValueList" ) );  return this->object()[ "ValueList" ].toDouble(); }
+	int valueList() const { return this->property( "ValueList" ).toDouble(); }
 
 	/**
 	 * @brief Gets the owner property definition.
 	 * @return Json value representing the owner property definition.
 	 */
-	QJsonValue ownerPropertyDef() const { Q_ASSERT( this->object().contains( "OwnerPropertyDef" ) );  return this->object()[ "OwnerPropertyDef" ]; }
+	QJsonValue ownerPropertyDef() const { return this->property( "OwnerPropertyDef" ); }
 
 	/**
 	 * @brief Checks wheather this is a valid owner property definition for subItemRepresentative or not.

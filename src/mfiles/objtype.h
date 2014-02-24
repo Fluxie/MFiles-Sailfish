@@ -42,19 +42,19 @@ public:
 	 * @brief id
 	 * @return Id of the value list
 	 */
-	int id() const { return this->object()[ "ID" ].toDouble(); }
+	int id() const { return this->property( "ID" ).toDouble(); }
 
 	/**
 	 * @brief hasOwner
 	 * @return True if this objec type has an owner.
 	 */
-	bool hasOwner() const { return this->object()[ "HasOwner" ].toBool(); }
+	bool hasOwner() const { return this->property( "HasOwner" ).toBool(); }
 
 	/**
 	 * @brief owner
 	 * @return The id of the owner type.
 	 */
-	int owner() const { Q_ASSERT( this->object().contains( "Owner" ) ); return this->object()[ "Owner" ].toDouble(); }
+	int owner() const { return this->property( "Owner" ).toDouble(); }
 };
 
 }

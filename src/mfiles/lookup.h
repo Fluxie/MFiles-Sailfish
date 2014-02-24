@@ -51,13 +51,13 @@ public:
 	 * @brief Gets the id of the lookup.
 	 * @return The id of the lookup.
 	 */
-	int item() const { return this->object()[ "Item" ].toDouble(); }
+	int item() const { return this->property( "Item" ).toDouble(); }
 
 	/**
 	 * @brief Gets the display value of this lookup.
 	 * @return The display value of the lookup.
 	 */
-	QString displayValue() const { Q_ASSERT( this->object().contains( "DisplayValue" ) ); return this->object()[ "DisplayValue" ].toString(); }
+	QString displayValue() const { return this->property( "DisplayValue" ).toString(); }
 
 };
 

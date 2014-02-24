@@ -197,10 +197,13 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 
 		}  // end if.
 
-		// Store the JSON objects that represents classes.		
+		// Post-process the data.
 		for( int i = 0; i < m_data.size(); i++ )
 		{
-			// Store the class.
+			// Normalize the value.
+			m_data[ i ] = this->normalizeValue( m_data[ i ] );
+
+			// Make ID -> value mapping.
 			const QJsonValue& item = m_data[ i ];
 			int id = item.toObject()[ "ID" ].toDouble();
 			m_cache.insert( id, i );
@@ -245,6 +248,7 @@ void StructureCacheBase::fetchOneItem( int cookie, int id )
 
 		// Parse the value from the result and inform that fetching the item has been completed.
 		QJsonValue value( result.object() );
+		value = this->normalizeValue( value );
 		QJsonObject asObject = value.toObject();
 		qDebug( QString( "Item %1 fetched." ).arg( asObject[ "ID" ].toDouble() ).toLatin1() );
 		emit itemFetched( cookie, value );

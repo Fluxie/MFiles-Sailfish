@@ -65,13 +65,13 @@ public:
 	 * @brief Gets the id of the property definition.
 	 * @return The id of the proeprty definition.
 	 */
-	int propertyDef() const { return this->object()[ "PropertyDef" ].toDouble(); }
+	int propertyDef() const { return this->property( "PropertyDef" ).toDouble(); }
 
 	/**
 	 * @brief Gets the typed value.
 	 * @return The typed value of this property value.
 	 */
-	TypedValue typedValue() const { return TypedValue( this->object()[ "TypedValue" ] ); }
+	TypedValue typedValue() const { return TypedValue( this->property( "TypedValue" ) ); }
 
 };
 

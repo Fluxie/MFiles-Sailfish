@@ -33,9 +33,12 @@ namespace MFiles
 /**
  * @brief Base class for M-Files type wrappers for QJsonValue objects.
  *
+ * @remarks {
  * This class encapsulates JSON object representing M-Files REST API type.
  *
- * Specific type implementations should inherit from this class.
+ * Specific type implementations should inherit from this class. }
+ *
+ * @see Different <a href="http://www.m-files.com/mfws/structs.html">Json object types</a> available in M-Files REST API.
  */
 class MFilesTypeWrapper
 {
@@ -88,6 +91,13 @@ protected:
 	 * @return True if the filed is included in the Json object.
 	 */
 	bool contains( const QString& field ) const { return m_object.contains( field ); }
+
+	/**
+	 * @brief Accesses the value of the specified property.
+	 * @param field The name of the property.
+	 * @return The Json value of the propetty.
+	 */
+	const QJsonValue property( const QString& field ) const { Q_ASSERT_X( this->contains( field ), field.toLatin1(), "Field missing." ); return m_object[ field ]; }
 
 // Private data.
 private:

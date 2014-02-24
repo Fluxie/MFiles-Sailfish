@@ -120,6 +120,13 @@ protected:
 	//! Override this to populate satellite data that after the cache contens has been refreshed.
 	virtual void populateSatelliteDataNts() {}
 
+	/**
+	 * @brief Normalizes the presentation of the value.
+	 * @param value The value that is normalized.
+	 * @return Normalized value.
+	 */
+	virtual QJsonValue normalizeValue( QJsonValue value ) { return value; }
+
 	//! Accesses the cache.
 	const CACHE_MAPPER& cacheMapperNts() const { return m_cache; }
 

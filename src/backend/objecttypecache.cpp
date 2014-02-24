@@ -104,6 +104,17 @@ void ObjectTypeCache::populateSatelliteDataNts()
 	}  // end for
 }
 
+
+QJsonValue ObjectTypeCache::normalizeValue( QJsonValue value )
+{
+	// Normalize the object type.
+	QJsonObject asObject = value.toObject();
+	if( ! asObject.contains( "HasOwner") )
+		asObject[ "HasOwner" ] = false;
+	value = asObject;
+	return value;
+}
+
 //! Requests value list.
 ValueListCore* ObjectTypeCache::getNewValueListNts( int id, int owner, const TypedValueFilter* filter )
 {

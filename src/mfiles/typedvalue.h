@@ -67,16 +67,16 @@ public:
 	 * @brief Gets the data type.
 	 * @return The data type of the typed value.
 	 */
-	int dataType() const { return this->object()[ "DataType" ].toDouble(); }
+	int dataType() const { return this->property( "DataType" ).toDouble(); }
 
 	/**
 	 * @brief hasValue
 	 * @return True if the typed value has a value.
 	 */
-	bool hasValue() const { return this->object()[ "HasValue" ].toBool(); }
+	bool hasValue() const { return this->property( "HasValue" ).toBool(); }
 
 	//! Lookup.
-	Lookup lookup() const { return Lookup( this->object()[ "Lookup" ] ); }
+	Lookup lookup() const { return Lookup( this->property( "Lookup" ) ); }
 
 	/**
 	 * @brief Gets the lookups of this typed value as a QJsonArray.

@@ -63,6 +63,15 @@ signals:
 
 public slots:
 
+protected:
+
+	/**
+	 * @brief Normalizes the presentation of the value.
+	 * @param value The value that is normalized.
+	 * @return Normalized value.
+	 */
+	virtual QJsonValue normalizeValue( QJsonValue value );
+
 // Private interface.
 private:
 

@@ -47,13 +47,13 @@ public:
 	 * @brief Gets the id of the owner property definition.
 	 * @return The id of the owner property definition.
 	 */
-	int id() const { Q_ASSERT( this->contains( "ID" ) ); return this->object()[ "ID" ].toDouble(); }
+	int id() const { return this->property( "ID" ).toDouble(); }
 
 	/**
 	 * @brief isRelationFiltering
 	 * @return True if relation filtering is in use.
 	 */
-	bool isRelationFiltering() const { Q_ASSERT( this->contains( "IsRelationFiltering" ) ); return this->object()[ "IsRelationFiltering" ].toBool(); }
+	bool isRelationFiltering() const { return this->property( "IsRelationFiltering" ).toBool(); }
 };
 
 }

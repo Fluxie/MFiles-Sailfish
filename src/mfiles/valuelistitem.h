@@ -62,25 +62,25 @@ public:
 	 * @brief Gets the id of the value list item.
 	 * @return Value list item id.
 	 */
-	int id() const { return this->object()[ "ID" ].toDouble(); }
+	int id() const { return this->property( "ID" ).toDouble(); }
 
 	/**
 	 * @brief name
 	 * @return The name of the value list item.
 	 */
-	QString name() const { return this->object()[ "Name" ].toString(); }
+	QString name() const { return this->property( "Name" ).toString(); }
 
 	/**
 	 * @brief Checks if this value list item has an owner item.
 	 * @return True if this value list item has an owner.
 	 */
-	bool hasOwner() const { return this->object()[ "HasOwner" ].toBool(); }
+	bool hasOwner() const { return this->property( "HasOwner" ).toBool(); }
 
 	/**
 	 * @brief Gets the id of the possible owner.
 	 * @return The id of the owner item.
 	 */
-	int ownerId() const { return this->object()[ "OwnerID" ].toDouble(); }
+	int ownerId() const { return this->property( "OwnerID" ).toDouble(); }
 
 	/**
 	 * @brief Converts this value list item to lookup.

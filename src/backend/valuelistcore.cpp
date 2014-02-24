@@ -57,6 +57,20 @@ ValueListCore::~ValueListCore()
 	delete m_filter;
 }
 
+/**
+ * @brief Normalizes the presentation of the value.
+ * @param value The value that is normalized.
+ */
+QJsonValue ValueListCore::normalizeValue( QJsonValue value )
+{
+	// Normalize the value list item.
+	QJsonObject asObject = value.toObject();
+	if( ! asObject.contains( "HasOwner") )
+		asObject[ "HasOwner" ] = false;
+	value = asObject;
+	return value;
+}
+
 //! Gets resource for fetching the relevant value list items.
 QString ValueListCore::getResource( bool allItems, int valueList, int owner, const TypedValueFilter* filter )
 {
