@@ -27,11 +27,10 @@ namespace MFiles
 {
 
 ValueListItem::ValueListItem( const QJsonValue& valueListItem ) :
-	m_valueListItem( valueListItem.toObject() )
+	MFilesTypeWrapper( valueListItem.toObject() )
 {
 }
 
-//! Converts this value list item to lookup.
 QJsonValue ValueListItem::toLookup() const
 {
 	// Construct Json object that looks like a lookup.

@@ -24,6 +24,8 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
+#include "mfilestypewrapper.h"
+
 /**
  * Namespace for M-Files types.
  */
@@ -35,7 +37,7 @@ namespace MFiles
  *
  * @see <a href="http://www.m-files.com/mfws/structs/valuelistitem.html">ValueListItem</a> in M-Files REST API documentation.
  */
-class ValueListItem
+class ValueListItem : MFilesTypeWrapper
 {
 public:
 
@@ -54,31 +56,31 @@ public:
 	 * @brief Checks if the value list item is empty?
 	 * @return True if the value list item is empty / unspecified.
 	 */
-	bool isEmpty() const { return m_valueListItem.isEmpty(); }
+	bool isEmpty() const { return this->object().isEmpty(); }
 
 	/**
 	 * @brief Gets the id of the value list item.
 	 * @return Value list item id.
 	 */
-	int id() const { return m_valueListItem[ "ID" ].toDouble(); }
+	int id() const { return this->object()[ "ID" ].toDouble(); }
 
 	/**
 	 * @brief name
 	 * @return The name of the value list item.
 	 */
-	QString name() const { return m_valueListItem[ "Name" ].toString(); }
+	QString name() const { return this->object()[ "Name" ].toString(); }
 
 	/**
 	 * @brief Checks if this value list item has an owner item.
 	 * @return True if this value list item has an owner.
 	 */
-	bool hasOwner() const { return m_valueListItem[ "HasOwner" ].toBool(); }
+	bool hasOwner() const { return this->object()[ "HasOwner" ].toBool(); }
 
 	/**
 	 * @brief Gets the id of the possible owner.
 	 * @return The id of the owner item.
 	 */
-	int ownerId() const { return m_valueListItem[ "OwnerID" ].toDouble(); }
+	int ownerId() const { return this->object()[ "OwnerID" ].toDouble(); }
 
 	/**
 	 * @brief Converts this value list item to lookup.
@@ -89,7 +91,6 @@ public:
 // Private data.
 private:
 
-	QJsonObject m_valueListItem;
 };
 
 }
