@@ -34,32 +34,43 @@ namespace MFiles
 {
 
 /**
- * @brief The PropertyValue class
+ * @brief Provides accessors for properties of PropertyValue M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/propertyvalue.html">PropertyValue</a> in M-Files REST API documentation.
  */
 class PropertyValue : public MFilesTypeWrapper
 {
 public:
 
 	/**
-	 * @brief Initializes new property value.
+	 * @brief Initializes property value object based on existing Json object.
+	 * @param propertyValue The wrapped Json object.
 	 */
 	PropertyValue( const QJsonValue& propertyValue );
 
 	/**
-	 * @brief Initializes new property value.
+	 * @brief Initializes new property value object.
+	 * @param propertyDefId Property definition id this property value represents.
+	 * @param typedValue The value part of this property value.
 	 */
 	PropertyValue( int propertyDefId, const TypedValue& typedValue );	
 
 	/**
-	 * @brief hasValue
-	 * @return  True if this
+	 * @brief Checks if this property value has a valid value.
+	 * @return  True if a value has been set.
 	 */
 	bool hasValue() const { return ! this->isUndefined() && this->typedValue().hasValue(); }
 
-	//! The id of the property definition.
+	/**
+	 * @brief Gets the id of the property definition.
+	 * @return The id of the proeprty definition.
+	 */
 	int propertyDef() const { return this->object()[ "PropertyDef" ].toDouble(); }
 
-	//! Typed value.
+	/**
+	 * @brief Gets the typed value.
+	 * @return The typed value of this property value.
+	 */
 	TypedValue typedValue() const { return TypedValue( this->object()[ "TypedValue" ] ); }
 
 };

@@ -13,16 +13,18 @@ namespace MFiles
 namespace Constants
 {
 
-	//! A special value indicating all object types.
+	/**
+	 * @brief AllObjectTypes specified "All object types" in the context where it is used.
+	 */
 	static const int AllObjectTypes = -2;
 
 	/**
-	 * @brief AutomaticFiltering is a special value for OwnerProperty that specifies that automatic filtering is used.
+	 * @brief AutomaticFiltering is a special value for OwnerProperty that specifies when automatic filtering is used.
 	 */
 	static const int AutomaticFiltering = -106;
 
 	/**
-	 * @brief The DataType enum
+	 * @brief Defines the different data types available for TypedValues.
 	 */
 	enum DataType
 	{

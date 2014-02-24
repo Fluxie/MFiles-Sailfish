@@ -32,44 +32,54 @@
 namespace MFiles
 {
 
+/**
+ * @brief Provides accessors for properties of PropertyDef M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/propertydef.html">PropertyDef</a> in M-Files REST API documentation.
+ */
 class PropertyDef : public MFilesTypeWrapper
 {
 public:
 
 	/**
-	 * @brief PropertyDef
+	 * @brief Initializes PropertyDef wrapper object.
+	 * @param properytDef M-Files REST API Json object.
 	 */
 	PropertyDef( const QJsonValue& propertyDef );
 
 	/**
-	 * @brief id
+	 * @brief Gets the property definition id.
 	 * @return Id of the property definition.
 	 */
 	int id() const { return this->object()[ "ID" ].toDouble(); }
 
 	/**
-	 * @brief dataType
+	 * @brief Gets the data type of the property definition.
 	 * @return Data type of the property definition.
 	 */
 	int dataType() const { return this->object()[ "DataType" ].toDouble(); }
 
 	/**
-	 * @brief basedOnValueList
+	 * @brief Checks is this PropertyDef based on a value list.
 	 * @return True if the property definition is based on a value list.
 	 */
 	bool basedOnValueList() const { return this->object()[ "BasedOnValueList" ].toBool(); }
 
 	/**
-	 * @brief valueList
+	 * @brief Gets the value list this property definition represents.
 	 * @return The id of the value list this property definition represents.
 	 */
 	int valueList() const { Q_ASSERT( this->object().contains( "ValueList" ) );  return this->object()[ "ValueList" ].toDouble(); }
 
+	/**
+	 * @brief Gets the owner property definition.
+	 * @return Json value representing the owner property definition.
+	 */
 	QJsonValue ownerPropertyDef() const { Q_ASSERT( this->object().contains( "OwnerPropertyDef" ) );  return this->object()[ "OwnerPropertyDef" ]; }
 
 	/**
-	 * @brief isValidOwnerFor checks wheather this is a valid owner property definition for subItemRepresentative or not.
-	 * @param subItemRepresentative
+	 * @brief Checks wheather this is a valid owner property definition for subItemRepresentative or not.
+	 * @param subItemRepresentative Property definition candidate for represing sub-items of this property definition.
 	 * @return True if this property definition is a valid owner property for the given sub item.
 	 */
 	bool isValidOwnerFor( const PropertyDef& subItemRepresentative ) const;

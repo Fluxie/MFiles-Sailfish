@@ -33,22 +33,28 @@ namespace MFiles
 {
 
 /**
- * @brief The Lookup class
+ * @brief Provides accessors for properties of Lookup M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/lookup.html">Lookup</a> in M-Files REST API documentation.
  */
 class Lookup : public MFilesTypeWrapper
 {
 public:
 
 	/**
-	 * @brief Initializes new Lookup.
+	 * @brief Initializes lookup based on existing Json object.
+	 * @param lookup The wrapped lookup.
 	 */
 	Lookup( const QJsonValue& lookup );
 
-	//! The id of the property definition.
+	/**
+	 * @brief Gets the id of the lookup.
+	 * @return The id of the lookup.
+	 */
 	int item() const { return this->object()[ "Item" ].toDouble(); }
 
 	/**
-	 * @brief displayValue
+	 * @brief Gets the display value of this lookup.
 	 * @return The display value of the lookup.
 	 */
 	QString displayValue() const { Q_ASSERT( this->object().contains( "DisplayValue" ) ); return this->object()[ "DisplayValue" ].toString(); }
@@ -57,6 +63,11 @@ public:
 
 }
 
+/**
+ * @brief Hash function for Lookup object.
+ * @param lookup The Lookup object for which the hash value is calculated.
+ * @return Hash value of the ObjID object.
+ */
 inline uint qHash( const MFiles::Lookup& lookup )
 {
 	uint hash = lookup.item();

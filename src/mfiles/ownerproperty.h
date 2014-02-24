@@ -31,6 +31,9 @@
 namespace MFiles
 {
 
+/**
+ * @brief Provides accessors for properties of OwnerProperty M-Files REST API Json object.
+ */
 class OwnerProperty : public MFilesTypeWrapper
 {
 public:
@@ -41,7 +44,7 @@ public:
 	OwnerProperty( const QJsonValue& ownerProperty );
 
 	/**
-	 * @brief id
+	 * @brief Gets the id of the owner property definition.
 	 * @return The id of the owner property definition.
 	 */
 	int id() const { Q_ASSERT( this->contains( "ID" ) ); return this->object()[ "ID" ].toDouble(); }

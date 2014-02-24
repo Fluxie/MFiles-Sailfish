@@ -36,28 +36,37 @@ namespace MFiles
 {
 
 /**
- * @brief The TypedValue class
+ * @brief Provides accessors for properties of TypedValue M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/typedvalue.html">TypedValue</a> in M-Files REST API documentation.
  */
 class TypedValue : public MFilesTypeWrapper
 {
 public:
 
 	/**
-	 * @brief Initializes new typed value.
+	 * @brief Initializes typed value based on existing Json object.
+	 * @param typedValue The wrapped Json object.
 	 */
 	TypedValue( const QJsonValue& typedValue );
 
 	/**
 	 * @brief Initializes a new lookup based typed value
+	 * @param dataType Data type of the typed value. Must be single-select lookup or multi-select lookup.
+	 * @param lookup First or only lookup for this typed value.
 	 */
 	TypedValue( int dataType, const Lookup& lookup );
 
 	/**
 	 * @brief Initializes a new multi-select lookup based typed value
+	 * @param lookups Lookups for the typed value.
 	 */
 	TypedValue( const QJsonArray& lookups );
 
-	//! Data type.
+	/**
+	 * @brief Gets the data type.
+	 * @return The data type of the typed value.
+	 */
 	int dataType() const { return this->object()[ "DataType" ].toDouble(); }
 
 	/**
@@ -70,42 +79,44 @@ public:
 	Lookup lookup() const { return Lookup( this->object()[ "Lookup" ] ); }
 
 	/**
-	 * @brief asLookups
+	 * @brief Gets the lookups of this typed value as a QJsonArray.
 	 * @return All lookups as a Json array. Can be called for both single-select and multi-select lookups.
 	 */
 	QJsonArray asLookups() const;
 
 	/**
-	 * @brief getLookupIds
+	 * @brief Gets the ids of the lookups. Can be called for single-select or multi-select lookups.
 	 * @return A collection of lookup ids.
 	 */
 	QSet< int > getLookupIds();
 
 	/**
-	 * @brief dropLookupsExcept Drops all lookups from this typed value that are not in the specified set.
+	 * @brief Drops all lookups from this typed value that are not in the specified set of lookup ids.
 	 * @param allowedLookups Ids of lookups that are allowed.
 	 * @return Returns true if something was dropped.
 	 */
 	bool dropLookupsExcept( const QSet< int > allowedLookups );
 
 	/**
-	 * @brief setMultiSelectLookup Sets lookups.
+	 * @brief Sets this typed value to multi-select lookup.
 	 * @param lookups Lookup values.
 	 */
 	void setMultiSelectLookup( const QJsonArray& lookups );
-
 };
 
 }
 
+/**
+ * @brief Hash function for TypedValue object.
+ * @param typedValue The TypedValue object for which the hash value is calculated.
+ * @return Hash value of the TypedValue object.
+ */
 inline uint qHash( const MFiles::TypedValue& typedValue )
 {
 	uint hash = typedValue.dataType();
-	hash = typedValue.hasValue() ? ~hash : hash;
-	qDebug( "TypedValue hash" );
+	hash = typedValue.hasValue() ? ~hash : hash;	
 	foreach( MFiles::Lookup lookup, typedValue.asLookups() )
 	{
-		qDebug( "Lookup for hash." );
 		hash ^= qHash( lookup );
 	}
 	return hash;

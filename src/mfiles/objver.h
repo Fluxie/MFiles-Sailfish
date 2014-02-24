@@ -31,46 +31,67 @@
 namespace MFiles
 {
 
+/**
+ * @brief C++ representation of ObjVer object.
+ */
 class ObjVer
 {
 // Public interface.
 public:
 
-	//! Initializes new ObjVer object from the given Json object.
-	ObjVer(
-		const QJsonObject& json
-	);
+	/**
+	 * @brief Initializes new ObjVer object.
+	 * @param json QJsonObject from which the object version is parsed.
+	 */
+	ObjVer( const QJsonObject& json );
 
-	//! Initializes new ObjVer object from the given Json object.
-	ObjVer(
-		const ObjID& id,
-		int version
-	);
+	/**
+	 * @brief Initializes new ObjVer object.
+	 * @param id ObjID representing object id part.
+	 * @param version The version part.
+	 */
+	ObjVer( const ObjID& id, int version );
 
 	//! Object identitys as ObjID.
 	const ObjID& objId() const { return m_id; }
 
-	//! Object type.
+	/**
+	 * @brief Gets the object type.
+	 * @return The object type.
+	 */
 	int type() const { return m_id.type(); }
 
-	//! Object id.
+	/**
+	 * @brief Gets the object id.
+	 * @return The object id.
+	 */
 	int id() const { return m_id.id(); }
 
-	//! Object version.
+	/**
+	 * @brief Gets the object version.
+	 * @return  The object version.
+	 */
 	int version() const { return m_version; }
 
-	//! Converts this ObjVer to Json object.
+	/**
+	 * @brief Converts this ObjVer to Json object.
+	 * @return This object converted QJsonObject.
+	 */
 	QJsonObject toJsonObject() const;
 
-	//! Less-than operator.
-	bool operator<(
-		const ObjVer& rightSide
-	) const;
+	/**
+	 * @brief Checks if this object is less than rightSide.
+	 * @param rightSide Right operand for less-than comparison.
+	 * @return True if this object is less than rightSide.
+	 */
+	bool operator<( const ObjVer& rightSide	) const;
 
-	//! Equality comparison.
-	bool operator==(
-		const ObjVer& rightSide
-	) const;
+	/**
+	 * @brief Compares this object to rightSide for equality.
+	 * @param rightSide The right operand for the comparison.
+	 * @return True if the compared objects are equal.
+	 */
+	bool operator==( const ObjVer& rightSide ) const;
 
 // Private data.
 private:
@@ -79,7 +100,12 @@ private:
 	int m_version;  //!< Object version.
 };
 
-//! Hash function impelemntation for ObjVer
+/**
+ * @brief Hash function impelemntation for ObjVer
+ * @param key
+ * @param seed Seed for the hash function.
+ * @return Hash value of ObjVer.
+ */
 inline unsigned int qHash(const ObjVer &key, unsigned int seed)
 {
 	return key.type() ^ seed ^ key.id() ^ key.version();

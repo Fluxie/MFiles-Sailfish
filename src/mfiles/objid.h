@@ -29,43 +29,64 @@
 namespace MFiles
 {
 
-//! C++ representation of ObjID.
+/**
+ * @brief C++ representation of ObjID object.
+ */
 class ObjID
 {
 public:
 
-	//! Initializes new ObjID object.
+	/**
+	 * @brief Initializes new ObjID object.
+	 * @param type The type of the object.
+	 * @param id The id of the object.
+	 */
 	ObjID( int type, int id );
 
-	//! Initializes new ObjID object from the given Json object.
-	ObjID(
-		const QJsonObject& json
-	);
+	/**
+	 * @brief Initializes new ObjID object.
+	 * @param json Json object that identifies the object.
+	 */
+	ObjID( const QJsonObject& json );
 
-	//! Object type.
+	/**
+	 * @brief Gets the object type.
+	 * @return The object type.
+	 */
 	int type() const { return m_type; }
 
-	//! Object id.
+	/**
+	 * @brief Gets the object id.
+	 * @return The object id.
+	 */
 	int id() const { return m_id; }
 
-	//! Converts this ObjID to Json object.
+	/**
+	 * @brief Converts this ObjID to QJsonObject.
+	 * @return This ObjID as QJsonObject.
+	 */
 	QJsonObject toJsonObject() const;
 
-	//! Less-than operator.
-	bool operator<(
-		const ObjID& rightSide
-	) const;
+	/**
+	 * @brief operator <
+	 * @param rightSide Right operan of the less operator.
+	 * @return True this object is less than rightSide.
+	 */
+	bool operator< ( const ObjID& rightSide ) const;
 
-	//! Equality comparison.
-	bool operator==(
-		const ObjID& rightSide
-	) const;
+	/**
+	 * @brief Compares objects for equality.
+	 * @param rightSide The object this object is compared with.
+	 * @return True if the compared objects are equal.
+	 */
+	bool operator== ( const ObjID& rightSide	) const;
 
-	//! Inequality comparison.
-	bool operator!=(
-		const ObjID& rightSide
-	) const
-	{ return ! ( (*this) == rightSide ); }
+	/**
+	 * @brief Compares objects for equality.
+	 * @param rightSide The object this object is compared with.
+	 * @return True if the compared objects are not equal.
+	 */
+	bool operator!=( const ObjID& rightSide ) const	{ return ! ( (*this) == rightSide ); }
 
 // Private data.
 private:
@@ -74,18 +95,26 @@ private:
 	int m_id;  //!< Object id.
 };
 
-//! Hash function impelemntation for ObjVer
-inline unsigned int qHash(const ObjID &key, unsigned int seed)
+/**
+ * @brief Hash function for ObjID object.
+ * @param key The ObjID object for which the hash value is calculated.
+ * @param seed Seed for the hash function.
+ * @return Hash value of the ObjID object.
+ */
+inline unsigned int qHash( const ObjID &key, unsigned int seed )
 {
 	return seed ^ key.type() ^ key.id();
 }
 
-//! Hash function impelemntation for ObjVer
+/**
+ * @brief Hash function for ObjID object.
+ * @param key The ObjID object for which the hash value is calculated.
+ * @return Hash value of the ObjID object.
+ */
 inline unsigned int qHash( const ObjID &key )
 {
 	return key.type() ^ key.id();
 }
-
 
 }
 

@@ -32,7 +32,6 @@ ObjID::ObjID( int type, int id ) :
 {
 }
 
-//! Initializes new ObjID object from the given Json object.
 ObjID::ObjID(
 	const QJsonObject& json
 ) :
@@ -42,7 +41,6 @@ ObjID::ObjID(
 
 }
 
-//! Converts this ObjID to Json object.
 QJsonObject ObjID::toJsonObject() const
 {
 	// Construct ObjID Json object.
@@ -52,9 +50,7 @@ QJsonObject ObjID::toJsonObject() const
 	return objid;
 }
 
-/*!
- *Less-than operator.
- */
+
 bool ObjID::operator<(
 	const ObjID& rightSide
 ) const
@@ -75,9 +71,6 @@ bool ObjID::operator<(
 	return false;
 }
 
-/*!
- *Equality comparison.
- */
 bool ObjID::operator==(
 	const ObjID& rightSide
 ) const

@@ -31,7 +31,7 @@ namespace MFiles
 {
 
 /**
- * @brief The MFilesTypeWrapper class
+ * @brief Base class for M-Files type wrappers for QJsonValue objects.
  *
  * This class encapsulates JSON object representing M-Files REST API type.
  *
@@ -70,14 +70,20 @@ public:
 // Protected interface.
 protected:
 
-	//! Accesses the object.
+	/**
+	 * @brief Returns constant reference to the wrapped object.
+	 * @return Constant reference to the wrapped object.
+	 */
 	const QJsonObject& object() const { return m_object; }
 
-	//! Accesses the object.
+	/**
+	 * @brief Returns reference to the wrapped object.
+	 * @return Constant reference to the wrapped object.
+	 */
 	QJsonObject& object() { return m_object; }
 
 	/**
-	 * @brief contains
+	 * @brief Checks if the specified field is set in the wrapped QJsonValue object.
 	 * @param field The name of the field in encapsuled Json object.
 	 * @return True if the filed is included in the Json object.
 	 */

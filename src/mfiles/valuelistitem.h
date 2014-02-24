@@ -30,12 +30,18 @@
 namespace MFiles
 {
 
+/**
+ * @brief Provides accessors for properties of ValueListItem M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/valuelistitem.html">ValueListItem</a> in M-Files REST API documentation.
+ */
 class ValueListItem
 {
 public:
 
 	/**
-	 * @brief Initializes new value list item.
+	 * @brief Initializes value list item based on existing Json object.
+	 * @param typedValue The wrapped Json object.
 	 */
 	ValueListItem( const QJsonValue& valueListItem );
 
@@ -45,14 +51,14 @@ public:
 	ValueListItem() {}
 
 	/**
-	 * @brief isEmpty
+	 * @brief Checks if the value list item is empty?
 	 * @return True if the value list item is empty / unspecified.
 	 */
 	bool isEmpty() const { return m_valueListItem.isEmpty(); }
 
 	/**
-	 * @brief id
-	 * @return  Valuelist item id.
+	 * @brief Gets the id of the value list item.
+	 * @return Value list item id.
 	 */
 	int id() const { return m_valueListItem[ "ID" ].toDouble(); }
 
@@ -63,18 +69,21 @@ public:
 	QString name() const { return m_valueListItem[ "Name" ].toString(); }
 
 	/**
-	 * @brief hasOwner
+	 * @brief Checks if this value list item has an owner item.
 	 * @return True if this value list item has an owner.
 	 */
 	bool hasOwner() const { return m_valueListItem[ "HasOwner" ].toBool(); }
 
 	/**
-	 * @brief hasOwner
+	 * @brief Gets the id of the possible owner.
 	 * @return The id of the owner item.
 	 */
 	int ownerId() const { return m_valueListItem[ "OwnerID" ].toDouble(); }
 
-	//! Converts this value list item to lookup.
+	/**
+	 * @brief Converts this value list item to lookup.
+	 * @return This value list item as a lookup.
+	 */
 	QJsonValue toLookup() const;
 
 // Private data.
