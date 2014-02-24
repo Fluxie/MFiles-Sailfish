@@ -21,7 +21,7 @@
 #ifndef VALUELIST_H
 #define VALUELIST_H
 
-#include "mfilestypecapsule.h"
+#include "mfilestypewrapper.h"
 
 /**
  * Namespace for M-Files types.
@@ -29,7 +29,7 @@
 namespace MFiles
 {
 
-class ObjType : public MFilesTypeCapsule
+class ObjType : public MFilesTypeWrapper
 {
 public:
 

@@ -18,8 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MFILESTYPECAPSULE_H
-#define MFILESTYPECAPSULE_H
+#ifndef MFILESTYPEWRAPPER_H
+#define MFILESTYPEWRAPPER_H
 
 #include <QJsonObject>
 #include <QJsonValue>
@@ -31,26 +31,26 @@ namespace MFiles
 {
 
 /**
- * @brief The MFilesTypeCapsule class
+ * @brief The MFilesTypeWrapper class
  *
  * This class encapsulates JSON object representing M-Files REST API type.
  *
  * Specific type implementations should inherit from this class.
  */
-class MFilesTypeCapsule
+class MFilesTypeWrapper
 {
 public:
 
 	/**
-	 * @brief MFilesTypeCapsule
+	 * @brief MFilesTypeWrapper
 	 * @param value The value this capsule represents.
 	 */
-	MFilesTypeCapsule( const QJsonValue& value );
+	MFilesTypeWrapper( const QJsonValue& value );
 
 	/**
-	 * @brief MFilesTypeCapsule
+	 * @brief MFilesTypeWrapper
 	 */
-	MFilesTypeCapsule() {}
+	MFilesTypeWrapper() {}
 
 	/**
 	 * @brief isEmpty
@@ -91,4 +91,4 @@ private:
 
 }
 
-#endif // MFILESTYPECAPSULE_H
+#endif // MFILESTYPEWRAPPER_H

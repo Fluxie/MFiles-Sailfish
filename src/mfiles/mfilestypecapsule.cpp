@@ -18,7 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "mfilestypecapsule.h"
+#include "mfilestypewrapper.h"
 
 /**
  * Namespace for M-Files types.
@@ -26,7 +26,7 @@
 namespace MFiles
 {
 
-MFilesTypeCapsule::MFilesTypeCapsule( const QJsonValue& value ) :
+MFilesTypeWrapper::MFilesTypeWrapper( const QJsonValue& value ) :
 	m_object( value.toObject() )
 {
 }

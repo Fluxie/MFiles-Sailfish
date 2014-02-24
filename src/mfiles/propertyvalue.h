@@ -24,7 +24,7 @@
 #include <QJsonValue>
 #include <QJsonObject>
 
-#include "mfilestypecapsule.h"
+#include "mfilestypewrapper.h"
 #include "typedvalue.h"
 
 /**
@@ -36,7 +36,7 @@ namespace MFiles
 /**
  * @brief The PropertyValue class
  */
-class PropertyValue : public MFilesTypeCapsule
+class PropertyValue : public MFilesTypeWrapper
 {
 public:
 

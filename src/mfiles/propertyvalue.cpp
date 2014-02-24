@@ -27,7 +27,7 @@ namespace MFiles
 {
 
 PropertyValue::PropertyValue( const QJsonValue& propertyValue ) :
-	MFilesTypeCapsule( propertyValue )
+	MFilesTypeWrapper( propertyValue )
 {
 }
 

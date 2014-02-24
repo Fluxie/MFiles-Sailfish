@@ -45,7 +45,7 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/mfiles/lookup.cpp \
     src/mfiles/valuelistitem.cpp \
     src/mfiles/propertydef.cpp \
-    src/mfiles/mfilestypecapsule.cpp \
+    src/mfiles/mfilestypewrapper.cpp \
     src/mfiles/objtype.cpp \
     src/backend/asyncfetch.cpp \
     src/backend/lazyownerinfo.cpp \
@@ -88,7 +88,6 @@ HEADERS += src/backend/objecttypecache.h \
     src/mfiles/lookup.h \
     src/mfiles/valuelistitem.h \
     src/mfiles/propertydef.h \
-    src/mfiles/mfilestypecapsule.h \
     src/mfiles/objtype.h \
     src/backend/asyncfetch.h \
     src/backend/lazyownerinfo.h \
@@ -97,7 +96,8 @@ HEADERS += src/backend/objecttypecache.h \
     src/lookuplistmodel.h \
     src/valuelistitemlistmodel.h \
     src/propertyvaluelistmodel.h \
-    src/mfiles/mfilesconstants.h
+    src/mfiles/mfilesconstants.h \
+    src/mfiles/mfilestypewrapper.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

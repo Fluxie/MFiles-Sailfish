@@ -24,7 +24,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
-#include "mfilestypecapsule.h"
+#include "mfilestypewrapper.h"
 
 /**
  * Namespace for M-Files types.
@@ -35,7 +35,7 @@ namespace MFiles
 /**
  * @brief The Lookup class
  */
-class Lookup : public MFilesTypeCapsule
+class Lookup : public MFilesTypeWrapper
 {
 public:
 

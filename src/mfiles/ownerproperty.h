@@ -23,7 +23,7 @@
 
 #include <QJsonValue>
 
-#include "mfilestypecapsule.h"
+#include "mfilestypewrapper.h"
 
 /**
  * Namespace for M-Files types.
@@ -31,7 +31,7 @@
 namespace MFiles
 {
 
-class OwnerProperty : public MFilesTypeCapsule
+class OwnerProperty : public MFilesTypeWrapper
 {
 public:
 

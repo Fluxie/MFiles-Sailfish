@@ -31,7 +31,7 @@ namespace MFiles
 {
 
 TypedValue::TypedValue( const QJsonValue& typedValue ) :
-	MFilesTypeCapsule( typedValue )
+	MFilesTypeWrapper( typedValue )
 {
 }
 
