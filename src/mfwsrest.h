@@ -38,7 +38,7 @@ public:
 	//! Constructor.
 	explicit MfwsRest(
 		const QString& url,
-		QObject *parent = 0
+		QObject *parent
 	);
 
 	//! Destructor.
@@ -77,6 +77,14 @@ private:
 
 	//! Prepares request.
 	QNetworkRequest prepareRequest( const QString& resource ) const;
+
+private slots:
+
+	/**
+	 * @brief Updates the parent of this object.
+	 * @param parent New parent.
+	 */
+	void updateParent( QObject* parent ) { this->setParent( parent ); }
 
 // Private data.
 private:

@@ -49,7 +49,7 @@ CoreBase::CoreBase( VaultCore* owner, QObject* parent ) :
 		qCritical( "Owner and parent must live in the same thread." );
 	this->moveToThread( owner->thread() );
 	if( parent != 0 )
-		this->setParent( parent );
+		QMetaObject::invokeMethod( this, "updateParent", Q_ARG( QObject*, parent ) );
 }
 
 //! A network error has occurred within the core.
@@ -75,9 +75,7 @@ MfwsRest* CoreBase::rest() const
 	// Create the MfwsRest object for fetching the actual data.
 	if( m_rest == 0 )
 	{
-		m_rest = new MfwsRest( this->vault()->url() );
-		m_rest->moveToThread( this->thread() );
-		m_rest->setParent( const_cast< CoreBase* >( this ) );
+		m_rest = new MfwsRest( this->vault()->url(), const_cast< CoreBase* >( this ) );
 		m_rest->setAuthentication( this->vault()->authentication() );
 		QObject::connect( m_rest, &MfwsRest::error, this, &CoreBase::reportNetworkError );
 		QObject::connect( this->vault(), &VaultCore::authenticationChanged, m_rest, &MfwsRest::setAuthentication );

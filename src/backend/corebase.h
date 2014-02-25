@@ -79,6 +79,14 @@ protected:
 	//! Accesses the MFWS REST API.
 	MfwsRest* rest() const;
 
+private slots:
+
+	/**
+	 * @brief Updates the parent of this object.
+	 * @param parent New parent.
+	 */
+	void updateParent( QObject* parent ) { this->setParent( parent ); }
+
 // Private data.
 private:
 

@@ -27,10 +27,16 @@
 #include <QEventLoop>
 
 MfwsRest::MfwsRest( const QString& url, QObject *parent ) :
-	QObject(parent),
+	QObject( 0 ),
 	m_url( url )
 {
+	Q_CHECK_PTR( parent );
+
 	m_network = new QNetworkAccessManager( this );
+
+
+	this->moveToThread( parent->thread() );
+	QMetaObject::invokeMethod( this, "updateParent", Q_ARG( QObject*, parent ) );
 
 	qDebug( "MfwsRest instantiated." );
 }
