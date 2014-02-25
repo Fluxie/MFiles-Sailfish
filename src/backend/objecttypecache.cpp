@@ -120,7 +120,7 @@ ValueListCore* ObjectTypeCache::getNewValueListNts( int id, int owner, const Typ
 {
 	// Instantiate the new value list core for the property definition and return it.
 	ValueListCore* core = new ValueListCore( this->vault(), id, owner, filter );
-	QObject::connect( core, &ValueListCore::initialized, core, &ValueListCore::requestRefresh );
+	QMetaObject::invokeMethod( core, "requestRefresh" );
 	m_valueLists.insert( ValueListKey( id, filter ), core );
 
 	// Return the core.

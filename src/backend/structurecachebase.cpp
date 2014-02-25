@@ -132,10 +132,6 @@ AsyncFetch* StructureCacheBase::list() const
 //! Populates the cache.
 void StructureCacheBase::requestRefresh()
 {
-	// Sanity check.
-	if( ! this->isInitialized() )
-		qCritical( "StructureCacheBase: requestRefresh without initialization." );
-
 	// Get cookie.
 	int cookie;
 	{

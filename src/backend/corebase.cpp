@@ -28,8 +28,7 @@
 CoreBase::CoreBase( VaultCore* owner ) :
 	QObject( 0 ),
 	m_vault( owner ),
-	m_rest( 0 ),
-	m_state( Initializing )
+	m_rest( 0 )
 {
 	Q_CHECK_PTR( m_vault );
 
@@ -41,8 +40,7 @@ CoreBase::CoreBase( VaultCore* owner ) :
 CoreBase::CoreBase( VaultCore* owner, QObject* parent ) :
 	QObject( 0 ),
 	m_vault( owner ),
-	m_rest( 0 ),
-	m_state( Initializing )
+	m_rest( 0 )
 {
 	Q_CHECK_PTR( m_vault );
 
@@ -52,23 +50,6 @@ CoreBase::CoreBase( VaultCore* owner, QObject* parent ) :
 	this->moveToThread( owner->thread() );
 	if( parent != 0 )
 		this->setParent( parent );
-
-	// Initialize the core.
-	initializeBase( parent );
-}
-
-//! Initializes the core. Must be called from the thread that owns the core.
-void CoreBase::initializeBase( QObject* parent )
-{
-	// Set the parent.
-	if( parent != 0 && this->thread() != parent->thread() )
-		qCritical( "Not in the thread of this object." );
-	if( this->parent() != parent )
-		this->setParent( parent );	
-
-	// The core is now initialized.
-	m_state = Initialized;
-	emit initialized();
 }
 
 //! A network error has occurred within the core.

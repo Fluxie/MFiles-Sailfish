@@ -30,39 +30,36 @@
 class MfwsRest;
 class VaultCore;
 
+/**
+ * @brief Base object for "core" classes.
+ *
+ * Core classes are classes that execute operations in the background thread that must not block UI.
+ */
 class CoreBase : public QObject
 {
 	Q_OBJECT
 public:
 
-	//! State of the core.
-	enum State
-	{
-		Initializing,  //! The core is still being initialized.
-		Initialized  //!< The core has been initialized.
-	};
-
-	//! Initializes new core base.
+	/**
+	 * @brief Initializes new core base without parent.
+	 * @param owner Vault that owns this object.
+	 *
+	 */
 	explicit CoreBase( VaultCore* owner );
 
-	//! Initializes new core base.
+	/**
+	 * @brief Initializes new core base.
+	 * @param owner Vault that owns this object.
+	 * @param parent Parent for the core.
+	 */
 	explicit CoreBase( VaultCore* owner, QObject* parent );
 
-	//! Is this core initializaed.
-	bool isInitialized() { return m_state == Initialized; }
-
 signals:
-
-	//! Signaled when the core becomes initialized.
-	void initialized();
 
 	//! Signaled when an error occurs in the procssing of a request to the core.
 	void error( const ErrorInfo& error );
 
 public slots:
-
-	//! Initializes the core. Must be called from the thread that owns the core.
-	void initializeBase( QObject* parent );
 
 	//! A network error has occurred within the core.
 	void reportNetworkError( QNetworkReply::NetworkError code, const QString& description );
@@ -86,8 +83,7 @@ protected:
 private:
 
 	VaultCore* m_vault;  //! Vault.
-	mutable MfwsRest* m_rest;  //!< Access to M-Files REST API.
-	State m_state;  //!< The state of the core.
+	mutable MfwsRest* m_rest;  //!< Access to M-Files REST API.	
 
 };
 
