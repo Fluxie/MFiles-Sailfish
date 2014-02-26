@@ -20,9 +20,9 @@
 
 #include "valuelistitemlistmodel.h"
 
-#include "backend/asyncfetch.h"
-#include "mfiles/lookup.h"
-#include "mfiles/valuelistitem.h"
+#include "../backend/asyncfetch.h"
+#include "../mfiles/lookup.h"
+#include "../mfiles/valuelistitem.h"
 
 //! The role id the lookup role.
 const int ValueListItemListModel::LookupRole = Qt::UserRole;

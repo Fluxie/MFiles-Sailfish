@@ -27,8 +27,8 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/mfiles/objid.cpp \
     src/backend/objectversioncore.cpp \
     src/objectversionfront.cpp \
-    src/realvalidator.cpp \
-    src/integervalidator.cpp \
+    src/ui/realvalidator.cpp \
+    src/ui/integervalidator.cpp \
     src/backend/valuelistcore.cpp \
     src/valuelistfront.cpp \
     src/frontbase.cpp \
@@ -39,7 +39,7 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/errors/errormodel.cpp \
     src/backend/typedvaluefilter.cpp \
     src/classesfront.cpp \
-    src/propertyvalueownerresolver.cpp \
+    src/ui/propertyvalueownerresolver.cpp \
     src/mfiles/propertyvalue.cpp \
     src/mfiles/typedvalue.cpp \
     src/mfiles/lookup.cpp \
@@ -50,10 +50,10 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/backend/asyncfetch.cpp \
     src/backend/lazyownerinfo.cpp \
     src/mfiles/ownerproperty.cpp \
-    src/allowedlookupsresolver.cpp \
-    src/lookuplistmodel.cpp \
-    src/valuelistitemlistmodel.cpp \
-    src/propertyvaluelistmodel.cpp
+    src/ui/allowedlookupsresolver.cpp \
+    src/ui/lookuplistmodel.cpp \
+    src/ui/valuelistitemlistmodel.cpp \
+    src/ui/propertyvaluelistmodel.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -69,8 +69,8 @@ HEADERS += src/backend/objecttypecache.h \
     src/mfiles/objid.h \
     src/backend/objectversioncore.h \
     src/objectversionfront.h \
-    src/realvalidator.h \
-    src/integervalidator.h \
+    src/ui/realvalidator.h \
+    src/ui/integervalidator.h \
     src/backend/valuelistcore.h \
     src/valuelistfront.h \
     src/backend/valuelistkey.h \
@@ -82,7 +82,7 @@ HEADERS += src/backend/objecttypecache.h \
     src/errors/errormodel.h \
     src/backend/typedvaluefilter.h \
     src/classesfront.h \
-    src/propertyvalueownerresolver.h \
+    src/ui/propertyvalueownerresolver.h \
     src/mfiles/propertyvalue.h \
     src/mfiles/typedvalue.h \
     src/mfiles/lookup.h \
@@ -92,10 +92,10 @@ HEADERS += src/backend/objecttypecache.h \
     src/backend/asyncfetch.h \
     src/backend/lazyownerinfo.h \
     src/mfiles/ownerproperty.h \
-    src/allowedlookupsresolver.h \
-    src/lookuplistmodel.h \
-    src/valuelistitemlistmodel.h \
-    src/propertyvaluelistmodel.h \
+    src/ui/allowedlookupsresolver.h \
+    src/ui/lookuplistmodel.h \
+    src/ui/valuelistitemlistmodel.h \
+    src/ui/propertyvaluelistmodel.h \
     src/mfiles/mfilesconstants.h \
     src/mfiles/mfilestypewrapper.h
 

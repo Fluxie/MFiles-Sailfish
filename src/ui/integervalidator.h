@@ -23,19 +23,26 @@
 
 #include <QIntValidator>
 
+/**
+ * @brief The IntegerValidator class validates integer numbers. Empty strings are accepted.
+ */
 class IntegerValidator : public QIntValidator
 {
 	Q_OBJECT
 public:
 
-	//! Constructor.
+	/**
+	 * @brief Initializes new IntegerValidator object.
+	 */
 	explicit IntegerValidator();
 
-	//! Override the validation method.
-	Q_INVOKABLE virtual QValidator::State validate(
-			QString& input,
-			int& pos
-	) const;
+	/**
+	 * @brief Validates the input string. Accepts empty strings.
+	 * @param input Input to validate.
+	 * @param pos The cursor position.
+	 * @return Returns true if it is a valid integer.
+	 */
+	Q_INVOKABLE virtual QValidator::State validate( QString& input, int& pos ) const;
 
 signals:
 

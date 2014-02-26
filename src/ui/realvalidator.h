@@ -34,14 +34,18 @@ class RealValidator : public QDoubleValidator
 	Q_OBJECT
 public:
 
-	//! Constructor
+	/**
+	 * @brief Initializes new RealValidator object.
+	 */
 	explicit RealValidator();
 
-	//! Override the validation method.
-	Q_INVOKABLE virtual QValidator::State validate(
-			QString& input,
-			int& pos
-	) const;
+	/**
+	 * @brief Validates the input string. Accepts empty strings.
+	 * @param input Input to validate.
+	 * @param pos The cursor position.
+	 * @return Returns true if it is a valid real number.
+	 */
+	Q_INVOKABLE virtual QValidator::State validate( QString& input, int& pos ) const;
 
 signals:
 

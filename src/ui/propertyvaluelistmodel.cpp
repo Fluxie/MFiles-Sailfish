@@ -24,12 +24,12 @@
 #include <QVariantMap>
 
 #include "allowedlookupsresolver.h"
-#include "objectversionfront.h"
-#include "mfiles/objver.h"
+#include "../objectversionfront.h"
+#include "../mfiles/objver.h"
 #include "propertyvalueownerresolver.h"
-#include "backend/typedvaluefilter.h"
-#include "mfiles/propertyvalue.h"
-#include "mfiles/typedvalue.h"
+#include "../backend/typedvaluefilter.h"
+#include "../mfiles/propertyvalue.h"
+#include "../mfiles/typedvalue.h"
 
 
 //! The role id of the property definition id role.

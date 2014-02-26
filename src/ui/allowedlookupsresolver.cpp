@@ -1,14 +1,14 @@
 #include "allowedlookupsresolver.h"
 
-#include "backend/asyncfetch.h"
-#include "mfiles/propertydef.h"
-#include "mfiles/propertyvalue.h"
-#include "mfiles/valuelistitem.h"
-#include "mfiles/mfilesconstants.h"
+#include "../backend/asyncfetch.h"
+#include "../mfiles/propertydef.h"
+#include "../mfiles/propertyvalue.h"
+#include "../mfiles/valuelistitem.h"
+#include "../mfiles/mfilesconstants.h"
 #include "propertyvaluelistmodel.h"
-#include "backend/typedvaluefilter.h"
-#include "valuelistfront.h"
-#include "vaultfront.h"
+#include "../backend/typedvaluefilter.h"
+#include "../valuelistfront.h"
+#include "../vaultfront.h"
 
 AllowedLookupsResolver::AllowedLookupsResolver( PropertyValueListModel* parent, VaultFront* vault  ) :
 	QObject( parent ),
@@ -24,7 +24,7 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 {
 	Q_ASSERT( topLeft.row() == bottomRight.row() );
 
-	// We need to attempt to resolve the ownership information only if the property value was changed.
+	// We need to attempt to resolve the allowed lookups only if the filter was changed.
 	bool filterChanged = roles.size() == 0;
 	foreach( int role, roles )
 	{
@@ -32,7 +32,7 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 			filterChanged = true;
 	}
 	if( ! filterChanged )
-		return;  // Other than changes to the property value do not affect ownership information.
+		return;  // Other than changes to the filter do not affect allowed lookups
 
 	// Fetch the current value and abort resolution if the property isn't lookup.
 	MFiles::PropertyValue currentValue( m_model->data( topLeft, PropertyValueListModel::PropertyValueRole ).toJsonValue() );

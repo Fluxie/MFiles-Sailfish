@@ -6,16 +6,16 @@
 #include <QMultiHash>
 #include <QHash>
 
-#include "backend/asyncfetch.h"
+#include "../backend/asyncfetch.h"
 #include "propertyvaluelistmodel.h"
-#include "mfiles/objtype.h"
-#include "mfiles/propertydef.h"
-#include "mfiles/propertyvalue.h"
-#include "mfiles/typedvalue.h"
-#include "mfiles/valuelistitem.h"
-#include "backend/typedvaluefilter.h"
-#include "valuelistfront.h"
-#include "vaultfront.h"
+#include "../mfiles/objtype.h"
+#include "../mfiles/propertydef.h"
+#include "../mfiles/propertyvalue.h"
+#include "../mfiles/typedvalue.h"
+#include "../mfiles/valuelistitem.h"
+#include "../backend/typedvaluefilter.h"
+#include "../valuelistfront.h"
+#include "../vaultfront.h"
 
 PropertyValueOwnerResolver::PropertyValueOwnerResolver(
 		PropertyValueListModel* parent,
