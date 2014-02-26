@@ -117,7 +117,6 @@ public slots:
 	 */
 	void setAuthentication( const QString& authentication );
 
-	//! An error has occurred within the vault.
 	/**
 	 * @brief Reports an error that has occurred within the vault.
 	 * @param errorinfo Description of the error.
