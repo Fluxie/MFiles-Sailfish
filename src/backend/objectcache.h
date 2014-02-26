@@ -32,20 +32,29 @@
 // Forward declarations.
 class VaultCore;
 
-//! Cache for ObjectCores
+/**
+ * @brief Cache for objects and related content retrieved from the server.
+ */
 class ObjectCache : public QObject
 {
 	Q_OBJECT
 public:
 
-	//! Initializes new object cache.
+	/**
+	 * @brief Initializes new object cache.
+	 * @param parent Parent for the cache.
+	 */
 	explicit ObjectCache( VaultCore* parent );
 	
 signals:
 	
 public slots:
 
-	//! Establishes new object core for the given object version.
+	/**
+	 * @brief Establishes new object core for the given object version.
+	 * @param id Object id.
+	 * @return ObjectCore representing the M-Files object.
+	 */
 	QSharedPointer< ObjectCore > object(
 		const MFiles::ObjID& id
 	);
@@ -53,7 +62,6 @@ public slots:
 // Private data.
 private:
 
-	//! Constant data.
 	VaultCore* m_vault;
 
 	mutable QMutex m_lock;

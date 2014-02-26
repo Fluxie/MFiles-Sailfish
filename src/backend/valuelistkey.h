@@ -23,11 +23,18 @@
 
 #include "typedvaluefilter.h"
 
+/**
+ * @brief The ValueListKey class specified a lookup key for cached value lists.
+ */
 class ValueListKey
 {
 public:
 
-	//! Constructor.
+	/**
+	 * @brief Initializes new ValueListKey object.
+	 * @param idIn The id of the value list.
+	 * @param filterIn  //!< The filter used to filter the value list.
+	 */
 	ValueListKey( int idIn, const TypedValueFilter* filterIn ) :
 		id( idIn ),
 		filter( filterIn ? new TypedValueFilter( *filterIn ) : 0 )
@@ -36,7 +43,10 @@ public:
 	//! Destructor.
 	~ValueListKey() { if( filter ) filter->deleteLater(); }
 
-	//! Copy constructore.
+	/**
+	 * @brief Copy-contstructor.
+	 * @param key Original.
+	 */
 	explicit ValueListKey( const ValueListKey& key ) :
 		id( key.id ),
 		filter( key.filter ? new TypedValueFilter( *key.filter ) : 0 )
@@ -46,6 +56,12 @@ public:
 	TypedValueFilter* filter;
 };
 
+/**
+ * @brief Comparison operator for ValueListKey objects.
+ * @param left  Left operand.
+ * @param right Right operand.
+ * @return Returns true if the compared objects are equal.
+ */
 inline bool operator==( const ValueListKey &left, const ValueListKey &right )
 {	
 	// Check if one of the keys is missing the filter while the other is not.
@@ -59,11 +75,15 @@ inline bool operator==( const ValueListKey &left, const ValueListKey &right )
 				*left.filter == *right.filter );  // The possibility of other being NULL was checked earlier.
 }
 
+/**
+ * @brief Hash function for ValueListKey object.
+ * @param key The ValueListKey object for which the hash value is calculated.
+ * @return Hash value of the ValueListKey object.
+ */
 inline uint qHash(const ValueListKey &key)
 {
 	return qHash( key.id ) ^ qHash( key.filter );
 }
-
 
 
 #endif // VALUELISTKEY_H

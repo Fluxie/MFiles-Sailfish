@@ -32,35 +32,50 @@ class VaultCore;
 class ValueListCore;
 
 /*!
- * \brief The ObjectTypeCache class
+ * @brief The ObjectTypeCache class caches all object types fetched from the server.
  *
- * Container for object types.
  */
 class ObjectTypeCache : public StructureCacheBase
 {
-
-
-	//! Definition for cached value lists
+	/**
+	 * @brief Definition for cached value lists
+	 */
 	typedef QHash< ValueListKey, ValueListCore* >  VALUELISTS;
 
 	Q_OBJECT
 public:
 
-	//! Constructor.
+	/**
+	 * @brief Initializes new ObjectTypeCache object.
+	 * @param parent Parent for the cache.
+	 */
 	explicit ObjectTypeCache( VaultCore *parent = 0 );
 
 	//! Destructor.
 	virtual ~ObjectTypeCache() {}
 
-	//! Gets value list.
+	/**
+	 * @brief Gets the specified value list from the cache.
+	 * @param id The id of the value list
+	 * @return Specified value list
+	 */
 	ValueListCore* list( int id ) const;
 
-	//! Gets value list.
+	/**
+	 * @brief Gets the specified filtered value list.
+	 * @param id The if of the value list.
+	 * @param filter Filter for filtering the values of the value list.
+	 * @return Value list filtered with the given filter.
+	 */
 	ValueListCore* list( int id, const TypedValueFilter* filter );
 
 signals:
 
-	//! Signaled when a value list core has become available.
+	/**
+	 * @brief This signal is emitted when a value list core has become available.
+	 * @param core The value list that has become available.
+	 * @param source The source of the event.
+	 */
 	void valueListAvailable( ValueListCore* core, ObjectTypeCache* source );
 
 public slots:
@@ -70,10 +85,14 @@ public slots:
 // Protected interface.
 protected:
 
-	//! Override this to clear the satellite data when the cache contents is cleared.
+	/**
+	 * @brief Clears the satellite data controlled by this cache.
+	 */
 	virtual void clearSatelliteDataNts();
 
-	//! Override this to populate satellite data that after the cache contens has been refreshed.
+	/**
+	 * @brief Updates the satellite data controlled by this cache when the cache is refreshed.
+	 */
 	virtual void populateSatelliteDataNts();
 
 	/**
@@ -86,7 +105,14 @@ protected:
 // Private interface.
 private:
 
-	//! Requests value list.
+	/**
+	 * @brief Gets a new representative for the specified value list.
+	 * @param id The id of the value list.
+	 * @param owner The id of the owner value list.
+	 * @param filter Filter for the new value list.
+	 * @return A new representative for the value list.
+	 * @remarks { This method is not thread-safe. }
+	 */
 	ValueListCore* getNewValueListNts( int id, int owner, const TypedValueFilter* filter );
 
 // Private data.

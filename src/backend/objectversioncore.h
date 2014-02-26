@@ -34,82 +34,116 @@
 class MfwsRest;
 class ObjectCore;
 
+/**
+ * @brief The ObjectVersionCore class represent a single object version of M-Files object.
+ */
 class ObjectVersionCore : public CoreBase
 {
 	Q_OBJECT
 public:
 
-	//! Initializes the ObjectVersionCore
-	explicit ObjectVersionCore(
-		ObjectCore *parent,
-		MFiles::ObjVer objver
-	);
+	/**
+	 * @brief Initializes new ObjectVersionCore object.
+	 * @param parent Parent for this object.
+	 * @param objver ObjVer of this version.
+	 */
+	explicit ObjectVersionCore( ObjectCore *parent, MFiles::ObjVer objver );
 
-	//! Initializes the ObjectVersionCore
-	explicit ObjectVersionCore(
-		ObjectCore *parent,
-		QJsonObject objectVersion
-	);
+	/**
+	 * @brief Initializes new ObjectVersionCore object.
+	 * @param parent Parent for this object.
+	 * @param objectVersion JSON object describing the object version.
+	 * @see <a href="http://www.m-files.com/mfws/structs/objectversion.html">Object version</a> in M-Files REST API.
+	 */
+	explicit ObjectVersionCore(	ObjectCore *parent, QJsonObject objectVersion );
 
-	//! Gets ObjectVersion.
+	/**
+	 * @brief Gets the object version.
+	 * @return Object version.
+	 */
 	QJsonValue objectVersion() const { QMutexLocker lock( &m_mtx ); return QJsonValue( m_objectVersion ); }
 
-	//! Gets property values for display.
+	/**
+	 * @brief Gets the property values for display of this object version.
+	 * @return Property values for display.
+	 */
 	QJsonValue propertiesForDisplay() const { QMutexLocker lock( &m_mtx ); return QJsonValue( m_propertiesForDisplay ); }
 
-	//! Gets property values.
+	/**
+	 * @brief Gets the property values of this object version.
+	 * @return Property values.
+	 */
 	QJsonValue properties() const { QMutexLocker lock( &m_mtx ); return QJsonValue( m_properties ); }
 
-	//! Object version.
+	/**
+	 * @brief Gets the object version.
+	 * @return ObjVer.
+	 */
 	MFiles::ObjVer objver() const  { QMutexLocker lock( &m_mtx ); return m_objver; }
 	
 signals:
 
-	//! Signaled when object version information has changed.
+	/**
+	 * @brief This signal is emitted when object version information has changed.
+	 */
 	void objectVersionChanged();
 
-	//! Signaled when the properties for display have changed.
+	/**
+	 * @brief This signal is emitted when the properties for display have changed.
+	 */
 	void propertiesForDisplayChanged();
 
-	//! Signaled when the properties have changed.
+	/**
+	 * @brief This signal is emitted when the properties have changed.
+	 */
 	void propertiesChanged();
 	
 public slots:
 
-	//! Sets object version.
-	void setObjectVersion(
-		const QJsonObject& objectVersion
-	);
+	/**
+	 * @brief Sets the properties for display.
+	 * @param propertiesForDisplay The properties for display.
+	 */
+	void setPropertiesForDisplay( const QJsonArray& propertiesForDisplay );
 
-	//! Sets the properties for display.
-	void setPropertiesForDisplay(
-		const QJsonArray& propertiesForDisplay
-	);
+	/**
+	 * @brief Sets the property values.
+	 * @param properties The property values.
+	 */
+	void setProperties( const QJsonArray& properties );
 
-	//! Requests the properties for display to be fetched.
+	/**
+	 * @brief Requests the properties for display to be fetched and cached.
+	 */
 	void requestPropertiesForDisplay();
 
-	//! Sets the normal property values.
-	void setProperties(
-		const QJsonArray& properties
-	);
-
-	//! Sends the given property values to the server. This creates a new version of the object.
+	/**
+	 * @brief Sends the given property values to the server. This creates a new version of the object.
+	 * @param properties The properties that are sent to the server.
+	 */
 	void sendPropertiesToServer( const QJsonArray& properties );
 
 // Private interface.
 private:
 
-	//! Performs initialization operations.
+	/**
+	 * @brief Performs common initialization operations.
+	 */
 	void initialize();
 
-	// !Refreshes object version information.
+	/**
+	 * @brief Refreshes object version information.
+	 */
 	void refreshObjectVersion();
 
-	//! Refreshes property value information.
+	/**
+	 * @brief Refreshes property value information.
+	 */
 	void refreshPropertyValues();
 
-	//! The intended purpose of the property value.
+	/**
+	 * @brief The intended usage purpose of the property value.
+	 */
 	enum PropertyValuePurpose
 	{
 		Undefined,  //!< Undefined.
@@ -117,14 +151,34 @@ private:
 		All  //!< All property values.
 	};
 
-	//! Property values that are blocked for display purposes.
+	/**
+	 * @brief Property values that are blocked for display purposes.
+	 */
 	static const int BLOCKED_FOR_DISPLAY_PROPERTY_VALUES[];
 
-	//! Normalizes property values for use. Receives the normalized property values.
+	/**
+	 * @brief Normalizes property values for use. Receives the normalized property values.
+	 * @param purpose The intended usage purpose of the property values.
+	 * @param values Property values for normalization.
+	 * @return Normalized property values.
+	 */
 	static QJsonArray normalizePropertyValues( PropertyValuePurpose purpose, const QJsonArray& values );
 
-	//! Normalizes property value for use. Receives true if the property value is acceptable for the intended purpose.
+	/**
+	 * @brief Normalizes property value for use. Receives true if the property value is acceptable for the intended purpose.
+	 * @param purpose The intended usage purpose of the properyt value.
+	 * @param value The property value to normalize.
+	 * @return True if the value was normalized.
+	 */
 	static bool normalizePropertyValue( PropertyValuePurpose purpose, QJsonValueRef value );
+
+private slots:
+
+	/**
+	 * @brief Sets object version.
+	 * @param objectVersion
+	 */
+	void setObjectVersion( const QJsonObject& objectVersion	);
 
 // Private data.
 private:

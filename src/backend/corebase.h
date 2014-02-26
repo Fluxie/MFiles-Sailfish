@@ -33,7 +33,9 @@ class VaultCore;
 /**
  * @brief Base object for "core" classes.
  *
- * Core classes are classes that execute operations in the background thread that must not block UI.
+ * CoreBase provides common functionality for objects that live in the background thread.
+ * When created the CoreBase automatically moves itself to the VaultCore's thread.
+ * The parent of the CoreBase is set indirectly to allow creating it in the UI thread.
  */
 class CoreBase : public QObject
 {
@@ -56,30 +58,49 @@ public:
 
 signals:
 
-	//! Signaled when an error occurs in the procssing of a request to the core.
+	/**
+	 * @brief This signal is emitted when an error occurs in the procssing of a request to the core.
+	 * @param error Description of the error.
+	 */
 	void error( const ErrorInfo& error );
 
 public slots:
 
-	//! A network error has occurred within the core.
-	void reportNetworkError( QNetworkReply::NetworkError code, const QString& description );
-
-	//! An error has occurred within the core or in an object related to this core.
+	/**
+	 * @brief Reports an error that occurred within the core or in an object related to this core.
+	 * @param errorinfo
+	 */
 	void reportError( const ErrorInfo& errorinfo );
 
 // Protected interface.
 protected:
 
-	//! Accesses the vault.
+	/**
+	 * @brief Accesses the vault object of the core.
+	 * @return Vault of this core.
+	 */
 	VaultCore* vault() { return m_vault; }
 
-	//! Accesses the vault.
+	/**
+	 * @brief Accesses the vault object of the core.
+	 * @return Vault of this core.
+	 */
 	const VaultCore* vault() const { return m_vault; }
 
-	//! Accesses the MFWS REST API.
+	/**
+	 * @brief Accesses M-Files REST API client for making REST requests.
+	 * @return M-Files REST API client
+	 */
 	MfwsRest* rest() const;
 
 private slots:
+
+	/**
+	 * @brief Reports a network error that occurred within the core.
+	 * @param code Error code.
+	 * @param description Description of the error.
+	 */
+	void reportNetworkError( QNetworkReply::NetworkError code, const QString& description );
 
 	/**
 	 * @brief Updates the parent of this object.

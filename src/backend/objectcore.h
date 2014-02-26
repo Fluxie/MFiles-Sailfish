@@ -35,6 +35,9 @@ class MfwsRest;
 class QNetworkReply;
 class VaultCore;
 
+/**
+ * @brief The ObjectCore class
+ */
 class ObjectCore : public CoreBase
 {
 	Q_OBJECT
@@ -42,42 +45,72 @@ class ObjectCore : public CoreBase
 // Private types.
 private:
 
-	//!
+	/**
+	 * @brief Definition for object version storage.
+	 */
 	typedef QHash< int, ObjectVersionCore* > VERSIONS;
 
 public:
 
-	//! Initializes new ObjectCore.
+	/**
+	 * @brief Initializes new ObjectCore object.
+	 * @param vault Vault of the
+	 * @param id The object id of the object this object represents.
+	 */
 	explicit ObjectCore( VaultCore* vault, MFiles::ObjID id );
 
-	//! Latest version.
+	/**
+	 * @brief Gets the latest known version of the obect.
+	 * @return Latest known version.
+	 */
 	int latestVersion() const { QMutexLocker lock( &m_mtx ); return m_latestKnownVersion; }
 
-	//! Returns reference to the latest known version or null if the latest version is not known.
+	/**
+	 * @brief Get the latest known version.
+	 * @return Reference to the representative of the latest known version.
+	 */
 	ObjectVersionCore* latest();
 
-	//! Returns reference to the specific version.
+	/**
+	 * @brief Gets the specified version of the object.
+	 * @param version The version to get.
+	 * @return Reference to the representative of the specified version.
+	 */
 	ObjectVersionCore* version(
 		const QJsonValue& version
 	);
 	
 signals:
 
-	//! Signaled when the latest known version of this object has changed.
+	/**
+	 * @brief This signal is emitted when the latest known version of this object has changed.
+	 */
 	void latestVersionChanged();
 	
 public slots:
 
-	//! Instructs the content of the latest version to be cached.
+	/**
+	 * @brief Refreshes the latest version.
+	 */
 	void requestLatestVersion();
 
-	//! Called when a REST request for fetching object version information becomes available.
+private slots:
+
+	/**
+	 * @brief Notifies that a REST request for fetching object version information has completed.
+	 * @param reply Replyt from the server.
+	 * @param latest True if this version currently known to be the latest version.
+	 */
 	void versionAvailable( QNetworkReply* reply, bool latest );
 
 // Private interface.
 private:
 
-	//! Gets core for the specified version.
+	/**
+	 * @brief getCore
+	 * @param version
+	 * @return
+	 */
 	ObjectVersionCore* getCore( int version );
 
 // Private data.

@@ -28,11 +28,19 @@
 #include <QObject>
 #include <QVector>
 
+/**
+ * @brief AsyncFetch objects represent an on-going asynchronous retrieval operations from M-Files REST API.
+ *
+ * @todo Improve the explanation.
+ */
 class AsyncFetch : public QObject
 {
 	Q_OBJECT
 public:
 
+	/**
+	 * @brief Type definition for a filter.
+	 */
 	typedef std::function< bool( const QJsonValue& ) > FILTER_T;
 
 	/**
@@ -46,31 +54,32 @@ public:
 	};
 
 	/**
-	 * @brief AsyncFetch
+	 * @brief Initializes new AsyncFetch object.
 	 * @param cookie The cookie that identifies the fetch request.
 	 */
 	explicit AsyncFetch( int cookie );
 
 	/**
-	 * @brief value
+	 * @brief Gets the fetched value.
+	 * @remarks { Call only when the fetch operations returns at maximum one value. }
 	 * @return Retrieves the value.
 	 */
 	QJsonValue value() const;
 
 	/**
-	 * @brief value
+	 * @brief Gets all the fetched values.
 	 * @return Retrieves the values.
 	 */
 	QJsonArray values() const;
 
 	/**
-	 * @brief state
+	 * @brief Gets the state of the fetch operation.
 	 * @return State of the fetching.
 	 */
 	State state() const { return m_state; }
 
 	/**
-	 * @brief appendFilter Appends new filter to the filters.
+	 * @brief Appends new filter to the filters.
 	 * @param filter Filter to append to the list of existing filters.
 	 */	
 	void appendFilter( FILTER_T filter ) { m_filters.push_back( FILTER_T( filter ) ); m_filteringUpToDate = false; }
@@ -78,7 +87,7 @@ public:
 signals:
 
 	/**
-	 * @brief finished
+	 * @brief Signaled when the fecth operation completes.
 	 */
 	void finished();
 
@@ -90,21 +99,21 @@ signals:
 public slots:
 
 	/**
-	 * @brief itemFetched is called when the value becomes available.
+	 * @brief Notifies the AsyncFetch that fetching a value has completed.
 	 * @param cookie The cookie that identifies the fetch request.
 	 * @param value  The fetched value.
 	 */
 	void itemFetched( int cookie, const QJsonValue& value );
 
 	/**
-	 * @brief itemsFetched is signaled when fetching items for the whole list completes.
+	 * @brief Notifies the AsyncFetch that fetching of items is complete.
 	 * @param cookie The cookie that identifies the fetch request
 	 * @param values The fetched items.
 	 */
 	void itemsFetched( int cookie, const QJsonArray& values );
 
 	/**
-	 * @brief error
+	 * @brief Rerpots an error during the fetch operation.
 	 * @param cookie The cookie that identifies the fetch request.
 	 */
 	void reportError( int cookie );
@@ -114,7 +123,7 @@ protected:
 
 	/**
 	 * @brief This virtual function is called when something has been connected to signal in this object.
-	 * @param signal
+	 * @param signal An slot was connected to this signal of this object.
 	 */
 	virtual void connectNotify( const QMetaMethod& signal );
 
@@ -122,7 +131,7 @@ protected:
 private:
 
 	/**
-	 * @brief applyFilter
+	 * @brief Applies filter for the given values.
 	 * @param values Values to be filtered.
 	 * @return Filtered values
 	 */

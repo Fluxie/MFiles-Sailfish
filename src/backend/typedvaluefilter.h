@@ -1,3 +1,23 @@
+/*
+ *  Copyright 2014 Juha Lepola
+ *
+ *  This file is part of M-Files for Sailfish.
+ *
+ *  M-Files for Sailfish is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public
+ *  License as published by the Free Software Foundation, either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  M-Files for Sailfish is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with M-Files for Sailfish. If not, see
+ *  <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef TYPEDVALUEFILTER_H
 #define TYPEDVALUEFILTER_H
 
@@ -7,7 +27,7 @@
 #include "lazyownerinfo.h"
 
 /**
- * @brief The TypedValueFilter class
+ * @brief The TypedValueFilter class specifies filter for value list items when they are fetched from the server.
  */
 class TypedValueFilter : public QObject
 {
@@ -16,12 +36,22 @@ class TypedValueFilter : public QObject
 	Q_PROPERTY( QJsonValue ownerInfo READ ownerInfo NOTIFY ownerInfoChanged )
 public:
 
-	//! The particular filter type is undefined.
+	/**
+	 * @brief The particular filter type is undefined.
+	 */
 	static const int Undefined = INT_MIN;
 
-	explicit TypedValueFilter(QObject *parent = 0);	
+	/**
+	 * @brief Initializes new TypedValueFilter object.
+	 * @param parent Parent for the filter.
+	 */
+	explicit TypedValueFilter(QObject *parent = 0);
 
-	// Copy constructor.
+	/**
+	 * @brief Copy-constructor
+	 * @param other Copied filter object.
+	 * @param parent Parent for the copy.
+	 */
 	TypedValueFilter( const TypedValueFilter& other, QObject *parent = 0 ) :
 		QObject( parent ),
 		m_enabled( other.m_enabled ),
@@ -30,53 +60,68 @@ public:
 		m_ownerInfo( other.m_ownerInfo ? new LazyOwnerInfo( *other.m_ownerInfo, this ) : 0 )
 	 {}
 
-	//! Destructor.
+	/**
+	 * @brief ~TypedValueFilter
+	 */
 	virtual ~TypedValueFilter() {}
 
 	/**
 	 * @brief Initializes new typed value filter for property definition.
 	 * @param propertyDef Property definition.
-	 * @return
+	 * @return Filter for property definition.
 	 */
 	static TypedValueFilter* forPropertyDefinition( int propertyDef );
 
 	/**
 	 * @brief Initializes new typed value filter for property definition.
-	 * @param propertyDef Property definition.
-	 * @param index The index of this item.
+	 * @param propertyDef Property definition.	 
 	 * @param resolver The owner resolver that will be used to determine the ownership info.
-	 * @return TypedValueFilter
+	 * @return Filter for property definition with owner filter.
 	 */
 	static TypedValueFilter* forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver );
 
-	//! Is this filter enabled?
+	/**
+	 * @brief Is this filter enabled?
+	 * @return True if the filter is enabled.
+	 */
 	bool enabled() const { return m_enabled; }
 
-	//! Gets the object type.
+	/**
+	 * @brief Gets the object type.
+	 * @return The object type.
+	 */
 	int objectType() const { return m_objectType; }
 
-	//! Gets the property definition.
+	/**
+	 * @brief Gets the property definition.
+	 * @return The property definition.
+	 */
 	int propertyDef() const { return m_propertyDef; }
 
 	/**
-	 * @brief ownerInfo
+	 * @brief Gets the ownerhip information for filtering.
 	 * @return Ownership information for filtering.
 	 */
 	QJsonValue ownerInfo() const;
 
 signals:
 
-	//! Signaled when the object type changes.
+	/**
+	 * @brief This signal is emitted when the object type changes.
+	 */
 	void objectTypeChanged();
 
 	/**
-	 * @brief Signaled when the ownership information in this filter changes.
+	 * @brief This signal is emitted when the ownership information in this filter changes.
 	 */
 	void ownerInfoChanged();
 
 public slots:
 
-	//! Sets the object type.
+	/**
+	 * @brief Sets the object type.
+	 * @param objectType Object type for filtering.
+	 */
 	void setObjectType( int objectType );
 
 // Private data.
@@ -91,6 +136,12 @@ private:
 
 Q_DECLARE_METATYPE( TypedValueFilter )
 
+/**
+ * @brief Compares TypedValueFilter objects for equality.
+ * @param left Left operand.
+ * @param right Right operand.
+ * @return True if the operands are equal.
+ */
 inline bool operator==( const TypedValueFilter &left, const TypedValueFilter &right )
 {
 	return left.enabled() == right.enabled()
@@ -99,6 +150,11 @@ inline bool operator==( const TypedValueFilter &left, const TypedValueFilter &ri
 			&& left.ownerInfo() == right.ownerInfo();
 }
 
+/**
+ * @brief Hash function for TypedValueFilter object.
+ * @param key The TypedValueFilter object for which the hash value is calculated.
+ * @return Hash value of the TypedValueFilter object.
+ */
 inline uint qHash( const TypedValueFilter* key )
 {
 	if( key == 0 )

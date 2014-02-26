@@ -43,57 +43,93 @@ class VaultCore : public QObject
 	Q_OBJECT
 public:
 
-	//! Constructor.
-	explicit VaultCore(
-		const QString& url,  //!< URL to the M-Files REST API.
-		const QString& authentication,  //!> Authentication information if available.
-		QObject *parent = 0  //!< Owner.
-	);
+	/**
+	 * @brief Initializes new VaultCore object.
+	 * @param url URL to the M-Files REST API.
+	 * @param authentication Authentication information if available.
+	 * @param parent Parent object.
+	 */
+	explicit VaultCore( const QString& url,	const QString& authentication, QObject *parent = 0 );
 
 	//! Destructor.
 	virtual ~VaultCore();
 
-	//! Authentication.
+	/**
+	 * @brief Gets the authentication information.
+	 * @return Returns the authentication information.
+	 */
 	QString authentication() const;
 
-	//! Url
+	/**
+	 * @brief Gets the URL to M-Files REST API.
+	 * @return Returns the URL to M-Files REST API.
+	 */
 	QString url() const { return m_url; }
 
-	//! Classes.
+	/**
+	 * @brief Gets the classes cache.
+	 * @return Returns reference to the classes cache.
+	 */
 	ClassCache* classes() const { return m_classes; }
 
-	//! Object types.
+	/**
+	 * @brief Gets the object type cache.
+	 * @return Returns reference to the object type cache.
+	 */
 	ObjectTypeCache* objectTypes() const { return m_objectTypes; }
 
-	//! Property definitions.
+	/**
+	 * @brief Gets the property definition cache.
+	 * @return Returns reference to the property definition cache.
+	 */
 	PropertyDefCache* propertyDefinitions() const { return m_propertyDefinitions; }
 
-	//! Objects.
+	/**
+	 * @brief Gets the object cache.
+	 * @return Returns reference to the object cache.
+	 */
 	ObjectCache* objects() const { return m_objectCache; }
 	
 signals:
 
-	//! Signaled the first time when all the caches have been populated.
+	/**
+	 * @brief This signal is emitted when all the caches have been populated for the first time.
+	 */
 	void allCachesPopulated();
 
-	//! Authentication changed signal.
-	void authenticationChanged( const QString& authentication );	
+	/**
+	 * @brief This signal is emitted when the authentication information has changed.
+	 * @param authentication The new changed authentication information.
+	 */
+	void authenticationChanged( const QString& authentication );
 
-	//! Signaled when error happens when processing "core" operation.
+	/**
+	 * @brief This signal is emitted when an error occurss within the vault's "core" operation.
+	 * @param error Description of the error.
+	 */
 	void error( const ErrorInfo& error );
 	
 public slots:
 
-	//! Updates the authentication info.
-	void setAuthentication(
-		const QString& authentication
-	);
-
-	//! A cache hosted by this core has been refreshed.
-	void cacheRefreshed();
+	/**
+	 * @brief Updates the authenticaion information
+	 * @param authentication Updated authentication information.
+	 */
+	void setAuthentication( const QString& authentication );
 
 	//! An error has occurred within the vault.
+	/**
+	 * @brief Reports an error that has occurred within the vault.
+	 * @param errorinfo Description of the error.
+	 */
 	void reportError( const ErrorInfo& errorinfo );
+
+private slots:
+
+	/**
+	 * @brief Notifies the vault that a cache has been refreshed.
+	 */
+	void cacheRefreshed();
 
 // Private data.
 private:

@@ -33,30 +33,50 @@
 // Forward declarations.
 class VaultCore;
 
+/**
+ * @brief The ValueListCore class stores value list items of the class fetched from the server.
+ */
 class ValueListCore : public StructureCacheBase
 {
 	Q_OBJECT
 public:
 
-	//! Constructs value list object to represent one value list.
+	/**
+	 * @brief Initializes new ValueListCore object to represent one value list.
+	 * @param vault Vault.
+	 * @param valueList  Id of the value list.
+	 * @param owner Id of the owner value list.
+	 */
 	explicit ValueListCore( VaultCore* vault, int valueList, int owner );
 
-	//! Constructs value list object to represent one value list accessed via the specified property definition.
+	/**
+	 * @brief Initializes new ValueListCore object to represent one value list with a filter.
+	 * @param vault Vault.
+	 * @param valueList  Id of the value list.
+	 * @param owner Id of the owner value list.
+	 * @param filter Filter for filtering the value list items.
+	 */
 	explicit ValueListCore( VaultCore* vault, int valueList, int owner, const TypedValueFilter* filter );
 
 	//! Destructor.
 	virtual ~ValueListCore();
 
-	//! The id of the value list.
+	/**
+	 * @brief Gets the id of the value list.
+	 * @return Id of the value list.
+	 */
 	int id() const { return m_valueList; }
 
 	/**
-	 * @brief owner value list
+	 * @brief Gets the owner of the value list.
 	 * @return Id of the owner value list.
-	 */
+	 */	
 	int owner() const { return m_owner; }
 
-	//! Filter the values in this list are filtered with.
+	/**
+	 * @brief Gets the filter that is used to filter the items in this value list.
+	 * @return Value list's filter.
+	 */
 	const TypedValueFilter* filter() const { return m_filter; }
 
 signals:
@@ -75,7 +95,14 @@ protected:
 // Private interface.
 private:
 
-	//! Gets resource for fetching the relevant value list items.
+	/**
+	 * @brief Gets resource for fetching the relevant value list items.
+	 * @param allItems True to get resource for fetching all items. False to get resource for fetching one item.
+	 * @param valueList Id of the value list.
+	 * @param owner Possible owner of the value list. Maybe be required with certain filters.
+	 * @param filter Filter to apply to the resource.
+	 * @return Returns MFWS REST API resource for fetching the specified values.
+	 */
 	static QString getResource( bool allItems, int valueList, int owner, const TypedValueFilter* filter );
 
 // Private data.

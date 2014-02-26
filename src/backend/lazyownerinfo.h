@@ -38,7 +38,7 @@ class LazyOwnerInfo : public QObject
 public:
 
 	/**
-	 * @brief RESOLVER_T definition for function for resolving Json values.
+	 * @brief Definition for function for resolving JSON values.
 	 */
 	typedef std::function< QJsonValue() > RESOLVER_T;
 
@@ -63,6 +63,12 @@ public:
 // Statics.
 public:
 
+	/**
+	 * @brief Compares two LazyOwnerInfo objects.
+	 * @param left Left operand.
+	 * @param right Right operand.
+	 * @return True if the operands are equal.
+	 */
 	static bool Compare( const LazyOwnerInfo* left, const LazyOwnerInfo* right )
 	{
 		// Compare pointers.
@@ -78,7 +84,7 @@ public:
 signals:
 
 	/**
-	 * @brief ownerInfoChanged is signaled when the ownership information changes.
+	 * @brief This signal is emitted when the ownership information changes.
 	 */
 	void ownerInfoChanged();
 
@@ -92,11 +98,22 @@ private:
 
 };
 
+/**
+ * @brief Comparison operator for LazyOwnerInfo objects.
+ * @param left Left operand.
+ * @param right Right operand.
+ * @return True if the operands are equal.
+ */
 inline bool operator==( const LazyOwnerInfo &left, const LazyOwnerInfo &right )
 {
 	return left.ownerInfo() == right.ownerInfo();
 }
 
+/**
+ * @brief Hash function for LazyOwnerInfo object.
+ * @param ownerInfo The LazyOwnerInfo object for which the hash value is calculated.
+ * @return Hash value of the LazyOwnerInfo object
+ */
 inline uint qHash( const LazyOwnerInfo* ownerInfo )
 {
 	if( ownerInfo == 0 )

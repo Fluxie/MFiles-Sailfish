@@ -48,7 +48,7 @@ CoreBase::CoreBase( VaultCore* owner, QObject* parent ) :
 	if( parent != 0 && owner->thread() != parent->thread() )
 		qCritical( "Owner and parent must live in the same thread." );
 	this->moveToThread( owner->thread() );
-	if( parent != 0 )
+	if( parent != nullptr )
 		QMetaObject::invokeMethod( this, "updateParent", Q_ARG( QObject*, parent ) );
 }
 

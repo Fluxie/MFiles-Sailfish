@@ -26,13 +26,19 @@
 // Forward declarations.
 class VaultCore;
 
+/**
+ * @brief The ObjectTypeCache class caches all object types fetched from the server.
+ */
 class PropertyDefCache : public StructureCacheBase
 {
 	Q_OBJECT
 public:
-	explicit PropertyDefCache(
-		VaultCore* parent  //!< Parent vault.
-	);
+
+	/**
+	 * @brief Initializes new PropertyDefCache object.
+	 * @param parent Parent for the cache.
+	 */
+	explicit PropertyDefCache( VaultCore* parent );
 	
 signals:
 	

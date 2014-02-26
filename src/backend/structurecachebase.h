@@ -1,20 +1,22 @@
 /*
-*  This file is part of M-Files for Sailfish.
-*
-*  M-Files for Sailfish is free software: you can redistribute it
-*  and/or modify it under the terms of the GNU General Public
-*  License as published by the Free Software Foundation, either
-*  version 3 of the License, or (at your option) any later version.
-*
-*  M-Files for Sailfish is distributed in the hope that it will be
-*  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-*  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with M-Files for Sailfish. If not, see
-*  <http://www.gnu.org/licenses/>.
-*/
+ *  Copyright 2014 Juha Lepola
+ *
+ *  This file is part of M-Files for Sailfish.
+ *
+ *  M-Files for Sailfish is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public
+ *  License as published by the Free Software Foundation, either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  M-Files for Sailfish is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with M-Files for Sailfish. If not, see
+ *  <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef STRUCTURECACHEBASE_H
 #define STRUCTURECACHEBASE_H
@@ -33,73 +35,90 @@ class VaultCore;
 class MfwsRest;
 class QNetworkReply;
 
+/**
+ * @brief The StructureCacheBase class is a base class for all core caches.
+ */
 class StructureCacheBase : public CoreBase
 {
 
 	Q_OBJECT
 public:
 
-	//! Constructor.
-	explicit StructureCacheBase(
-		const QString& resource,  //!< The resource this cache caches. E.g /structure/classes
-		VaultCore* parent,  //!< Parent vault.
-		bool immediateRefresh = true  //!< True if the cache should be refreshed immediately.
-	);
+	/**
+	 * @brief Initializes new StructureCacheBase object.
+	 * @param resource The resource this cache caches. E.g /structure/classes
+	 * @param parent Parent vault.
+	 * @param immediateRefresh True if the cache should be refreshed immediately.
+	 */
+	explicit StructureCacheBase( const QString& resource, VaultCore* parent, bool immediateRefresh = true );
 
 	//! Constructor.
-	explicit StructureCacheBase(
-		const QString& resource,  //!< The resource this cache caches. E.g /structure/classes
-		const QString& fetchOne,  //!< String format for fetching one item.
-		VaultCore* parent,  //!< Parent vault.
-		bool immediateRefresh = true  //!< True if the cache should be refreshed immediately.
-	);
+	/**
+	 * @brief Initializes new StructureCacheBase object.
+	 * @param resource The resource this cache caches. E.g /structure/classes
+	 * @param fetchOne String format for fetching one item.
+	 * @param parent Parent vault.
+	 * @param immediateRefresh True if the cache should be refreshed immediately.
+	 */
+	explicit StructureCacheBase( const QString& resource, const QString& fetchOne, VaultCore* parent, bool immediateRefresh = true );
 
-	//! Destructor.
-	virtual ~StructureCacheBase() {}
-
-	//! Gets an item from the cache.
+	/**
+	 * @brief Gets an item from the cache.
+	 * @param id Id of the item.
+	 * @return Representative for the asynchronous fetch operation.
+	 */
 	AsyncFetch* get( int id ) const;
 
 	/**
-	 * @brief list
-	 * @return The values of the value list.
+	 * @brief Gets all items in the cache.
+	 * @return Representative for the asynchronous fetch operation.
 	 */
 	AsyncFetch* list() const;
 
-	//! Is this cache populated?
+	/**
+	 * @brief Checks if this cache is populated.
+	 * @return True if the cache is populated.
+	 */
 	bool populated() const { return m_populated; }
 	
 signals:
 
-	//! Signaled when cache is unable to server a request from the cache.
+	/**
+	 * @brief This signal is emitted when  cache is unable to serve a request from the cache.
+	 * @param id
+	 */
 	void missing( int id ) const;
 
-	//! Signaled when fething of an item completes
+	/**
+	 * @brief This signal is emitted when fething of an item completes.
+	 * @param cookie Cookie identifies the request
+	 * @param value The fetched value.
+	 */
 	void itemFetched( int cookie, const QJsonValue& value ) const;
 
 	/**
-	 * @brief itemsFetched is signaled when fetching items for the whole list completes.
+	 * @brief This signal is emitted when fetching items for the whole list completes.
 	 * @param cookie Cookie identifies the request
 	 * @param values The fetched items.
 	 */
 	void itemsFetched( int cookie, const QJsonArray& values ) const;
 
-	//! Signaled when cache has been refreshed.
+	/**
+	 * @brief This signal is emitted when cache has been refreshed.
+	 */
 	void refreshed();
 
-	//! Signaled when the populated status has changed.
+	/**
+	 * @brief This signal is emitted when the populated status has changed.
+	 */
 	void populatedChanged();
 
 public slots:
 
-	//! Requests the cache refresh.
+	/**
+	 * @brief Requestes the cache to be refreshed.
+	 */
 	void requestRefresh();
-
-	//! Sets the cache content from the given network reply.
-	void setContentFrom( int cookie, QNetworkReply* reply );
-
-	//! Requests one item to be fetched.
-	void fetchOneItem( int cookie, int id );
 
 	/**
 	 * @brief requestRefresh Request refresh of the list.
@@ -111,27 +130,40 @@ public slots:
 // Protected interface.
 protected:
 
-	//! Definition for cached item container.
+	/**
+	 * @brief Definition for cached item container.
+	 */
 	typedef QHash< int, int > CACHE_MAPPER;
 
-	//! Override this to clear the satellite data when the cache contents is cleared.
+	/**
+	 * @brief Override this to clear the satellite data when the cache contents is cleared.
+	 */
 	virtual void clearSatelliteDataNts() {}
 
-	//! Override this to populate satellite data that after the cache contens has been refreshed.
+	/**
+	 * @brief Override this to populate satellite data that after the cache contens has been refreshed.
+	 */
 	virtual void populateSatelliteDataNts() {}
 
 	/**
-	 * @brief Normalizes the presentation of the value.
+	 * @brief Normalizes the presentation of the value. The actual normalization is implementation dependant.
 	 * @param value The value that is normalized.
 	 * @return Normalized value.
 	 */
 	virtual QJsonValue normalizeValue( QJsonValue value ) { return value; }
 
-	//! Accesses the cache.
+	//!
+	/**
+	 * @brief Accesses the cache map.
+	 * @return Cache map.
+	 */
 	const CACHE_MAPPER& cacheMapperNts() const { return m_cache; }
 
-	//! Access the actual data.
-	const QJsonArray& dataNts() const { return m_data; }	
+	/**
+	 * @brief Access the actual data.
+	 * @return Cached data.
+	 */
+	const QJsonArray& dataNts() const { return m_data; }
 
 // Protected data.
 protected:
@@ -146,6 +178,22 @@ private:
 	 * @return Next cookie.
 	 */
 	int getNextCookieNts() const { return m_nextCookie++; }
+
+private slots:
+
+	/**
+	 * @brief Requests one item to be fetched.
+	 * @param cookie Cookie identifies the request.
+	 * @param id The id of the item to be fetched
+	 */
+	void fetchOneItem( int cookie, int id );
+
+	/**
+	 * @brief Sets the cache content from the given network reply.
+	 * @param cookie Cookie identifies the request.
+	 * @param reply REST API request reply.
+	 */
+	void setContentFrom( int cookie, QNetworkReply* reply );
 
 // Private data.
 private:

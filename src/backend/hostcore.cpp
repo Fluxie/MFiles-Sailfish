@@ -75,11 +75,6 @@ void HostCore::reportError( const ErrorInfo& errorinfo )
 	emit error( errorinfo );
 }
 
-/**
- * @brief HostCore::run
- *
- *
- */
 void HostCore::run()
 {
     // Start event loop.

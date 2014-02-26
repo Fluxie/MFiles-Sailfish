@@ -29,37 +29,59 @@
 class AppMonitor;
 class VaultCore;
 
+/**
+ * @brief HostCore manages the background thread for background operations.
+ */
 class HostCore : public QThread
 {
     Q_OBJECT
 public:
 
-	//! Constructor.
+	/**
+	 * @brief Initializes new HostCore object.
+	 * @param monitor Global application monitor.
+	 */
 	explicit HostCore( AppMonitor* monitor );
 
-	//! Returns Host instance.
+	/**
+	 * @brief Gets the global HostCore instance.
+	 * @return Global host core instance.
+	 */
 	static HostCore* instance();
     
 signals:
 
-	//! Signaled when an error occurss within the application.
+	/**
+	 * @brief This signal is emitted when an error occurss within the application.
+	 * @param error Description of the error.
+	 */
 	void error( const ErrorInfo& error );
     
 public slots:
 
-	//! Prepares vault.
+	/**
+	 * @brief Prepares new VaultCore object for accessing the specified vault.
+	 * @param url http url to the vaul.
+	 * @param authentication Authentication token for accessing the vault's resources.
+	 * @return VautlCore
+	 */
 	VaultCore* prepareVault(
 		const QString& url,
 		const QString& authentication
 	);
 
-	//! Reports an error somewhere within the application.
+	/**
+	 * @brief Reports an error somewhere within the application.
+	 * @param error Description of the error.
+	 */
 	void reportError( const ErrorInfo& error );
 
 // Private interface.
 private:
 
-	//! Implementation.
+	/**
+	 * @brief Event loop of the background thrad.
+	 */
 	virtual void run();
 
 // Private data.

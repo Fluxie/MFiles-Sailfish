@@ -31,32 +31,47 @@
 // Forward declarations.
 class VaultCore;
 
-//! Cache for classes.
+/**
+ * @brief Cache for object classes retrieved from the server.
+ */
 class ClassCache : public StructureCacheBase
 {
 	Q_OBJECT
 public:
 
-	//! Constructor
+	/**
+	 * @brief Initializes new ClassCache object.
+	 * @param parent PA
+	 */
 	explicit ClassCache( VaultCore* parent = 0);
 
-	//! Destructor.
+	/**
+	 * @brief Uninitializes this object.
+	 */
 	virtual ~ClassCache() {}
 
-	//! Fetches the classes of the specified object type.
+	/**
+	 * @brief Gets the classes that belong to specified object type.
+	 * @param objectType Classes of this object type are returned.
+	 * @return Classes of the specified object type.
+	 */
 	QList< int > classesOfObjectType( int objectType );
 	
 signals:
 	
 public slots:
 
-// Protected interface.
+
 protected:
 
-	//! Override this to clear the satellite data when the cache contents is cleared.
+	/**
+	 * @brief Clears the satellite data controlled by this cache.
+	 */
 	virtual void clearSatelliteDataNts();
 
-	//! Override this to populate satellite data that after the cache contens has been refreshed.
+	/**
+	 * @brief Updates the satellite data controlled by this cache when the cache is refreshed.
+	 */
 	virtual void populateSatelliteDataNts();
 
 // Private data.
