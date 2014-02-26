@@ -27,38 +27,55 @@
 
 #include "errorlayer.h"
 
-//! Represents a single error within the application.
+/**
+ * @brief The ErrorInfo class reprsents a single error within the application.
+ */
 class ErrorInfo
 {
 // Public interface.
 public:
 
-	//! Initializes empty error. Required for Qt metatype system.
+	/**
+	 * @brief Initializes new empty ErrorInfo. Required for Qt metatype system.
+	 */
 	ErrorInfo() {}
 
-	//! Initializes new error info.
+	/**
+	 * @brief Initializes new ErrorInfo object with a message.
+	 * @param message Error message.
+	 */
 	ErrorInfo( const QString& message );
 
-	//! Copy-constructor.
+	/**
+	 * @brief Copy-constructor.
+	 * @param copy Original.
+	 */
 	ErrorInfo( const ErrorInfo& copy );
 
-	//! Destructor.
-	~ErrorInfo() {}
-
-	//! Assignment.
+	/**
+	 * @brief Assignment operator.
+	 * @param assigned The object assigne to this object.
+	 */
 	void operator=( const ErrorInfo& assigned );
 
-	//! Message.
+	/**
+	 * @brief Gets the error message.
+	 * @return Returns the error message.
+	 */
 	const QString& message() const { return m_message; }
 
-	//! Adds new layer to the error.
-	void push_layer(
-			const QString& file,
-			int lineNumber,
-			const QString& contextId
-	) const;
+	/**
+	 * @brief Adds new layer to the error.
+	 * @param file The name of the file where the
+	 * @param lineNumber The line number where the layer was added.
+	 * @param contextId Additional context information.
+	 */
+	void push_layer( const QString& file, int lineNumber, const QString& contextId ) const;
 
-	//! Error layers.
+	/**
+	 * @brief Gets the error layers.
+	 * @return Returns the error layers.
+	 */
 	const QVector< ErrorLayer >& layers() const { return m_layers; }
 
 // Private data.

@@ -26,6 +26,9 @@
 
 #include "errorinfo.h"
 
+/**
+ * @brief The ErrorModel class provides a model for UI for displaying an error.
+ */
 class ErrorModel : public QObject
 {
 	Q_OBJECT
@@ -33,32 +36,49 @@ class ErrorModel : public QObject
 	Q_PROPERTY( QStringListModel* stack READ stack NOTIFY stackChanged )
 public:
 
-	//! Constructrs empty error model.
+	/**
+	 * @brief Initializes empty error model. Required for Qt metatype system.
+	 * @param parent Owner object.
+	 */
 	explicit ErrorModel(QObject *parent = 0);
 
-	//! Constructrs an error model based on the given error.
+	/**
+	 * @brief Initializes new ErrorModel object based on the given error.
+	 * @param error Description of the error.
+	 */
 	explicit ErrorModel( const ErrorInfo& error );
 
-	//! Gets the error message.
+	/**
+	 * @brief Gets the error message.
+	 * @return Returns the error message.
+	 */
 	QString message() const { return m_error.message(); }
 
-	//! Gets the error stack.
+	/**
+	 * @brief Gets the error stack.
+	 * @return Returns the error stack.
+	 */
 	QStringListModel* stack() const;
 
 signals:
 
-	//! Signaled when the message changes.
+	/**
+	 * @brief This signal is emitted when the message changes.
+	 */
 	void messageChanged();
 
-	//! Signaled when the stack changes.
+	/**
+	 * @brief This signal is emitted when the stack changes.
+	 */
 	void stackChanged();
 
 public slots:
 
-// Private interface.
 private:
 
-	//! Fills the stack based on the current error object.
+	/**
+	 * @brief Fills the stack based on the current error object.
+	 */
 	void fillStack();
 
 // Private data

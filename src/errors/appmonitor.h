@@ -29,40 +29,55 @@
 // Forward declarations.
 class ErrorModel;
 
-//! Application monitor for monitoring the status of the application for errors and other related information.
+/**
+ * @brief The AppMonitor class monitors the status of the application for errors and other related information.
+ */
 class AppMonitor : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY( ErrorModel* lastError READ lastError NOTIFY lastErrorChanged )
 public:
 
-	//! Initializes the AppMonitor.
+	/**
+	 * @brief Initializes new AppMonitor object.
+	 * @param parent Parent object.
+	 */
 	explicit AppMonitor( QObject *parent = 0 );
 
-	//! Destructor.
 	virtual ~AppMonitor();
 
-
-	//! The last error messagge.
+	/**
+	 * @brief Gets the last error message.
+	 * @return Returns the last error message.
+	 */
 	ErrorModel* lastError() const { return m_lastError; }
 
-	//! Hides all current errors from the user.
+	/**
+	 * @brief Hides all current errors from the user.
+	 */
 	Q_INVOKABLE void hideErrors();
 
 signals:
 
-	//! Signaled when the last error changes.
+	/**
+	 * @brief This signal is emitted when the last error changes.
+	 */
 	void lastErrorChanged();
 
 public slots:
 
-	//! Reports an error.
+	/**
+	 * @brief Reports an error.
+	 * @param error Description of the error.
+	 */
 	void reportError( const ErrorInfo& error );
 
 // Private interface.
 private:
 
-	//! Refreshes the last error.
+	/**
+	 * @brief Refreshes the last error.
+	 */
 	void refreshLastError();
 
 // Private data.

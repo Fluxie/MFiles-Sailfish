@@ -23,35 +23,58 @@
 
 #include <QString>
 
-//! Error layer act
+/**
+ * @brief The ErrorLayer class represents a single error information layer wihtin the error.
+ *
+ * The error layer captures the location where the error was passed on.
+ */
 class ErrorLayer
 {
 public:
 
-	//! Default constructor, required for vector.
+	/**
+	 * @brief Default constructor, required for QVector.
+	 */
 	ErrorLayer() {}
 
-	//! Initializes new layer.
-	ErrorLayer(
-			const QString& file,
-			int lineNumber,
-			const QString& className,
-			const QString& contextId
-	);
+	/**
+	 * @brief Initializes new layer.
+	 * @param file The file name where the layer is created.
+	 * @param lineNumber  The line number within the file where the layer is created.
+	 * @param className  The name of the class where the layer is created.
+	 * @param contextId Additional context information. This information can be used to filter the errors that will be shown to the user.
+	 */
+	ErrorLayer( const QString& file, int lineNumber, const QString& className, const QString& contextId );
 
-	//! Copy-constructor.
+	/**
+	 * @brief Copy-constructor.
+	 * @param copy Original.
+	 */
 	ErrorLayer( const ErrorLayer& copy );
 
-	//! File where this layer was created.
+	/**
+	 * @brief GEts the file name where the layer was created.
+	 * @return Returns the file name.
+	 */
 	const QString& file() const { return m_file; }
 
-	//! The line number within the file where this layer was created.
+	/**
+	 * @brief Gets the line number within the file where this layer was created.
+	 * @return Returns the line number within the file where this layer was created.
+	 */
 	int lineNumber() const { return m_lineNumber; }
 
-	//! The class name where the layer was added.
+	/**
+	 * @brief Gets the name of the class where the layer is created.
+	 * @return Returns the name of the class where this layer was created.
+	 */
 	const QString& className() const { return m_className; }
 
 	//! The context where this layer was created.
+	/**
+	 * @brief Gets the context identifier.
+	 * @return Returns the context identifier.
+	 */
 	const QString& contextId() const { return m_contextId; }
 
 private:
