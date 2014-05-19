@@ -7,8 +7,8 @@
 #include "../mfiles/mfilesconstants.h"
 #include "propertyvaluelistmodel.h"
 #include "../backend/typedvaluefilter.h"
-#include "../valuelistfront.h"
-#include "../vaultfront.h"
+#include "../frontend/valuelistfront.h"
+#include "../frontend/vaultfront.h"
 
 AllowedLookupsResolver::AllowedLookupsResolver( PropertyValueListModel* parent, VaultFront* vault  ) :
 	QObject( parent ),

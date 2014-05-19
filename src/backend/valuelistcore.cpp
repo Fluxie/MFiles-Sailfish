@@ -67,6 +67,7 @@ QJsonValue ValueListCore::normalizeValue( QJsonValue value )
 	QJsonObject asObject = value.toObject();
 	if( ! asObject.contains( "HasOwner") )
 		asObject[ "HasOwner" ] = false;
+    asObject[ "_sf__CanSelect" ] = true;
 	value = asObject;
 	return value;
 }

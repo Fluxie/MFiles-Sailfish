@@ -1,10 +1,10 @@
 #include "classesfront.h"
 
-#include "backend/asyncfetch.h"
-#include "backend/classcache.h"
-#include "mfiles/mfilesconstants.h"
-#include "mfiles/valuelistitem.h"
-#include "backend/vaultcore.h"
+#include "../backend/asyncfetch.h"
+#include "../backend/classcache.h"
+#include "../mfiles/mfilesconstants.h"
+#include "../mfiles/valuelistitem.h"
+#include "../backend/vaultcore.h"
 
 ClassesFront::ClassesFront(
 	VaultCore* vault,  //!< Vault.
@@ -64,5 +64,19 @@ void ClassesFront::refreshClasses()
 		}
 	}
 	else
-		m_classes.clear();
+	{
+		// Collect all classes.
+		auto items = this->vault()->classes()->list();
+		QObject::connect( items, &AsyncFetch::finished, [=]() mutable {
+			items->deleteLater();
+
+			m_classes.clear();
+			foreach( MFiles::ValueListItem cls, items->values() )
+			{
+				m_classes.insert( cls.id() );
+			}
+
+		} );
+
+	}  // end if
 }

@@ -22,7 +22,7 @@
 
 #include <QQmlEngine>
 
-#include "mfiles/objver.h"
+#include "../mfiles/objver.h"
 #include "objectversionfront.h"
 
 ObjectFront::ObjectFront( QSharedPointer< ObjectCore >& core ) :

@@ -27,8 +27,8 @@
 #include <QSet>
 
 #include "frontbase.h"
-#include "backend/objecttypecache.h"
-#include "backend/valuelistcore.h"
+#include "../backend/objecttypecache.h"
+#include "../backend/valuelistcore.h"
 
 // Forward declarations.
 class VaultCore;

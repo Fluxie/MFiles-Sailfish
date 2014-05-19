@@ -27,7 +27,7 @@
 #include <QVariant>
 
 #include "../backend/typedvaluefilter.h"
-#include "../valuelistfront.h"
+#include "../frontend/valuelistfront.h"
 
 // Forward declarations.
 class AsyncFetch;

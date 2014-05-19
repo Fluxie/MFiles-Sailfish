@@ -36,16 +36,16 @@
 #include "errors/errorinfo.h"
 #include "backend/hostcore.h"
 #include "ui/integervalidator.h"
-#include "objectfront.h"
-#include "objectversionfront.h"
+#include "frontend/objectfront.h"
+#include "frontend/objectversionfront.h"
 #include "backend/lazyownerinfo.h"
 #include "ui/lookuplistmodel.h"
 #include "ui/propertyvaluelistmodel.h"
 #include "ui/realvalidator.h"
 #include "backend/typedvaluefilter.h"
-#include "vaultfront.h"
+#include "frontend/vaultfront.h"
 #include "ui/valuelistitemlistmodel.h"
-#include "valuelistfront.h"
+#include "frontend/valuelistfront.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {	

@@ -14,8 +14,8 @@
 #include "../mfiles/typedvalue.h"
 #include "../mfiles/valuelistitem.h"
 #include "../backend/typedvaluefilter.h"
-#include "../valuelistfront.h"
-#include "../vaultfront.h"
+#include "../frontend/valuelistfront.h"
+#include "../frontend/vaultfront.h"
 
 PropertyValueOwnerResolver::PropertyValueOwnerResolver(
 		PropertyValueListModel* parent,

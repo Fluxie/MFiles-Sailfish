@@ -24,7 +24,7 @@
 #include <QVariantMap>
 
 #include "allowedlookupsresolver.h"
-#include "../objectversionfront.h"
+#include "../frontend/objectversionfront.h"
 #include "../mfiles/objver.h"
 #include "propertyvalueownerresolver.h"
 #include "../backend/typedvaluefilter.h"

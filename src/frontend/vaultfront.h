@@ -25,7 +25,7 @@
 #include <QJsonValue>
 #include <QMetaType>
 
-#include "backend/typedvaluefilter.h"
+#include "../backend/typedvaluefilter.h"
 
 // Forward declarations.
 namespace MFiles { class ObjID; }
