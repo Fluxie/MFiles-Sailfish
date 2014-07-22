@@ -19,26 +19,26 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/mfwsrest.cpp \
     src/backend/structurecachebase.cpp \
     src/backend/propertydefcache.cpp \
-    src/objectfront.cpp \
+    src/frontend/objectfront.cpp \
     src/backend/objectcore.cpp \
-    src/vaultfront.cpp \
+    src/frontend/vaultfront.cpp \
     src/mfiles/objver.cpp \
     src/backend/objectcache.cpp \
     src/mfiles/objid.cpp \
     src/backend/objectversioncore.cpp \
-    src/objectversionfront.cpp \
+    src/frontend/objectversionfront.cpp \
     src/ui/realvalidator.cpp \
     src/ui/integervalidator.cpp \
     src/backend/valuelistcore.cpp \
-    src/valuelistfront.cpp \
-    src/frontbase.cpp \
+    src/frontend/valuelistfront.cpp \
+    src/frontend/frontbase.cpp \
     src/backend/corebase.cpp \
     src/errors/appmonitor.cpp \
     src/errors/errorinfo.cpp \
     src/errors/errorlayer.cpp \
     src/errors/errormodel.cpp \
     src/backend/typedvaluefilter.cpp \
-    src/classesfront.cpp \
+    src/frontend/classesfront.cpp \
     src/ui/propertyvalueownerresolver.cpp \
     src/mfiles/propertyvalue.cpp \
     src/mfiles/typedvalue.cpp \
@@ -53,7 +53,12 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/ui/allowedlookupsresolver.cpp \
     src/ui/lookuplistmodel.cpp \
     src/ui/valuelistitemlistmodel.cpp \
-    src/ui/propertyvaluelistmodel.cpp
+    src/ui/propertyvaluelistmodel.cpp \
+    src/ui/viewlistmodel.cpp \
+    src/backend/listingcache.cpp \
+    src/backend/cachedlisting.cpp \
+    src/backend/listingid.cpp \
+    src/backend/listresourcecachebase.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -61,27 +66,27 @@ HEADERS += src/backend/objecttypecache.h \
     src/mfwsrest.h \
     src/backend/structurecachebase.h \
     src/backend/propertydefcache.h \
-    src/objectfront.h \
+    src/frontend/objectfront.h \
     src/backend/objectcore.h \
-    src/vaultfront.h \
+    src/frontend/vaultfront.h \
     src/mfiles/objver.h \
     src/backend/objectcache.h \
     src/mfiles/objid.h \
     src/backend/objectversioncore.h \
-    src/objectversionfront.h \
+    src/frontend/objectversionfront.h \
     src/ui/realvalidator.h \
     src/ui/integervalidator.h \
     src/backend/valuelistcore.h \
-    src/valuelistfront.h \
+    src/frontend/valuelistfront.h \
     src/backend/valuelistkey.h \
-    src/frontbase.h \
+    src/frontend/frontbase.h \
     src/backend/corebase.h \
     src/errors/appmonitor.h \
     src/errors/errorinfo.h \
     src/errors/errorlayer.h \
     src/errors/errormodel.h \
     src/backend/typedvaluefilter.h \
-    src/classesfront.h \
+    src/frontend/classesfront.h \
     src/ui/propertyvalueownerresolver.h \
     src/mfiles/propertyvalue.h \
     src/mfiles/typedvalue.h \
@@ -97,7 +102,12 @@ HEADERS += src/backend/objecttypecache.h \
     src/ui/valuelistitemlistmodel.h \
     src/ui/propertyvaluelistmodel.h \
     src/mfiles/mfilesconstants.h \
-    src/mfiles/mfilestypewrapper.h
+    src/mfiles/mfilestypewrapper.h \
+    src/ui/viewlistmodel.h \
+    src/backend/listingcache.h \
+    src/backend/cachedlisting.h \
+    src/backend/listingid.h \
+    src/backend/listresourcecachebase.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

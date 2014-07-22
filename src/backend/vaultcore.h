@@ -29,6 +29,7 @@
 
 // Forward declarations.
 class ClassCache;
+class ListingCache;
 class ObjectTypeCache;
 class PropertyDefCache;
 class ObjectCache;
@@ -89,6 +90,12 @@ public:
 	 * @return Returns reference to the object cache.
 	 */
 	ObjectCache* objects() const { return m_objectCache; }
+
+	/**
+	 * @brief Gets the listing cache.
+	 * @return Returns reference to the listing cache.
+	 */
+	ListingCache* listings() const { return m_listingCache; }
 	
 signals:
 
@@ -138,6 +145,7 @@ private:
 	ObjectTypeCache* m_objectTypes;
 	PropertyDefCache*  m_propertyDefinitions;
 	ObjectCache* m_objectCache;
+	ListingCache* m_listingCache;
 	QString m_url;
 
 	// Authentication information.

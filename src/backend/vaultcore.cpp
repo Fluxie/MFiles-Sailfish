@@ -21,6 +21,7 @@
 #include "vaultcore.h"
 
 #include "classcache.h"
+#include "listingcache.h"
 #include "objectcache.h"
 #include "objecttypecache.h"
 #include "propertydefcache.h"
@@ -40,11 +41,15 @@ VaultCore::VaultCore(
 	m_objectTypes = new ObjectTypeCache( this );
 	m_propertyDefinitions = new PropertyDefCache( this );
 	m_objectCache = new ObjectCache( this );
+	m_listingCache = new ListingCache( this );
 
 	// Connect events.
 	QObject::connect( m_classes, &ClassCache::error, this, &VaultCore::reportError );
 	QObject::connect( m_classes, &ClassCache::refreshed, this, &VaultCore::cacheRefreshed );
 	QObject::connect( this, &VaultCore::authenticationChanged, m_classes, &ClassCache::requestRefresh, Qt::QueuedConnection );
+
+	QObject::connect( m_listingCache, &ListingCache::error, this, &VaultCore::reportError );
+	QObject::connect( this, &VaultCore::authenticationChanged, m_listingCache, &ListingCache::requestRefresh, Qt::QueuedConnection );
 
 	QObject::connect( this, &VaultCore::authenticationChanged, m_objectTypes, &ObjectTypeCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_objectTypes, &ObjectTypeCache::refreshed, this, &VaultCore::cacheRefreshed );
