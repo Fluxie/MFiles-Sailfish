@@ -141,7 +141,7 @@ void ViewListModel::forDisplay( const QModelIndex & index, QVariant& variant ) c
 {	
 	// Return the display name of the item.
 	MFiles::FolderContentItem item( m_listingData[ index.row() ] );
-	variant = item.dipslayName();
+	variant = item.displayName();
 }
 
 void ViewListModel::forResource( const QModelIndex & index, QVariant& variant ) const

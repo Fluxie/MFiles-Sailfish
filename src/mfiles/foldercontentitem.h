@@ -77,7 +77,7 @@ public:
 	 * @brief Gets the simple display name for this item.
 	 * @return The name of this item.
 	 */
-	QString dipslayName() const;
+	QString displayName() const;
 };
 
 }

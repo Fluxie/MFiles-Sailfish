@@ -43,7 +43,7 @@ public:
 
 	/**
 	 * @brief Initializes value list item based on existing Json object.
-	 * @param typedValue The wrapped Json object.
+	 * @param valueListItem The wrapped Json object.
 	 */
 	ValueListItem( const QJsonValue& valueListItem );
 

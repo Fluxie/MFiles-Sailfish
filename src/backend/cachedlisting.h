@@ -53,6 +53,11 @@ public:
 	 */
 	QString resource() const;
 
+// ListResourceCacheBase.
+protected:
+
+	virtual QJsonValue normalizeValue( QJsonValue value );
+
 // Private data.
 private:
 

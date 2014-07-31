@@ -18,32 +18,41 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "foldercontentitem.h"
+#ifndef VIEW_H
+#define VIEW_H
 
-MFiles::FolderContentItem::FolderContentItem( const QJsonValue& item ) :
-	MFilesTypeWrapper( item )
+#include <QJsonValue>
+
+#include "mfilestypewrapper.h"
+
+/**
+ * Namespace for M-Files types.
+ */
+namespace MFiles
 {
+
+/**
+ * @brief Provides accessors for properties of View M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/view.html">View</a> in M-Files REST API documentation.
+ */
+class View : public MFilesTypeWrapper
+{
+public:
+
+	/**
+	 * @brief Initializes view based on existing Json object.
+	 * @param view The wrapped Json object.
+	 */
+	View( const QJsonValue& view );
+
+	/**
+	 * @brief Gets information about the view location.
+	 * @return The view location.
+	 */
+	QJsonValue viewLocation() const { return this->property( "ViewLocation" ); }
+};
+
 }
 
-QString MFiles::FolderContentItem::displayName() const
-{
-	// Return the default display name based on the type of the item.
-	switch( this->type() )
-	{
-	case MFiles::Constants::ObjectVersion :
-		return this->objectVersion().toObject()[ "Title" ].toString();
-		break;
-
-	case MFiles::Constants::PropertyFolder :
-		return this->propertyFolder().toObject()[ "DisplayValue" ].toString();
-		break;
-
-	case MFiles::Constants::ViewFolder :
-		return this->view().toObject()[ "Name" ].toString();
-		break;
-
-	default :
-		Q_ASSERT( false );
-		return "";
-	}
-}
+#endif // VIEW_H

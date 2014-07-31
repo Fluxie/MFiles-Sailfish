@@ -18,32 +18,16 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "foldercontentitem.h"
+#include "viewlocation.h"
 
-MFiles::FolderContentItem::FolderContentItem( const QJsonValue& item ) :
-	MFilesTypeWrapper( item )
+MFiles::ViewLocation::ViewLocation( const QJsonValue& location ) :
+	MFilesTypeWrapper( location )
 {
 }
 
-QString MFiles::FolderContentItem::displayName() const
+MFiles::ViewLocation::ViewLocation() :
+	MFilesTypeWrapper()
 {
-	// Return the default display name based on the type of the item.
-	switch( this->type() )
-	{
-	case MFiles::Constants::ObjectVersion :
-		return this->objectVersion().toObject()[ "Title" ].toString();
-		break;
-
-	case MFiles::Constants::PropertyFolder :
-		return this->propertyFolder().toObject()[ "DisplayValue" ].toString();
-		break;
-
-	case MFiles::Constants::ViewFolder :
-		return this->view().toObject()[ "Name" ].toString();
-		break;
-
-	default :
-		Q_ASSERT( false );
-		return "";
-	}
+	this->object()[ "OverlappedFolder" ] = QJsonValue( QJsonValue::Object );
+	this->object()[ "Overlapping" ] = QJsonValue( false );
 }

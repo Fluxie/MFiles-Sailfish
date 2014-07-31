@@ -18,32 +18,9 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "foldercontentitem.h"
+#include "view.h"
 
-MFiles::FolderContentItem::FolderContentItem( const QJsonValue& item ) :
-	MFilesTypeWrapper( item )
+MFiles::View::View( const QJsonValue& view ) :
+	MFilesTypeWrapper( view )
 {
-}
-
-QString MFiles::FolderContentItem::displayName() const
-{
-	// Return the default display name based on the type of the item.
-	switch( this->type() )
-	{
-	case MFiles::Constants::ObjectVersion :
-		return this->objectVersion().toObject()[ "Title" ].toString();
-		break;
-
-	case MFiles::Constants::PropertyFolder :
-		return this->propertyFolder().toObject()[ "DisplayValue" ].toString();
-		break;
-
-	case MFiles::Constants::ViewFolder :
-		return this->view().toObject()[ "Name" ].toString();
-		break;
-
-	default :
-		Q_ASSERT( false );
-		return "";
-	}
 }

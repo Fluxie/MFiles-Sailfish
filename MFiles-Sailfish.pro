@@ -62,7 +62,9 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/frontend/listingfront.cpp \
     src/ui/resetmodel.cpp \
     src/mfiles/foldercontentitem.cpp \
-    src/mfiles/objectversion.cpp
+    src/mfiles/objectversion.cpp \
+    src/mfiles/view.cpp \
+    src/mfiles/viewlocation.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -116,7 +118,9 @@ HEADERS += src/backend/objecttypecache.h \
     src/ui/resetmodel.h \
     src/ui/listmodelbase.h \
     src/mfiles/foldercontentitem.h \
-    src/mfiles/objectversion.h
+    src/mfiles/objectversion.h \
+    src/mfiles/view.h \
+    src/mfiles/viewlocation.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

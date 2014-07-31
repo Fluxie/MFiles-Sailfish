@@ -75,6 +75,12 @@ public:
 	 */
 	bool hasValue() const { return this->property( "HasValue" ).toBool(); }
 
+	/**
+	 * @brief Gets the display value of this typed value.
+	 * @return The display value.
+	 */
+	QString displayValue() const { return this->property( "DisplayValue" ).toString(); }
+
 	//! Lookup.
 	Lookup lookup() const { return Lookup( this->property( "Lookup" ) ); }
 
