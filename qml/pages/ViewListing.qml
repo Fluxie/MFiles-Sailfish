@@ -29,6 +29,7 @@ Page {
 
     property VaultFront vault : VaultFront {}
     property var view
+    property var propertyFolder
     property string path
 
 
@@ -38,7 +39,7 @@ Page {
         anchors.right: parent.right
 
         id: header
-        title: page.view.Name
+        title:  page.propertyFolder ? page.propertyFolder.DisplayValue : page.view.Name
     }
 
     // To enable PullDownMenu, place our content in a SilicaFlickable
@@ -80,6 +81,10 @@ Page {
 
                 case ViewListModel.ObjectVersion :
                     pageStack.push( 'PropertyValues.qml', { objectVersion: model.data, vault: page.vault } );
+                    break;
+
+                case ViewListModel.PropertyFolder :
+                    pageStack.push( 'ViewListing.qml', { view: page.view, propertyFolder: model.data, path: model.resource, vault: page.vault } );
                     break;
 
                 default:

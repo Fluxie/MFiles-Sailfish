@@ -23,6 +23,7 @@
 #include "mfilesconstants.h"
 
 #include <QJsonArray>
+#include <QUrl>
 
 /**
  * Namespace for M-Files types.
@@ -124,7 +125,7 @@ QJsonArray TypedValue::asLookups() const
  * @brief getLookupIds
  * @return A collection of lookup ids.
  */
-QSet< int > TypedValue::getLookupIds()
+QSet< int > TypedValue::getLookupIds() const
 {
 	Q_ASSERT( this->dataType() == 9 || this->dataType() == 10 );
 
@@ -212,6 +213,81 @@ bool TypedValue::dropLookupsExcept( const QSet< int > allowedLookups )
 	}
 
 	return somethingDropped;
+}
+
+QString TypedValue::getUriEncodedValue() const
+{
+	// Uninitialized?
+	if( ! hasValue() )
+		return "-";
+
+	// Determine the encoding prefix and the encoded value.
+	char prefix;
+	QString value = "";
+	switch ( this->dataType() )
+	{
+	case MFiles::Constants::Text :
+		prefix = 'T';
+		value = QUrl::toPercentEncoding( this->getAsUnlocalizedText() ).constData();
+		break;
+
+	case MFiles::Constants::SingleSelectLookup :
+		prefix = 'L';
+		value = QString::number( this->lookup().item() );
+		break;
+
+	// Multi-select
+	case MFiles::Constants::MultiSelectLookup:
+		prefix = 'S';
+		foreach( int lookupId, this->getLookupIds() )
+		{
+			value.append( QString::number( lookupId ) );
+			value.append( ',' );
+		}
+		value.chop( 1 );  // Remove the extra comma.
+		break;
+
+	case MFiles::Constants::MultiLineText :
+		prefix = 'M';
+		value = QUrl::toPercentEncoding( this->getAsUnlocalizedText() ).constEnd();
+		break;
+
+	// Unexpected data type.
+	default:
+		prefix = '-';
+		qCritical( "TODO: Report error." );
+		break;
+	}
+
+	// Format the value.
+	QString format( "%1%2" );
+	QString encodedValue = format.arg( prefix ).arg( value );
+
+	// Double URI encode.
+	encodedValue = QUrl::toPercentEncoding( encodedValue );
+	return encodedValue;
+}
+
+QString TypedValue::getAsUnlocalizedText() const
+{
+	// Uninitialized?
+	if( ! hasValue() )
+		return "";
+
+	QString value;
+	switch ( this->dataType() )
+	{
+	case MFiles::Constants::Text :
+	case MFiles::Constants::MultiLineText :
+		value = this->property( "Value" ).toString();
+		break;
+
+	// Unexpected data type.
+	default:
+		qCritical( "TODO: Report error." );
+		break;
+	}
+	return value;
 }
 
 }

@@ -88,7 +88,7 @@ public:
 	 * @brief Gets the ids of the lookups. Can be called for single-select or multi-select lookups.
 	 * @return A collection of lookup ids.
 	 */
-	QSet< int > getLookupIds();
+	QSet< int > getLookupIds() const;
 
 	/**
 	 * @brief Drops all lookups from this typed value that are not in the specified set of lookup ids.
@@ -102,6 +102,20 @@ public:
 	 * @param lookups Lookup values.
 	 */
 	void setMultiSelectLookup( const QJsonArray& lookups );
+
+	/**
+	 * @brief Gets the value as URI encoded value.
+	 * @return The encoded value of this typed value.
+	 *
+	 * @see <a href="http://http://www.m-files.com/mfws/syntax.html">Encoding syntax</a> in M-Files REST API documentation.
+	 */
+	QString getUriEncodedValue() const;
+
+	/**
+	 * @brief Gets the value of this typed value as unlocalized text.
+	 * @return The value of this typed value as unlocalized text.
+	 */
+	QString getAsUnlocalizedText() const;
 };
 
 }

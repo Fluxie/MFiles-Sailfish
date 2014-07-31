@@ -25,6 +25,7 @@
 #include "../mfiles/foldercontentitem.h"
 #include "../mfiles/objectversion.h"
 #include "../mfiles/objver.h"
+#include "../mfiles/typedvalue.h"
 #include "../frontend/listingfront.h"
 
 const int ViewListModel::ResourceRole = Qt::UserRole;
@@ -167,6 +168,15 @@ void ViewListModel::forResource( const QModelIndex & index, QVariant& variant ) 
 		}
 		break;
 
+	case MFiles::Constants::PropertyFolder :
+		{
+			MFiles::TypedValue pv( item.propertyFolder() );
+			QString resource( "%1%2/items" );
+			QString args = resource.arg( this->m_listing->resource().replace( "items", "" ) ).arg( pv.getUriEncodedValue() );
+			variant = args;
+		}
+		break;
+
 	default :
 		qCritical( "ViewListModel::forResource" );
 		break;
@@ -184,6 +194,10 @@ void ViewListModel::forData( const QModelIndex & index, QVariant& variant ) cons
 
 	case MFiles::Constants::ObjectVersion :
 		variant = item.objectVersion();
+		break;
+
+	case MFiles::Constants::PropertyFolder :
+		variant = item.propertyFolder();
 		break;
 
 	default :
