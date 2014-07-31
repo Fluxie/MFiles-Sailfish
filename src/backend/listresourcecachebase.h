@@ -1,3 +1,23 @@
+/*
+ *  Copyright 2014 Juha Lepola
+ *
+ *  This file is part of M-Files for Sailfish.
+ *
+ *  M-Files for Sailfish is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public
+ *  License as published by the Free Software Foundation, either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  M-Files for Sailfish is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with M-Files for Sailfish. If not, see
+ *  <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef LISTRESOURCECACHE_H
 #define LISTRESOURCECACHE_H
 
@@ -28,7 +48,7 @@ public:
 	 * @param parent Parent vault.
 	 * @param immediateRefresh True if the cache should be refreshed immediately.
 	 */
-	explicit ListResourceCacheBase( const QString& resource, VaultCore* parent, bool immediateRefresh = true );
+	explicit ListResourceCacheBase( const QString& resource, VaultCore* vault, VaultCore* parent = nullptr, bool immediateRefresh = true );
 
 	/**
 	 * @brief Gets all items in the cache.
@@ -40,7 +60,7 @@ public:
 	 * @brief Checks if this cache is populated.
 	 * @return True if the cache is populated.
 	 */
-	bool populated() const { return m_populated; }
+	bool populated() const;
 
 signals:
 
@@ -114,6 +134,11 @@ private:
 	 */
 	int getNextCookieNts() const { return m_nextCookie++; }
 
+	/**
+	 * @brief Checks if this cache is populated.
+	 * @return True if the cache is populated.
+	 */
+	bool populatedNts() const { return m_populated; }
 
 // Private slots.
 private slots:

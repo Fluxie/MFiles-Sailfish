@@ -32,7 +32,9 @@ namespace MFiles
 {
 
 /**
- * @brief C++ representation of ObjVer object.
+ * @brief Provides accessors for properties of ObjVer M-Files REST API Json object.
+ *
+ * @see <a href="http://www.m-files.com/mfws/structs/objver.html">ObjVer</a> in M-Files REST API documentation.
  */
 class ObjVer
 {
@@ -44,6 +46,12 @@ public:
 	 * @param json QJsonObject from which the object version is parsed.
 	 */
 	ObjVer( const QJsonObject& json );
+
+	/**
+	 * @brief Initializes new ObjVer object.
+	 * @param json QJsonValue from which the object version is parsed.
+	 */
+	ObjVer( const QJsonValue& value );
 
 	/**
 	 * @brief Initializes new ObjVer object.

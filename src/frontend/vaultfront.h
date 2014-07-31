@@ -29,6 +29,7 @@
 
 // Forward declarations.
 namespace MFiles { class ObjID; }
+class ListingFront;
 class ObjectFront;
 class ValueListFront;
 class VaultCore;
@@ -45,8 +46,10 @@ class VaultFront : public QObject
 {
 	Q_OBJECT
 	Q_ENUMS( CacheType )
+	Q_PROPERTY( bool authenticated READ authenticated NOTIFY authenticatedChanged )
 	Q_PROPERTY( bool classesReady READ classesReady NOTIFY classesReadyChanged )
 	Q_PROPERTY( bool propertyDefinitionsReady READ propertyDefinitionsReady NOTIFY propertyDefinitionsReadyChanged )
+	Q_PROPERTY( ListingFront* rootListing READ rootListing NOTIFY rootListingChanged )
 public:
 
 	enum CacheType
@@ -90,7 +93,26 @@ public:
     Q_INVOKABLE ValueListFront* valueList(
         int id,  //!< The id of the requested value list.
 		TypedValueFilter* filter  //!< Filter for searching value list items from the server.
-    );
+	);
+
+	/**
+	 * @brief Gets a listing of the specified path.
+	 * @param path Path to the listing.
+	 * @return A listing represented by the path.
+	 */
+	Q_INVOKABLE ListingFront* listing( const QString& path );
+
+	/**
+	 * @brief Gets the root listing.
+	 * @return The root listing.
+	 */
+	ListingFront* rootListing();
+
+	/**
+	 * @brief Checks if this vault object has an authenticated access to the vault.
+	 * @return True if this vault object has an authenticated access to a vault.
+	 */
+	bool authenticated() const;
 
 	//! Checks if the classes are ready.
 	bool classesReady() const;
@@ -99,6 +121,11 @@ public:
 	bool propertyDefinitionsReady() const;
 	
 signals:
+
+	/**
+	 * @brief authenticatedChanged is signaled when the vault gains or loses access to the vault.
+	 */
+	void authenticatedChanged();
 
 	//! Signaled the first time when all the caches have been populated.
 	void allCachesPopulated();
@@ -117,6 +144,11 @@ signals:
 
 	//! Signaled when property definitions ready state is changed.
 	void propertyDefinitionsReadyChanged();
+
+	/**
+	 * @brief Signaled when rootViewListingReady changes.
+	 */
+	void rootListingChanged() const;
 	
 public slots:
 

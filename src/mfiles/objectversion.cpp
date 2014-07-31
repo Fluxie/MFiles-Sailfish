@@ -18,25 +18,9 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "cachedlisting.h"
+#include "objectversion.h"
 
-#include <QMutexLocker>
-#include <QNetworkReply>
-
-#include "asyncfetch.h"
-#include "listingcache.h"
-
-CachedListing::CachedListing( ListingCache* parent, const ListingId& id ) :
-	ListResourceCacheBase( id.path(), parent->vault(), nullptr, false ),
-	m_id( id ),
-	m_owner( parent )
+MFiles::ObjectVersion::ObjectVersion( const QJsonValue& objectVersion ) :
+	MFilesTypeWrapper( objectVersion )
 {
-
-	qDebug( "Cached listing instantiated." );
 }
-
-QString CachedListing::resource() const
-{
-	return m_id.path();
-}
-

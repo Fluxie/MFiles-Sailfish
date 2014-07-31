@@ -1,3 +1,23 @@
+/*
+ *  Copyright 2014 Juha Lepola
+ *
+ *  This file is part of M-Files for Sailfish.
+ *
+ *  M-Files for Sailfish is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public
+ *  License as published by the Free Software Foundation, either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  M-Files for Sailfish is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with M-Files for Sailfish. If not, see
+ *  <http://www.gnu.org/licenses/>.
+ */
+
 #include "ListResourceCacheBase.h"
 
 #include <QByteArray>
@@ -11,8 +31,8 @@
 #include "vaultcore.h"
 #include "../mfwsrest.h"
 
-ListResourceCacheBase::ListResourceCacheBase( const QString& resource, VaultCore* parent, bool immediateRefresh ) :
-	CoreBase( parent, parent ),
+ListResourceCacheBase::ListResourceCacheBase( const QString& resource, VaultCore* vault, VaultCore* parent, bool immediateRefresh ) :
+	CoreBase( vault, parent ),
 	m_resource( resource ),
 	m_populated( false ),
 	m_nextCookie( 0 )
@@ -20,6 +40,14 @@ ListResourceCacheBase::ListResourceCacheBase( const QString& resource, VaultCore
 	// This object might have been already transferred to other thread than the one where it has been created.
 	if( immediateRefresh )
 		QMetaObject::invokeMethod( this, "requestRefresh", Qt::AutoConnection );
+}
+
+
+bool ListResourceCacheBase::populated() const
+{
+	QMutexLocker lock( &m_mutex );
+
+	return m_populated;
 }
 
 AsyncFetch* ListResourceCacheBase::list() const
@@ -32,7 +60,7 @@ AsyncFetch* ListResourceCacheBase::list() const
 
 	// Return items from the cache if we are populated
 	// Otherwise star refresh.
-	if( this->populated() )
+	if( this->populatedNts() )
 	{
 		// Found it, return the value.
 		fetch->itemsFetched( cookie, m_data );

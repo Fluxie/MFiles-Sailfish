@@ -45,6 +45,8 @@
 #include "backend/typedvaluefilter.h"
 #include "frontend/vaultfront.h"
 #include "ui/valuelistitemlistmodel.h"
+#include "ui/viewlistmodel.h"
+#include "frontend/listingfront.h"
 #include "frontend/valuelistfront.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
@@ -59,11 +61,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< TypedValueFilter >("mohari.sailfish", 1, 0, "TypedValueFilter");
 	qmlRegisterType< PropertyValueListModel >("mohari.sailfish", 1, 0, "PropertyValueListModel");
 	qmlRegisterType< ValueListItemListModel >("mohari.sailfish", 1, 0, "ValueListItemListModel");
+	qmlRegisterType< ViewListModel >("mohari.sailfish", 1, 0, "ViewListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");
 	qmlRegisterType< IntegerValidator >("mohari.sailfish", 1, 0, "IntegerValidator");
 	qmlRegisterType< RealValidator >("mohari.sailfish", 1, 0, "RealValidator");
 	qmlRegisterType< AsyncFetch >();
 	qmlRegisterType< LazyOwnerInfo >();
+	qmlRegisterType< ListingFront >();
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
 	qmlRegisterType< ValueListFront >();

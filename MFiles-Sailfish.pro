@@ -58,7 +58,11 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/backend/listingcache.cpp \
     src/backend/cachedlisting.cpp \
     src/backend/listingid.cpp \
-    src/backend/listresourcecachebase.cpp
+    src/backend/listresourcecachebase.cpp \
+    src/frontend/listingfront.cpp \
+    src/ui/resetmodel.cpp \
+    src/mfiles/foldercontentitem.cpp \
+    src/mfiles/objectversion.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -107,7 +111,12 @@ HEADERS += src/backend/objecttypecache.h \
     src/backend/listingcache.h \
     src/backend/cachedlisting.h \
     src/backend/listingid.h \
-    src/backend/listresourcecachebase.h
+    src/backend/listresourcecachebase.h \
+    src/frontend/listingfront.h \
+    src/ui/resetmodel.h \
+    src/ui/listmodelbase.h \
+    src/mfiles/foldercontentitem.h \
+    src/mfiles/objectversion.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover
@@ -125,5 +134,6 @@ OTHER_FILES += qml/MFiles-Sailfish.qml \
     qml/visuals/*.js \
     rpm/MFiles-Sailfish.spec \
     rpm/MFiles-Sailfish.yaml \
-    MFiles-Sailfish.desktop
+    MFiles-Sailfish.desktop \
+    qml/pages/ViewListing.qml
 

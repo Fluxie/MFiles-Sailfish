@@ -32,6 +32,18 @@ namespace Constants
 		MultiSelectLookup = 10,
 	};
 
+	/**
+	 * @brief Defines the different folder items that can be visible in views.
+	 */
+	enum FolderContentItemType
+	{
+		Unknown	= 0,
+		ViewFolder = 1,
+		PropertyFolder = 2,
+		TraditionalFolder = 3,
+		ObjectVersion = 4,
+	};
+
 }
 
 }

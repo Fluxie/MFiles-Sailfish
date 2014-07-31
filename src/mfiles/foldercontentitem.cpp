@@ -18,25 +18,32 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
-#include "cachedlisting.h"
+#include "foldercontentitem.h"
 
-#include <QMutexLocker>
-#include <QNetworkReply>
-
-#include "asyncfetch.h"
-#include "listingcache.h"
-
-CachedListing::CachedListing( ListingCache* parent, const ListingId& id ) :
-	ListResourceCacheBase( id.path(), parent->vault(), nullptr, false ),
-	m_id( id ),
-	m_owner( parent )
+MFiles::FolderContentItem::FolderContentItem( const QJsonValue& item ) :
+	MFilesTypeWrapper( item )
 {
-
-	qDebug( "Cached listing instantiated." );
 }
 
-QString CachedListing::resource() const
+QString MFiles::FolderContentItem::dipslayName() const
 {
-	return m_id.path();
-}
+	// Return the default display name based on the type of the item.
+	switch( this->type() )
+	{
+	case MFiles::Constants::ObjectVersion :
+		return this->objectVersion().toObject()[ "Title" ].toString();
+		break;
 
+	case MFiles::Constants::PropertyFolder :
+		return this->propertyFolder().toObject()[ "DisplayValue" ].toString();
+		break;
+
+	case MFiles::Constants::ViewFolder :
+		return this->view().toObject()[ "Name" ].toString();
+		break;
+
+	default :
+		Q_ASSERT( false );
+		return "";
+	}
+}

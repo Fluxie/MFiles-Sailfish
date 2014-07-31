@@ -58,6 +58,9 @@ protected:
 	//! Accesses the core object.
 	QObject* core() { return m_core; }
 
+	//! Accesses the core object.
+	const QObject* coreConst() const { return m_core; }
+
 // Pritvate interface.
 private:
 

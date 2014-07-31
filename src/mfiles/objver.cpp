@@ -35,6 +35,13 @@ ObjVer::ObjVer(
 {
 }
 
+ObjVer::ObjVer( const QJsonValue& value ) :
+	m_id( (int) value.toObject()[ "Type" ].toDouble(), (int) value.toObject()[ "ID" ].toDouble() ),
+	m_version( (int) value.toObject()[ "Version" ].toDouble() )
+{
+
+}
+
 //! Initializes new ObjVer object from the given Json object.
 ObjVer::ObjVer(
 	const ObjID& id,

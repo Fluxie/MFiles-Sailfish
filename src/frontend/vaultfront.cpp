@@ -21,6 +21,7 @@
 #include "vaultfront.h"
 
 #include <QJsonValue>
+#include <QSharedPointer>
 #include <QQmlEngine>
 
 #include "../errors/appmonitor.h"
@@ -31,6 +32,8 @@
 #include "../mfiles/mfilesconstants.h"
 #include "../backend/vaultcore.h"
 #include "../backend/classcache.h"
+#include "../backend/listingid.h"
+#include "../backend/listingcache.h"
 #include "../backend/objecttypecache.h"
 #include "../backend/objectcache.h"
 #include "objectfront.h"
@@ -38,6 +41,7 @@
 #include "../backend/propertydefcache.h"
 #include "../backend/valuelistcore.h"
 #include "valuelistfront.h"
+#include "listingfront.h"
 
 VaultFront::VaultFront(QObject *parent) :
 	QObject(parent),
@@ -74,6 +78,10 @@ void VaultFront::initialize(
 	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::refreshed, this, &VaultFront::objectTypesRefreshed, Qt::QueuedConnection );
 	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::populatedChanged, this, &VaultFront::propertyDefinitionsReadyChanged, Qt::QueuedConnection );
 	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::refreshed, this, &VaultFront::propertyDefinitionsRefreshed, Qt::QueuedConnection );
+
+	// Authenticated.
+	emit rootListingChanged();
+	emit authenticatedChanged();
 }
 
 //! Gets an item from the cache.
@@ -207,6 +215,33 @@ ValueListFront* VaultFront::valueList(
 
 	// Return the front.	
 	return front;
+}
+
+ListingFront* VaultFront::listing( const QString& path )
+{
+	// No core, no listing.
+	if( m_core == nullptr )
+		return nullptr;
+
+	// Return the requested listing.
+	ListingFront* front = new ListingFront( m_core->listings()->listing( ListingId( path ) ) );
+	return front;
+}
+
+ListingFront* VaultFront::rootListing()
+{
+	// No core, no listing.
+	if( m_core == nullptr )
+		return nullptr;
+
+	// Return the root listing.
+	ListingFront* front = new ListingFront( m_core->listings()->root() );
+	return front;
+}
+
+bool VaultFront::authenticated() const
+{
+	return m_core != nullptr;
 }
 
 //! Checks if the classes are ready.

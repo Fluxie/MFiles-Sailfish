@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013 Mikko Rantanen
+ *  Copyright 2013, 2014 Mikko Rantanen, Juha Lepola
  *
  *  This file is part of M-Files for Sailfish.
  *
@@ -77,7 +77,13 @@ Page {
 		clip: true
 
 		property ListModel favoritesList: ListModel {}
-		model: favoritesList
+		model: ViewListModel {
+
+
+			dataFilter: ViewListModel.AllItems
+			listing: page.vault.rootListing
+			vault: page.vault
+		}
 
 		ViewPlaceholder {
 			enabled: listView.count === 0
@@ -89,17 +95,17 @@ Page {
 
 			onClicked: {
 				var properties = pageStack.push(
-							'PropertyValues.qml', { objectVersion: model.data, vault: page.vault } );
+						'ViewListing.qml', { view: model.data, path: model.resource, vault: page.vault } );
 			}
 
 			Column {
 				Label {
-					text: model.title
+					text: model.display
 					x: Theme.paddingLarge
 				}
 
 				Label {
-					text: model.objectTypeName + ':' + model.className
+					text: model.resource
 					x: Theme.paddingLarge * 2
 				}
 			}

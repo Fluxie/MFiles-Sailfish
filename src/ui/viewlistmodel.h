@@ -1,21 +1,103 @@
+/*
+ *  Copyright 2014 Juha Lepola
+ *
+ *  This file is part of M-Files for Sailfish.
+ *
+ *  M-Files for Sailfish is free software: you can redistribute it
+ *  and/or modify it under the terms of the GNU General Public
+ *  License as published by the Free Software Foundation, either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  M-Files for Sailfish is distributed in the hope that it will be
+ *  useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ *  of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with M-Files for Sailfish. If not, see
+ *  <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef VIEWLISTMODEL_H
 #define VIEWLISTMODEL_H
 
-#include <QAbstractListModel>
+#include <QJsonArray>
+#include <QObject>
+
+#include "listmodelbase.h"
+
+// Forward declarations.
+class ListingFront;
+class VaultFront;
 
 /**
  * @brief The ViewListModel class
  */
-class ViewListModel : public QAbstractListModel
+class ViewListModel : public ListModelBase
 {
+	/**
+	 * @brief Resource role identifies the resource that can be used to fetch more information about the item.
+	 */
+	static const int ResourceRole;
+
+	/**
+	 * @brief Data role represents the actual item as a Json value.
+	 */
+	static const int DataRole;
+
+	/**
+	 * @brief Type role represents the type of the item.
+	 */
+	static const int TypeRole;
+
     Q_OBJECT
+	Q_ENUMS( DataFilter )
+	Q_ENUMS( ItemType )
+	Q_PROPERTY( DataFilter dataFilter READ dataFilter WRITE setDataFilter NOTIFY dataFilterChanged )
+	Q_PROPERTY( VaultFront* vault READ vault WRITE setVault NOTIFY vaultChanged )
+	Q_PROPERTY( ListingFront* listing READ listing WRITE setListing NOTIFY listingChanged )
 public:
+
+	enum DataFilter
+	{
+		Undefined,  //!< No data has been specified to be shown in the model.
+		ViewsOnly,  //!< Only views are shon
+		ObjectsOnly,  //!< Only objects are shown.
+		AllItems  //!< All items are shown.
+	};
+
+	enum ItemType
+	{
+		Unknown	= 0,
+		ViewFolder = 1,
+		PropertyFolder = 2,
+		TraditionalFolder = 3,
+		ObjectVersion = 4,
+	};
 
     /**
      * @brief ViewListModel
      * @param parent
      */
     explicit ViewListModel(QObject *parent = 0);
+
+	/**
+	 * @brief Gets the current data filter.
+	 * @return The data filter of this model
+	 */
+	DataFilter dataFilter() const { return m_filter; }
+
+	/**
+	 * @brief vault
+	 * @return Vault associated with this model.
+	 */
+	VaultFront* vault() const { return m_vault; }
+
+	/**
+	 * @brief listing that this model represents.
+	 * @return Reference to the listing.
+	 */
+	ListingFront* listing() const { return m_listing; }
 
 
 // Interface implementing the model.
@@ -30,16 +112,93 @@ public:
     //! Role names. Note: The documentation claims that we should call setRoleNames to specify the roles. However, this function no longer exists and roleNAmes has been made virtula.
     virtual QHash< int,QByteArray > roleNames() const;
 
-    //! Flags.
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-
-    //! Sets the data.
-    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-
 signals:
+
+	/**
+	 * @brief dataFilterChanged is signaled when the data filter changes.
+	 */
+	void dataFilterChanged();
+
+
+	/**
+	 * @brief vaultChanged is signaled when the vault associated with the property value model changes.
+	 */
+	void vaultChanged();
+
+	/**
+	 * @brief listingChanged is signaled when the listing associated with the model changes.
+	 */
+	void listingChanged();
 
 public slots:
 
+	/**
+	 * @brief Sets the data filter for the model.
+	 * @param filter New data filter
+	 */
+	void setDataFilter( DataFilter filter );
+
+	/**
+	 * @brief setVault
+	 * @param vault associated with the model.
+	 */
+	void setVault( VaultFront* vault );
+
+	/**
+	 * @brief Sets the listing the model represents.
+	 * @param listing New listing.
+	 */
+	void setListing( ListingFront* listing );
+
+// Private interface.
+private:
+
+	/**
+	 * @brief forDisplay The display value.
+	 * @param index The index of the value
+	 * @param variant The value for display
+	 */
+	void forDisplay( const QModelIndex & index, QVariant& variant ) const;
+
+	/**
+	 * @brief forResource The resource path for fetching more information about the item.
+	 * @param index The index of the resource
+	 * @param variant The value for resource
+	 */
+	void forResource( const QModelIndex & index, QVariant& variant ) const;
+
+	/**
+	 * @brief forData The data as Json object.
+	 * @param index The index of the data object
+	 * @param variant The value for the data object.
+	 */
+	void forData( const QModelIndex & index, QVariant& variant ) const;
+
+	/**
+	 * @brief forData The type of the item.
+	 * @param index The index of the type
+	 * @param variant The type
+	 */
+	void forType( const QModelIndex & index, QVariant& variant ) const;
+
+// Private slots.
+private slots:
+
+	/**
+	 * @brief Refreshes the listing data.
+	 */
+	void refreshListingData();
+
+// Private data:
+private:
+
+	DataFilter m_filter;  //!< The type of the data modelled in this model.
+	QJsonArray m_listingData;  //!< The list contents.
+	ListingFront* m_listing;
+	int m_listingDataUpdateCookie;
+
+	// Auxilary functions.
+	VaultFront* m_vault;
 };
 
 #endif // VIEWLISTMODEL_H
