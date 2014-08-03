@@ -21,11 +21,14 @@
 #ifndef HOSTCORE_H
 #define HOSTCORE_H
 
+#include <QJSValue>
 #include <QThread>
+#include <QVariant>
 
 #include "../errors/errorinfo.h"
 
 // Forward declarations.
+class QQmlEngine;
 class AppMonitor;
 class VaultCore;
 
@@ -48,6 +51,33 @@ public:
 	 * @return Global host core instance.
 	 */
 	static HostCore* instance();
+
+	/**
+	 * @brief Creates a new JS object to the global QML engine.
+	 * @return New JavaScript object as QJSValue
+	 */
+	static QJSValue newJSObject();
+
+	/**
+	 * @brief Converts the given variant QJSValue that can be used in the JavaScript engine.
+	 * @param Variant.
+	 * @return Variant as QJSValue
+	 */
+	static QJSValue toJSValue( const QVariant& var );
+
+	/**
+	 * @brief Global QML engine running the UI code.
+	 * @return The global QML engine.
+	 */
+	QQmlEngine* qmlEngine() const { return m_engine; }
+
+	/**
+	 * @brief Sets
+	 * @param engine
+	 */
+	void setQmlEngine( QQmlEngine* engine ) { m_engine = engine; }
+
+
     
 signals:
 
@@ -88,7 +118,7 @@ private:
 private:
 
 	AppMonitor* m_monitor;  //!< Global application monitor.
-
+	QQmlEngine* m_engine;  //!< Global JavaScript engine.
 };
 
 #endif // HOSTCORE_H

@@ -44,6 +44,7 @@
 #include "ui/realvalidator.h"
 #include "backend/typedvaluefilter.h"
 #include "frontend/vaultfront.h"
+#include "ui/customroleproxymodel.h"
 #include "ui/valuelistitemlistmodel.h"
 #include "ui/viewlistmodel.h"
 #include "frontend/listingfront.h"
@@ -59,6 +60,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< ErrorModel >("mohari.sailfish", 1, 0, "ErrorModel");
 	qmlRegisterType< LookupListModel >("mohari.sailfish", 1, 0, "LookupListModel");
 	qmlRegisterType< TypedValueFilter >("mohari.sailfish", 1, 0, "TypedValueFilter");
+	qmlRegisterType< CustomRoleProxyModel >("mohari.sailfish", 1, 0, "CustomRoleProxyModel");
 	qmlRegisterType< PropertyValueListModel >("mohari.sailfish", 1, 0, "PropertyValueListModel");
 	qmlRegisterType< ValueListItemListModel >("mohari.sailfish", 1, 0, "ValueListItemListModel");
 	qmlRegisterType< ViewListModel >("mohari.sailfish", 1, 0, "ViewListModel");
@@ -73,6 +75,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< ValueListFront >();
 
 	// Register certain QT specific types in order to use them in QML.
+	qmlRegisterType< QAbstractItemModel >();
 	qmlRegisterType< QStringListModel >();
 
 	// Create and register global monitor.
@@ -87,6 +90,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	app->setQuitOnLastWindowClosed( true );
 	QScopedPointer<QQuickView> view( SailfishApp::createView() );
 	view->engine()->rootContext()->setContextProperty( "GlobalMonitor", monitor.data() );
+	host->setQmlEngine( view->engine() );
+
+	// Open UI.
 	view->setSource( SailfishApp::pathTo( "qml/MFiles-Sailfish.qml" ) );
 	view->showFullScreen();
     

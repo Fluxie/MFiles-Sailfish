@@ -34,7 +34,8 @@ namespace
 
 HostCore::HostCore( AppMonitor* monitor ) :
 	QThread( 0 ),
-	m_monitor( monitor )
+	m_monitor( monitor ),
+	m_engine( nullptr )
 {
 	Q_ASSERT( g_instance == 0 );
 	g_instance = this;
@@ -47,6 +48,19 @@ HostCore::HostCore( AppMonitor* monitor ) :
 HostCore* HostCore::instance()
 {
 	return g_instance;
+}
+
+QJSValue HostCore::newJSObject()
+{
+	HostCore* host = instance();
+	return host->qmlEngine()->newObject();
+}
+
+QJSValue HostCore::toJSValue( const QVariant& var )
+{
+	HostCore* host = instance();
+	QJSValue converted = host->qmlEngine()->newQObject( var.value< QObject* >() );
+	return converted;
 }
 
 /*!

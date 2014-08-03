@@ -64,7 +64,8 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/mfiles/foldercontentitem.cpp \
     src/mfiles/objectversion.cpp \
     src/mfiles/view.cpp \
-    src/mfiles/viewlocation.cpp
+    src/mfiles/viewlocation.cpp \
+    src/ui/customroleproxymodel.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -120,7 +121,8 @@ HEADERS += src/backend/objecttypecache.h \
     src/mfiles/foldercontentitem.h \
     src/mfiles/objectversion.h \
     src/mfiles/view.h \
-    src/mfiles/viewlocation.h
+    src/mfiles/viewlocation.h \
+    src/ui/customroleproxymodel.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

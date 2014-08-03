@@ -88,7 +88,7 @@ QHash< int, QByteArray > ViewListModel::roleNames() const
 	// TODO: Should we reset the original roles too here?
 	QHash< int, QByteArray > roles;
 	roles.insert( Qt::DisplayRole, "display" );
-	roles.insert( Qt::DecorationRole, "decoration" );
+	// roles.insert( Qt::DecorationRole, "decoration" );
 	roles.insert( ViewListModel::ResourceRole, "resource" );
 	roles.insert( ViewListModel::DataRole, "data" );
 	roles.insert( ViewListModel::TypeRole, "type" );

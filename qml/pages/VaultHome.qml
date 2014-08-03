@@ -32,6 +32,12 @@ Page {
 	property string mfwaUrl: ''
 	property string authentication: ''
 	property string vaultName: ''
+    property ViewListModel rootModel : ViewListModel {
+
+        dataFilter: ViewListModel.AllItems
+        listing: page.vault.rootListing
+        vault: page.vault
+    }
 
 	function initialize() {
 		Logic.initialize( page, listView );
@@ -77,13 +83,18 @@ Page {
 		clip: true
 
 		property ListModel favoritesList: ListModel {}
-		model: ViewListModel {
+        model: CustomRoleProxyModel {
 
+            sourceModel : ViewListModel {
 
-			dataFilter: ViewListModel.AllItems
-			listing: page.vault.rootListing
-			vault: page.vault
-		}
+                dataFilter: ViewListModel.AllItems
+                listing: page.vault.rootListing
+                vault: page.vault
+            }
+
+            customRoleName: "sort"
+            customRoleValue : function( input ) { return input.display; }
+        }
 
 		ViewPlaceholder {
 			enabled: listView.count === 0
@@ -105,7 +116,7 @@ Page {
 				}
 
 				Label {
-					text: model.resource
+                    text: model.sort
 					x: Theme.paddingLarge * 2
 				}
 			}
