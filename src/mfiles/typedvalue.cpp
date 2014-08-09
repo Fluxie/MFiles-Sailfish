@@ -22,6 +22,9 @@
 
 #include "mfilesconstants.h"
 
+#include <QDate>
+#include <QDateTime>
+#include <QDebug>
 #include <QJsonArray>
 #include <QUrl>
 
@@ -231,6 +234,39 @@ QString TypedValue::getUriEncodedValue() const
 		value = QUrl::toPercentEncoding( this->getAsUnlocalizedText() ).constData();
 		break;
 
+	case MFiles::Constants::Integer :
+		prefix = 'I';
+		value = QString::number( this->value().toDouble() );
+		break;
+
+	case MFiles::Constants::Floating :
+		prefix = 'R';
+		value = QString::number( this->value().toDouble() );
+		break;
+
+	case MFiles::Constants::Date :
+		{
+			prefix = 'D';
+			QDate date = QDate::fromString( this->value().toString(), Qt::ISODate );
+			value = date.toString( "yyyy-MM-dd" );
+		}
+		break;
+
+	// TODO: Need to investagte how to properly format the time and timestamps fields.
+	/*case MFiles::Constants::Time :
+		{
+			prefix = 'C';
+			qDebug() << this->value().toString();
+			QDateTime dt = QDateTime::fromString( this->value().toString(), Qt::ISODate );
+			value = dt.toString( "yyyy-MM-ddThh:mm:ss" );
+		}
+		break;
+
+	case MFiles::Constants::Timestamp :
+		prefix = 'P';
+		value = this->value().toString();
+		break;*/
+
 	case MFiles::Constants::SingleSelectLookup :
 		prefix = 'L';
 		value = QString::number( this->lookup().item() );
@@ -265,6 +301,7 @@ QString TypedValue::getUriEncodedValue() const
 
 	// Double URI encode.
 	encodedValue = QUrl::toPercentEncoding( encodedValue );
+	// encodedValue.replace( "%", "_p" );
 	return encodedValue;
 }
 

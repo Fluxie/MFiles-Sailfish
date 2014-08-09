@@ -85,6 +85,12 @@ public:
 	Lookup lookup() const { return Lookup( this->property( "Lookup" ) ); }
 
 	/**
+	 * @brief Gets the value of the typed value.
+	 * @return Returns the value
+	 */
+	QJsonValue value() const { return this->property( "Value" ); }
+
+	/**
 	 * @brief Gets the lookups of this typed value as a QJsonArray.
 	 * @return All lookups as a Json array. Can be called for both single-select and multi-select lookups.
 	 */
