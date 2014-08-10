@@ -30,6 +30,9 @@
 class ViewListModelDataAccessor : public LazyModelDataAccessor
 {
 	Q_OBJECT
+	Q_PROPERTY( QVariant resource READ resource )
+	Q_PROPERTY( QVariant data READ data )
+	Q_PROPERTY( QVariant type READ type )
 public:
 
 	/**

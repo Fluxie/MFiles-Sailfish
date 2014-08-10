@@ -148,5 +148,6 @@ OTHER_FILES += qml/MFiles-Sailfish.qml \
     rpm/MFiles-Sailfish.spec \
     rpm/MFiles-Sailfish.yaml \
     MFiles-Sailfish.desktop \
-    qml/pages/ViewListing.qml
+    qml/pages/ViewListing.qml \
+    qml/common/listings.js
 

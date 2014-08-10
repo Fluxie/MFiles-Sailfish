@@ -21,7 +21,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import mohari.sailfish 1.0
-
+import "../common/listings.js" as ListingLogic
 
 Page {
 
@@ -85,7 +85,7 @@ Page {
             }
 
             // Set function for sorting the listing.
-            lessThanJS: function( left, right ) { return left.display.localeCompare( right.display ) < 0; }
+            lessThanJS: ListingLogic.lessThanFolderItem;
         }
 
         ViewPlaceholder {
