@@ -18,11 +18,13 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
+#include <QAbstractItemModel>
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QQmlContext>
 #include <QtQml>
 #include <QStringListModel>
+#include <QSortFilterProxyModel>
 
 #include <sailfishapp.h>
 
@@ -45,6 +47,7 @@
 #include "backend/typedvaluefilter.h"
 #include "frontend/vaultfront.h"
 #include "ui/customroleproxymodel.h"
+#include "ui/qmlsortfilterproxymodel.h"
 #include "ui/valuelistitemlistmodel.h"
 #include "ui/viewlistmodel.h"
 #include "frontend/listingfront.h"
@@ -62,6 +65,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< TypedValueFilter >("mohari.sailfish", 1, 0, "TypedValueFilter");
 	qmlRegisterType< CustomRoleProxyModel >("mohari.sailfish", 1, 0, "CustomRoleProxyModel");
 	qmlRegisterType< PropertyValueListModel >("mohari.sailfish", 1, 0, "PropertyValueListModel");
+	qmlRegisterType< QmlSortFilterProxyModel >("mohari.sailfish", 1, 0, "QmlSortFilterProxyModel");
 	qmlRegisterType< ValueListItemListModel >("mohari.sailfish", 1, 0, "ValueListItemListModel");
 	qmlRegisterType< ViewListModel >("mohari.sailfish", 1, 0, "ViewListModel");
 	qmlRegisterType< VaultFront >("mohari.sailfish", 1, 0, "VaultFront");

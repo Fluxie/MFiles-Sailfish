@@ -40,7 +40,8 @@ Page {
     }
 
 	function initialize() {
-		Logic.initialize( page, listView );
+        Logic.initialize( page, listView );
+        sorter.sortByDefaults();
 	}
 
 	Connections {
@@ -83,7 +84,11 @@ Page {
 		clip: true
 
 		property ListModel favoritesList: ListModel {}
-        model: CustomRoleProxyModel {
+        model: QmlSortFilterProxyModel {
+
+            id: sorter
+
+            dynamicSortFilter: true
 
             sourceModel : ViewListModel {
 
@@ -92,8 +97,8 @@ Page {
                 vault: page.vault
             }
 
-            customRoleName: "sort"
-            customRoleValue : function( input ) { return input.display; }
+            // Set function for sorting the listing.
+            lessThanJS: function( left, right ) { return left.display.localeCompare( right.display ) < 0; }
         }
 
 		ViewPlaceholder {
@@ -116,7 +121,7 @@ Page {
 				}
 
 				Label {
-                    text: model.sort
+                    text: model.resource
 					x: Theme.paddingLarge * 2
 				}
 			}

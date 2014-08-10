@@ -66,6 +66,14 @@ public:
 	static QJSValue toJSValue( const QVariant& var );
 
 	/**
+	 * @brief Converts the given QObject QJSValue that can be used in the JavaScript engine.
+	 * @param QObject.
+	 * @param javaScriptOwnership True to set the ownership of the object to JavaScript.
+	 * @return QObject as QJSValue
+	 */
+	static QJSValue toJSValue( QObject* object );
+
+	/**
 	 * @brief Global QML engine running the UI code.
 	 * @return The global QML engine.
 	 */

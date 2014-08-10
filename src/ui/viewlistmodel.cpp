@@ -28,6 +28,8 @@
 #include "../mfiles/typedvalue.h"
 #include "../frontend/listingfront.h"
 
+#include "viewlistmodeldataaccessor.h"
+
 const int ViewListModel::ResourceRole = Qt::UserRole;
 const int ViewListModel::DataRole = Qt::UserRole + 1;
 const int ViewListModel::TypeRole = Qt::UserRole + 2;
@@ -95,6 +97,10 @@ QHash< int, QByteArray > ViewListModel::roleNames() const
 	return roles;
 }
 
+LazyModelDataAccessor* ViewListModel::createAccessor( const QModelIndex& index )
+{
+	return new ViewListModelDataAccessor( this, index );
+}
 
 void ViewListModel::setDataFilter( DataFilter filter )
 {

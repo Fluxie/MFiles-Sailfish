@@ -24,16 +24,18 @@
 #include <QJsonArray>
 #include <QObject>
 
+#include "dataaccessorsource.h"
 #include "listmodelbase.h"
 
 // Forward declarations.
 class ListingFront;
 class VaultFront;
+class ViewListModelDataAccessor;
 
 /**
  * @brief The ViewListModel class
  */
-class ViewListModel : public ListModelBase
+class ViewListModel : public ListModelBase, public DataAccessorSource
 {
 	/**
 	 * @brief Resource role identifies the resource that can be used to fetch more information about the item.
@@ -111,6 +113,15 @@ public:
 
     //! Role names. Note: The documentation claims that we should call setRoleNames to specify the roles. However, this function no longer exists and roleNAmes has been made virtula.
     virtual QHash< int,QByteArray > roleNames() const;
+
+// DataAccessorSource.
+public:
+
+	/**
+	 * @brief Creates new data accessor.
+	 * @return New data accessor
+	 */
+	virtual LazyModelDataAccessor* createAccessor( const QModelIndex& index );
 
 signals:
 
@@ -191,6 +202,8 @@ private slots:
 
 // Private data:
 private:
+
+	friend class ViewListModelDataAccessor;
 
 	DataFilter m_filter;  //!< The type of the data modelled in this model.
 	QJsonArray m_listingData;  //!< The list contents.

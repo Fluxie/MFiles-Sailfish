@@ -63,6 +63,13 @@ QJSValue HostCore::toJSValue( const QVariant& var )
 	return converted;
 }
 
+QJSValue HostCore::toJSValue( QObject* object )
+{
+	HostCore* host = instance();
+	QJSValue converted = host->qmlEngine()->newQObject( object );
+	return converted;
+}
+
 /*!
  *Prepares vault.
  */
@@ -71,6 +78,9 @@ VaultCore* HostCore::prepareVault(
 	const QString& authentication
 )
 {
+	// Ensure free memory before creating new vault.s
+	this->qmlEngine()->collectGarbage();
+
 	// Create a new vault object and move it to this thread.
 	VaultCore* core = new VaultCore( url, authentication );
 	core->moveToThread( this );

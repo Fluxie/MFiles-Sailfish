@@ -65,7 +65,10 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/mfiles/objectversion.cpp \
     src/mfiles/view.cpp \
     src/mfiles/viewlocation.cpp \
-    src/ui/customroleproxymodel.cpp
+    src/ui/customroleproxymodel.cpp \
+    src/ui/qmlsortfilterproxymodel.cpp \
+    src/ui/lazymodeldataaccessor.cpp \
+    src/ui/viewlistmodeldataaccessor.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -122,7 +125,11 @@ HEADERS += src/backend/objecttypecache.h \
     src/mfiles/objectversion.h \
     src/mfiles/view.h \
     src/mfiles/viewlocation.h \
-    src/ui/customroleproxymodel.h
+    src/ui/customroleproxymodel.h \
+    src/ui/qmlsortfilterproxymodel.h \
+    src/ui/lazymodeldataaccessor.h \
+    src/ui/viewlistmodeldataaccessor.h \
+    src/ui/dataaccessorsource.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover
