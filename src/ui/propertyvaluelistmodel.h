@@ -136,6 +136,12 @@ public slots:
 // Private interface.
 private:
 
+	/**
+	 * @brief Checks if all data required to operate is available.
+	 * @return True if all data required to operate is available.
+	 */
+	bool allDataAvailable() const;
+
 	//! Refreshes the property values based on the current filter and object version.
 	void refreshPropertyValuesImpl();
 
@@ -154,12 +160,19 @@ private:
 	//! Returns data for filter role.
 	void forFilter( const QModelIndex & index, QVariant& variant ) const;
 
+private slots:
+
+	/**
+	 * @brief Notifies the model that the property definitions have become available.
+	 */
+	void notifyPropertyDefinitionsReady();
+
 // Private data:
 private:
 
 	DataFilter m_filter;  //!< The type of the data modelled in this model.
 	ObjectVersionFront* m_objectVersion;  //!< The object version this model represents.
-	QJsonArray m_propertyValues;  //!< The property values shown in this model.
+	QJsonArray m_propertyValues;  //!< The property values shown in this model.	
 
 	// Auxilary functions.
 	PropertyValueOwnerResolver* m_ownerResolver;  //!< Functionality for resolving the owner.

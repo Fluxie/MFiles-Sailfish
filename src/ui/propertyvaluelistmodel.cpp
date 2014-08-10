@@ -30,6 +30,7 @@
 #include "../backend/typedvaluefilter.h"
 #include "../mfiles/propertyvalue.h"
 #include "../mfiles/typedvalue.h"
+#include "../frontend/vaultfront.h"
 
 
 //! The role id of the property definition id role.
@@ -44,9 +45,9 @@ const int PropertyValueListModel::FilterRole = Qt::UserRole + 2;
 PropertyValueListModel::PropertyValueListModel(QObject *parent) :
 	QAbstractListModel(parent),
 	m_filter( Undefined ),
-	m_objectVersion( 0 ),
-	m_ownerResolver( 0 ),
-	m_vault( 0 )
+	m_objectVersion( nullptr ),
+	m_ownerResolver( nullptr ),
+	m_vault( nullptr )
 {
 }
 
@@ -266,8 +267,19 @@ void PropertyValueListModel::setVault( VaultFront* vault )
 	// Change the vault.
 	this->beginResetModel();
 	{
+		// Disconnect previous event.
+		if( m_vault != nullptr )
+			QObject::disconnect( m_vault, &VaultFront::propertyDefinitionsReadyChanged, this, nullptr );
+
 		m_vault = vault;
+
+		// Refresh the property values.
 		this->refreshPropertyValuesImpl();
+
+		// Connect vault signals.
+		// Because the signal is emitted in UI thread, and we are it, we can safely connect it after refreshing the property values.
+		if( m_vault != nullptr )
+			QObject::connect( m_vault, &VaultFront::propertyDefinitionsReadyChanged, this, &PropertyValueListModel::notifyPropertyDefinitionsReady );
 	}
 	this->endResetModel();
 	emit vaultChanged();
@@ -336,6 +348,10 @@ void PropertyValueListModel::forFilter( const QModelIndex & index, QVariant& var
 
 void PropertyValueListModel::refreshPropertyValues()
 {
+	// Skip if all data is yet to become available.
+	if( ! allDataAvailable() )
+		return;
+
 	this->beginResetModel();
 	{
 		this->refreshPropertyValuesImpl();
@@ -343,11 +359,21 @@ void PropertyValueListModel::refreshPropertyValues()
 	this->endResetModel();
 }
 
+bool PropertyValueListModel::allDataAvailable() const
+{
+	// Basic check.
+	if( m_objectVersion == nullptr || m_vault == nullptr )
+		return false;
+
+	// We need property definition cache in order to process the relationship information.
+	return m_vault->propertyDefinitionsReady();
+}
+
 //! Refreshes the property values based on the current filter and object version.
 void PropertyValueListModel::refreshPropertyValuesImpl()
 {
 	// Skip if object version or vault are still unavailable.
-	if( m_objectVersion == 0 || m_vault == 0 )
+	if( ! allDataAvailable() )
 		return;
 
 	// Select the values we want to show based on the filter and then
@@ -374,3 +400,15 @@ void PropertyValueListModel::refreshPropertyValuesImpl()
 		m_allowedLookupsResolvers = new AllowedLookupsResolver( this, m_vault );
 }
 
+void PropertyValueListModel::notifyPropertyDefinitionsReady()
+{
+	// Skip if all data is yet to become available.
+	if( ! allDataAvailable() )
+		return;
+
+	this->beginResetModel();
+	{
+		this->refreshPropertyValuesImpl();
+	}
+	this->endResetModel();
+}
