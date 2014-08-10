@@ -22,14 +22,16 @@
 #define QMLSORTFILTERPROXYMODEL_H
 
 #include <QJSValue>
+#include <QQmlParserStatus>
 #include <QSortFilterProxyModel>
 
 // Forward declaration.
 class DataAccessorSource;
 
-class QmlSortFilterProxyModel : public QSortFilterProxyModel
+class QmlSortFilterProxyModel : public QSortFilterProxyModel, public QQmlParserStatus
 {
 	Q_OBJECT
+	Q_INTERFACES( QQmlParserStatus )
 	Q_PROPERTY( QJSValue lessThanJS READ lessThanJS NOTIFY lessThanJSChanged WRITE setLessThanJS )
 public:
 	explicit QmlSortFilterProxyModel(QObject *parent = 0);
@@ -59,6 +61,14 @@ public slots:
 	 * @param lessThanFunction The comparison function.
 	 */
 	void setLessThanJS( const QJSValue& lessThanFunction );
+
+
+// // QQmlParserStatus
+public:
+
+	virtual void classBegin() {}
+
+	virtual void componentComplete();
 
 // QSortFilterProxyModel
 protected:

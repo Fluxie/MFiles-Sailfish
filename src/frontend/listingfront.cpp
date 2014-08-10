@@ -44,6 +44,13 @@ QString ListingFront::resource() const
 	return this->cachedListingConst()->resource();
 }
 
+
+void ListingFront::requestRefresh()
+{
+	// Delegate.
+	QMetaObject::invokeMethod( this->cachedListing(), "requestRefresh", Qt::AutoConnection );
+}
+
 bool ListingFront::accept( QObject* core ) const
 {
 	return qobject_cast< CachedListing* >( core ) != nullptr;

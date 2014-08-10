@@ -46,6 +46,11 @@ signals:
 
 public slots:
 
+	/**
+	 * @brief Requests for an asynchronous refresh.
+	 */
+	void requestRefresh();
+
 // FrontBase.
 protected:
 

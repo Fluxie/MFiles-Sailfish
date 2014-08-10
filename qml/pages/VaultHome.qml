@@ -26,62 +26,41 @@ import "VaultHome.js" as Logic
 
 Page {
 
-	id: page
+    id: homePage
 
 	property VaultFront vault : VaultFront {}
 	property string mfwaUrl: ''
 	property string authentication: ''
-	property string vaultName: ''
-    property ViewListModel rootModel : ViewListModel {
-
-        dataFilter: ViewListModel.AllItems
-        listing: page.vault.rootListing
-        vault: page.vault
-    }
+    property string vaultName: ''
 
 	function initialize() {
-        Logic.initialize( page, listView );
-        sorter.sortByDefaults();
-	}
-
-	Connections {
-		target : vault
-		onAllCachesPopulated : {
-
-			console.log( "Setting class name and object type name." );
-
-			// Update the names
-			var lvm = listView.model;
-			for(var i=0; i < lvm.count; i++) {
-				var item = lvm.get(i);
-				var mfclass = vault.get( VaultFront.Class, item.data.Class );
-				var mfot = vault.get( VaultFront.ObjectType, item.data.ObjVer.Type );
-				item.className = mfclass.Name;
-				item.objectTypeName = mfot.Name;
-			}
-		}
-	}
-
-
-	PageHeader {
-		anchors.top: parent.top
-		anchors.left: parent.left
-		anchors.right: parent.right
-
-		id: header
-		title: page.vaultName
-	}
+        Logic.initialize( homePage, listView );
+	}	
 
 	// To enable PullDownMenu, place our content in a SilicaFlickable
 	SilicaListView {
 
 		id: listView
 
-		anchors.top: header.bottom
-		anchors.left: parent.left
-		anchors.right: parent.right
-		anchors.bottom: parent.bottom
+        anchors.fill: parent
 		clip: true
+
+        header: PageHeader {
+
+            id: header
+            title: homePage.vaultName
+        }
+
+        PullDownMenu {
+            id: pullDownMenu
+
+            MenuItem {
+                text: "Refresh"
+                onClicked: {
+                    homePage.vault.rootListing.requestRefresh()
+                }
+            }
+        }
 
 		property ListModel favoritesList: ListModel {}
         model: QmlSortFilterProxyModel {
@@ -93,8 +72,8 @@ Page {
             sourceModel : ViewListModel {
 
                 dataFilter: ViewListModel.AllItems
-                listing: page.vault.rootListing
-                vault: page.vault
+                listing: homePage.vault.rootListing
+                vault: homePage.vault
             }
 
             // Set function for sorting the listing.
@@ -111,7 +90,7 @@ Page {
 
 			onClicked: {
 				var properties = pageStack.push(
-						'ViewListing.qml', { view: model.data, path: model.resource, vault: page.vault } );
+                        'ViewListing.qml', { view: model.data, path: model.resource, vault: homePage.vault } );
 			}
 
 			Column {

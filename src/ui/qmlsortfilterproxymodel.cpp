@@ -46,6 +46,11 @@ void QmlSortFilterProxyModel::setLessThanJS( const QJSValue& lessThanFunction )
 	emit lessThanJSChanged();
 }
 
+void QmlSortFilterProxyModel::componentComplete()
+{
+	QMetaObject::invokeMethod( this, "sortByDefaults", Qt::QueuedConnection );
+}
+
 bool QmlSortFilterProxyModel::lessThan(const QModelIndex & left, const QModelIndex & right) const
 {
 	// Delegate to base class if our comparison function has not been defined.

@@ -30,36 +30,62 @@ Page {
     property VaultFront vault : VaultFront {}
     property var view
     property var propertyFolder
+    property var listing : page.vault.listing( page.path )
     property string path
 
-
-    PageHeader {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-
-        id: header
-        title:  page.propertyFolder ? page.propertyFolder.DisplayValue : page.view.Name
-    }
 
     // To enable PullDownMenu, place our content in a SilicaFlickable
     SilicaListView {
 
         id: listView
 
-        anchors.top: header.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
         clip: true
 
+        header: PageHeader {
+
+            id: header
+            title:  page.propertyFolder ? page.propertyFolder.DisplayValue : page.view.Name
+        }
+
+        PullDownMenu {
+            id: pullDownMenu
+
+            MenuItem {
+                text: "Home"
+                onClicked: {
+
+                    var homePage = pageStack.find( function( searchFor ) {
+                        var found = searchFor.vaultName ? true : false;
+                        return found; } );
+                    pageStack.pop( homePage );
+                }
+            }
+
+            MenuItem {
+                text: "Refresh"
+                onClicked: {
+                    page.listing.requestRefresh()
+                }
+            }
+        }
+
         property ListModel favoritesList: ListModel {}
-        model: ViewListModel {
+        model: QmlSortFilterProxyModel {
 
+            id: sorter
 
-            dataFilter: ViewListModel.AllItems
-            listing: page.vault.listing( page.path )
-            vault: page.vault
+            dynamicSortFilter: true
+
+            sourceModel: ViewListModel {
+
+                dataFilter: ViewListModel.AllItems
+                listing: page.listing
+                vault: page.vault
+            }
+
+            // Set function for sorting the listing.
+            lessThanJS: function( left, right ) { return left.display.localeCompare( right.display ) < 0; }
         }
 
         ViewPlaceholder {
