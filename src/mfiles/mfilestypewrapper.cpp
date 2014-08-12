@@ -29,6 +29,7 @@ namespace MFiles
 MFilesTypeWrapper::MFilesTypeWrapper( const QJsonValue& value ) :
 	m_object( value.toObject() )
 {
+	Q_ASSERT( ! m_object.isEmpty() );
 }
 
 }

@@ -68,7 +68,7 @@ public:
 	 * @brief value
 	 * @return The object as JSON value.
 	 */
-	QJsonValue value() const { return QJsonValue( m_object ); }
+	QJsonValue toJsonValue() const { return QJsonValue( m_object ); }
 
 // Protected interface.
 protected:

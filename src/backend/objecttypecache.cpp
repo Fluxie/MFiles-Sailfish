@@ -46,7 +46,7 @@ ValueListCore* ObjectTypeCache::list( int id, const TypedValueFilter* filter )
 
 	// Nothing return if not populated.
     if( ! populated() )
-		return 0;
+		return nullptr;
 
 	// Search for the value list cached for this property definition.
 	ValueListKey key( id, filter );

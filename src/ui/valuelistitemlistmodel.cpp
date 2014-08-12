@@ -151,7 +151,7 @@ void ValueListItemListModel::setValueList( ValueListFront* valueList )
 //! Sets the filter.
 void ValueListItemListModel::setFilter( TypedValueFilter* filter )
 {
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - setFilter" );
 	// Skip if the filter isn't changed.
 	if( m_filter == filter )
 		return;
@@ -161,13 +161,13 @@ void ValueListItemListModel::setFilter( TypedValueFilter* filter )
 	this->resetFromList();
 	emit filterChanged();
 
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - setFilter" );
 }
 
 //! Sets the currently selected lookup.
 void ValueListItemListModel::setSelectedLookup( const QJsonValue& lookup )
 {
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - setSelectedLookup" );
 	// Skip if the lookup does not change.
 	if( m_selectedLookup == lookup )
 		return;
@@ -176,13 +176,13 @@ void ValueListItemListModel::setSelectedLookup( const QJsonValue& lookup )
 	m_selectedLookup = lookup;
 	this->includeSelectedLookupIfMissing( true );
 	emit selectedLookupChanged();
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - setSelectedLookup" );
 }
 
 //! Sets the blocked lookups.
 void ValueListItemListModel::setBlockedLookups( const QJsonArray& blocked )
 {
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - setSelectedLookup" );
 	// Set the blocked lookups and construct a blocking list from them.
 	m_blockedLookups.clear();
 	for( QJsonArray::const_iterator itr = blocked.constBegin(); itr != blocked.constEnd(); itr++ )
@@ -194,13 +194,13 @@ void ValueListItemListModel::setBlockedLookups( const QJsonArray& blocked )
 	}	
 	this->resetFromList(); // Reset after blocking.	
 	emit blockedLookupsChanged();
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - setSelectedLookup" );
 }
 
 //! Returns an array of value list items without the blocked lookups.
 AsyncFetch* ValueListItemListModel::filterBlocked( AsyncFetch* items ) const
 {
-	qDebug( "ValueListItemListModel" );
+	qDebug( "ValueListItemListModel - filterBlocked" );
 	// Filter the items if necessary.
 	if( m_blockedLookups.empty() )
 	{
@@ -238,7 +238,7 @@ void ValueListItemListModel::includeSelectedLookupIfMissing( bool notify )
 		int lookupId = lookup.item();
 		int index = this->indexOf( lookupId );
 		if( index == -1 )
-			this->insertLookup( lookup.value(), notify );
+			this->insertLookup( lookup.toJsonValue(), notify );
 		Q_ASSERT( this->indexOf( lookupId ) != -1 );
 
 	}  // end if.

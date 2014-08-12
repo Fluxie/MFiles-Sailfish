@@ -1,11 +1,11 @@
 #include "typedvaluefilter.h"
 
-TypedValueFilter::TypedValueFilter(QObject *parent) :
-	QObject(parent),
+TypedValueFilter::TypedValueFilter( QObject *parent ) :
+	QObject( parent ),
 	m_enabled( false ),
 	m_objectType( TypedValueFilter::Undefined ),
 	m_propertyDef( TypedValueFilter::Undefined ),
-	m_ownerInfo( 0 )
+	m_ownerInfo( nullptr )
 {
 
 }
@@ -32,7 +32,7 @@ TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef, Lazy
 QJsonValue TypedValueFilter::ownerInfo() const
 {
 	// Fetch and return the owner info if it is available.
-	if( m_ownerInfo != 0 )
+	if( m_ownerInfo != nullptr )
 	{
 		// Delegate.
 		return m_ownerInfo->ownerInfo();
@@ -42,7 +42,7 @@ QJsonValue TypedValueFilter::ownerInfo() const
 		// Construct the empty ownership info in similar manner than what is done in PropertyValueOWnerResolver::ownershipInfo.
 		QJsonArray noLookups;
 		MFiles::TypedValue empty( noLookups );
-		return empty.value();
+		return empty.toJsonValue();
 	}
 }
 

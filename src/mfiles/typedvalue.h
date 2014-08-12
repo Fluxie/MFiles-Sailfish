@@ -64,6 +64,12 @@ public:
 	TypedValue( const QJsonArray& lookups );
 
 	/**
+	 * @brief Copy-constructor
+	 * @param source Source of the copy.
+	 */
+	TypedValue( const TypedValue& source );
+
+	/**
 	 * @brief Gets the data type.
 	 * @return The data type of the typed value.
 	 */

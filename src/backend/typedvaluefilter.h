@@ -45,7 +45,7 @@ public:
 	 * @brief Initializes new TypedValueFilter object.
 	 * @param parent Parent for the filter.
 	 */
-	explicit TypedValueFilter(QObject *parent = 0);
+	explicit TypedValueFilter( QObject *parent = nullptr );
 
 	/**
 	 * @brief Copy-constructor

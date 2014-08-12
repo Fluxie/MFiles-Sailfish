@@ -55,7 +55,7 @@ QJsonValue PropertyValueOwnerResolver::ownershipInfo( const QModelIndex& index )
 		QJsonArray ownerLookups = owner.typedValue().asLookups();
 		foreach( MFiles::Lookup lookup, ownerLookups )
 		{			
-			ownerLookupsAll.push_back( lookup.value() );
+			ownerLookupsAll.push_back( lookup.toJsonValue() );
 
 		}  // end foreach		
 
@@ -63,7 +63,7 @@ QJsonValue PropertyValueOwnerResolver::ownershipInfo( const QModelIndex& index )
 
 	// Construct and return a typed value based on the owner lookups.
 	MFiles::TypedValue ownerValue( ownerLookupsAll );
-	return ownerValue.value();
+	return ownerValue.toJsonValue();
 }
 
 bool PropertyValueOwnerResolver::mayHaveOwner( const QModelIndex& subItem ) const
@@ -236,7 +236,7 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 			// Does this value list have an owner?
 			MFiles::PropertyDef propertyDef( m_vault->get( VaultFront::PropertyDefinition, propertyValue.propertyDef() ) );
 			Q_ASSERT( propertyDef.basedOnValueList() );
-			propertyDefsByRow.insert( row, propertyDef.value() );
+			propertyDefsByRow.insert( row, propertyDef.toJsonValue() );
 			rowsOfValueList.insert( propertyDef.valueList(), row );  // Store thw row where this value list is located.
 			MFiles::ObjType objtype( m_vault->get( VaultFront::ObjectType, propertyDef.valueList() ) );
 			if( objtype.hasOwner() )
@@ -347,7 +347,7 @@ void PropertyValueOwnerResolver::tryAutoFillOwnerLocation( int ownerLocationVers
 
 			// Signal that the owner should be changed.
 			Q_ASSERT( newOwner.typedValue().hasValue() );
-			emit ownerDetermined( ownerIndex, newOwner.value() );
+			emit ownerDetermined( ownerIndex, newOwner.toJsonValue() );
 
 			// Mark the fetch for deletion.
 			fetchOwner->deleteLater();

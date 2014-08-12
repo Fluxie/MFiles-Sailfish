@@ -56,7 +56,7 @@ QJsonValue CachedListing::normalizeValue( QJsonValue value )
 		{
 			MFiles::ViewLocation emptyLocation;
 			QJsonObject viewObject = viewValue.toObject();
-			viewObject[ "ViewLocation" ] = emptyLocation.value();
+			viewObject[ "ViewLocation" ] = emptyLocation.toJsonValue();
 			viewValue = viewObject;
 		}
 		else

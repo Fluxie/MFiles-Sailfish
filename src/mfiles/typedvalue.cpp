@@ -59,8 +59,8 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 	// Single-select.
 	case MFiles::Constants::SingleSelectLookup :
 	{
-		typedValue[ "Lookup" ] = lookup.value();
-		typedValue[ "Value" ] = lookup.value();
+		typedValue[ "Lookup" ] = lookup.toJsonValue();
+		typedValue[ "Value" ] = lookup.toJsonValue();
 		break;
 	}
 
@@ -68,7 +68,7 @@ TypedValue::TypedValue( int dataType, const Lookup& lookup )
 	case MFiles::Constants::MultiSelectLookup :
 	{
 		QJsonArray lookups;
-		lookups.push_back( lookup.value() );
+		lookups.push_back( lookup.toJsonValue() );
 		typedValue[ "Lookups" ] = lookups;
 		typedValue[ "Value" ] = lookups;
 		break;
@@ -85,6 +85,12 @@ TypedValue::TypedValue( const QJsonArray& lookups )
 {
 	// Delegate.
 	this->setMultiSelectLookup( lookups );
+}
+
+TypedValue::TypedValue( const TypedValue& source ) :
+	MFilesTypeWrapper( source.toJsonValue() )
+{
+
 }
 
 /**
@@ -110,7 +116,7 @@ QJsonArray TypedValue::asLookups() const
 	{
 		foreach( Lookup lookup, this->object()[ "Lookups" ].toArray() )
 		{
-			lookups.push_back( lookup.value() );
+			lookups.push_back( lookup.toJsonValue() );
 		}
 		break;
 	}

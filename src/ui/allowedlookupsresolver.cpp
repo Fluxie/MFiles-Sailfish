@@ -41,14 +41,14 @@ void AllowedLookupsResolver::requestValueResolution( const QModelIndex& topLeft,
 		return;
 
 	// Fetch the allowed values using the new filter.
-	AsyncFetch* fetchAllowed = this->fetchAllowedItems( topLeft, currentValue.value() );
+	AsyncFetch* fetchAllowed = this->fetchAllowedItems( topLeft, currentValue.toJsonValue() );
 
 	// Resolve the validity.
 	QObject::connect( fetchAllowed, &AsyncFetch::finished, [=]() mutable {
 		fetchAllowed->deleteLater();
 
 		QJsonArray values = fetchAllowed->values();
-		this->resolveValidity( values, topLeft, currentValue.value() );
+		this->resolveValidity( values, topLeft, currentValue.toJsonValue() );
 	} );
 }
 
@@ -87,11 +87,11 @@ void AllowedLookupsResolver::resolveValidity( const QJsonArray& allowedItems, co
 	// Remove all values from the lookup that were not returned
 	// and then signal update if something was dropped.
 	MFiles::PropertyValue asPropertyValue( currentValue );
-	MFiles::TypedValue updatedTypedValue( asPropertyValue.typedValue().value() );
+	MFiles::TypedValue updatedTypedValue( asPropertyValue.typedValue() );
 	if( updatedTypedValue.dropLookupsExcept( allowedItemIds ) )
 	{
 		// Update the value.
 		MFiles::PropertyValue updatedValue( asPropertyValue.propertyDef(), updatedTypedValue );
-		emit allowedValueResolved( index, updatedValue.value() );
+		emit allowedValueResolved( index, updatedValue.toJsonValue() );
 	}
 }
