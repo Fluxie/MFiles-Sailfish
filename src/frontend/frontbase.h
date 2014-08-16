@@ -23,6 +23,8 @@
 
 #include <QObject>
 
+class VaultFront;
+
 //! A helper class for managing the construction of core objects.
 class FrontBase : public QObject
 {
@@ -31,18 +33,38 @@ Q_OBJECT
 // Public interface.
 public:
 
-	//! Initializes new core object.
-	explicit FrontBase() {}
+	//! Initializes new FrontBase object.
+	explicit FrontBase() : m_core( nullptr ) {}
 
-	//! Initializes new core object.
-	explicit FrontBase( QObject* core ) :
-		m_core( core )
-	{ emit refreshed(); }
+	//! Initializes new FrontBase object.
+	explicit FrontBase( QObject* core ) : m_core( core ) { }
+
+	/**
+	 * @brief Initializes new FrontBase object.
+	 * @param core Core object
+	 * @param parent Parent.
+	 */
+	explicit FrontBase( QObject* core, QObject* parent  );
+
+	/**
+	 * @brief Checks if this object is part of the given vault.
+	 * @param vault The vault
+	 * @return True if this front belongs to the given vault
+	 */
+	bool isPartOf( const VaultFront* vault ) const;
+
+	/**
+	 * @brief Sets new core.
+	 * @param core The new core.
+	 */
+	void setCore( QObject* core );
 
 signals:
 
-	//! Signaled when the data has been refresheded. Core becomes available or otherwise.
-	void refreshed();
+	/**
+	 * @brief coreChanged is signaled when the core has changed.
+	 */
+	void coreChanged();
 
 public slots:
 

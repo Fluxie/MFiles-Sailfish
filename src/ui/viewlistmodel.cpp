@@ -38,11 +38,9 @@ ViewListModel::ViewListModel( QObject *parent ) :
 	ListModelBase( parent ),
 	m_filter( Undefined ),
 	m_listing( nullptr ),
+	m_listingDataSet( false ),
 	m_listingDataUpdateCookie( 0 )
 {
-	// Make internal connections.
-	QObject::connect( this, &ViewListModel::dataFilterChanged, this, &ViewListModel::refreshListingData );
-	QObject::connect( this, &ViewListModel::listingChanged, this, &ViewListModel::refreshListingData );
 }
 
 //! Returns the number of rows under the given parent.
@@ -97,6 +95,15 @@ QHash< int, QByteArray > ViewListModel::roleNames() const
 	return roles;
 }
 
+ListingStatus::Status ViewListModel::status() const
+{
+	if( m_listing == nullptr || m_listingDataSet == false )
+		return ListingStatus::Refreshing;
+
+	qDebug( "ViewListModel::status" );
+	return m_listing->status();
+}
+
 LazyModelDataAccessor* ViewListModel::createAccessor( const QModelIndex& index )
 {
 	return new ViewListModelDataAccessor( this, index );
@@ -119,6 +126,12 @@ void ViewListModel::setVault( VaultFront* vault )
 	if( m_vault == vault )
 		return;
 
+	// Verify that the listing and the vault are compatible.
+	if( vault != nullptr && m_listing != nullptr )
+	{
+		Q_ASSERT( m_listing->isPartOf( vault ) );
+	}
+
 	m_vault = vault;	
 	emit vaultChanged();
 }
@@ -133,13 +146,27 @@ void ViewListModel::setListing( ListingFront* listing )
 	if( m_listing == listing )
 		return;
 
+	// Verify that the listing and the vault are compatible.
+	if( m_vault != nullptr && listing != nullptr )
+	{
+		Q_ASSERT( listing->isPartOf( m_vault ) );
+	}
+
 	// Disconnect previous signals.
 	if( m_listing != nullptr )
+	{
 		m_listing->disconnect( this, nullptr );
+		this->disconnect( m_listing, nullptr );
+	}
 
+	// Store the listing.
 	m_listing = listing;
 	if( m_listing != nullptr )
-		QObject::connect( m_listing, &ListingFront::refreshed, this, &ViewListModel::refreshListingData );
+	{
+		QObject::connect( m_listing, &ListingFront::refreshed, this, &ViewListModel::setListingData );
+		QObject::connect( this, &ViewListModel::dataFilterChanged, m_listing, &ListingFront::requestRefresh );
+		m_listing->requestRefresh();
+	}
 	emit listingChanged();
 }
 
@@ -218,53 +245,29 @@ void ViewListModel::forType( const QModelIndex & index, QVariant& variant ) cons
 	variant = item.type();
 }
 
-/**
- * @brief Refreshes the listing data.
- */
-void ViewListModel::refreshListingData()
+void ViewListModel::setListingData( const QJsonArray& data )
 {
-	// Can we fill the listing data?
-	if( m_listing == nullptr || m_filter == DataFilter::Undefined )
-	{
-		// Reset model.
-		ResetModel reset( this );
-		Q_UNUSED( reset );
-
-		// Clear the previous listing.
-		m_listingData = QJsonArray();
-
-		return;
-	}
-
-	// Fetch the listing and apply appropriate filter.
-	AsyncFetch* fetchListing = m_listing->list();
+	// Apply filter.
+	QJsonArray filteredData;
 	switch( m_filter )
 	{
 	case DataFilter::AllItems :
+		filteredData = data;
 		break;
 	default:
 		qCritical( "TODO: Report error." );
 		break;
 	};
 
-	// Set the listing.
-	int cookie = ++m_listingDataUpdateCookie;
-	QObject::connect( fetchListing, &AsyncFetch::finished,  [=]() {
-
-		// We are doing the update asynchronously.
-		// Ensure that the latest listing request is the one that takes effect.
-		if( this->m_listingDataUpdateCookie != cookie )
-			return;
-
-		// Reset model.
+	// Save the data.
+	{
 		ResetModel reset( this );
 		Q_UNUSED( reset );
 
 		// Set the data.
-		m_listingData = fetchListing->values();
-
-		// Mark the fetch for deletion.
-		fetchListing->deleteLater();
-
-	} );  // end connect
+		qDebug( "ViewListModel::setListingData" );
+		m_listingData = filteredData;
+		m_listingDataSet = true;
+	}
+	emit statusChanged();
 }

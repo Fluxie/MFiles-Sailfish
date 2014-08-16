@@ -51,6 +51,7 @@
 #include "ui/valuelistitemlistmodel.h"
 #include "ui/viewlistmodel.h"
 #include "frontend/listingfront.h"
+#include "frontend/listingstatus.h"
 #include "frontend/valuelistfront.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
@@ -74,6 +75,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	qmlRegisterType< AsyncFetch >();
 	qmlRegisterType< LazyOwnerInfo >();
 	qmlRegisterType< ListingFront >();
+	qmlRegisterType< ListingStatus >("mohari.sailfish", 1, 0, "ListingStatus");
 	qmlRegisterType< ObjectFront >();
 	qmlRegisterType< ObjectVersionFront >();
 	qmlRegisterType< ValueListFront >();
@@ -94,6 +96,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	app->setQuitOnLastWindowClosed( true );
 	QScopedPointer<QQuickView> view( SailfishApp::createView() );
 	view->engine()->rootContext()->setContextProperty( "GlobalMonitor", monitor.data() );
+	view->engine()->rootContext()->setContextProperty( "ListingStatus", new ListingStatus() );
 	host->setQmlEngine( view->engine() );
 
 	// Open UI.

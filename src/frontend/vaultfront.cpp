@@ -43,9 +43,8 @@
 #include "valuelistfront.h"
 #include "listingfront.h"
 
-VaultFront::VaultFront(QObject *parent) :
-	QObject(parent),
-	m_core( 0 )
+VaultFront::VaultFront( QObject *parent ) :
+	FrontBase( nullptr, parent )
 {
 }
 
@@ -53,8 +52,8 @@ VaultFront::VaultFront(QObject *parent) :
 VaultFront::~VaultFront()
 {
 	// Mark the associated vault core for destruction.
-	if( m_core != 0 )
-		m_core->deleteLater();
+	if( core() != nullptr )
+		core()->deleteLater();
 }
 
 /**
@@ -65,19 +64,20 @@ VaultFront::~VaultFront()
 void VaultFront::initialize(
 		const QString& url,
 		const QString& authentication )
-{
-	Q_ASSERT( m_core == 0 );
+{	
+	Q_ASSERT( core() == nullptr );
 
 	// Prepare new core.
-	m_core = HostCore::instance()->prepareVault( url, authentication );
+	this->setCore( HostCore::instance()->prepareVault( url, authentication ) );
 
 	// Connect events
-	QObject::connect( m_core, &VaultCore::allCachesPopulated, this, &VaultFront::allCachesPopulated, Qt::QueuedConnection );
-	QObject::connect( m_core->classes(), &ClassCache::populatedChanged, this, &VaultFront::classesReadyChanged, Qt::QueuedConnection );
-	QObject::connect( m_core->classes(), &ClassCache::refreshed, this, &VaultFront::classesRefreshed, Qt::QueuedConnection );
-	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::refreshed, this, &VaultFront::objectTypesRefreshed, Qt::QueuedConnection );
-	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::populatedChanged, this, &VaultFront::propertyDefinitionsReadyChanged, Qt::QueuedConnection );
-	QObject::connect( m_core->propertyDefinitions(), &PropertyDefCache::refreshed, this, &VaultFront::propertyDefinitionsRefreshed, Qt::QueuedConnection );
+	VaultCore* core = vaultCore();
+	QObject::connect( core, &VaultCore::allCachesPopulated, this, &VaultFront::allCachesPopulated, Qt::QueuedConnection );
+	QObject::connect( core->classes(), &ClassCache::populatedChanged, this, &VaultFront::classesReadyChanged, Qt::QueuedConnection );
+	QObject::connect( core->classes(), &ClassCache::refreshed, this, &VaultFront::classesRefreshed, Qt::QueuedConnection );
+	QObject::connect( core->objectTypes(), &ObjectTypeCache::refreshed, this, &VaultFront::objectTypesRefreshed, Qt::QueuedConnection );
+	QObject::connect( core->propertyDefinitions(), &PropertyDefCache::populatedChanged, this, &VaultFront::propertyDefinitionsReadyChanged, Qt::QueuedConnection );
+	QObject::connect( core->propertyDefinitions(), &PropertyDefCache::refreshed, this, &VaultFront::propertyDefinitionsRefreshed, Qt::QueuedConnection );
 
 	// Authenticated.
 	emit rootListingChanged();
@@ -95,15 +95,15 @@ QJsonValue VaultFront::get(
 	switch( type )
 	{
 	case CacheType::Class :
-		fetch = m_core->classes()->get( id );
+		fetch = vaultCoreConst()->classes()->get( id );
 		break;
 
 	case CacheType::ObjectType :
-		fetch = m_core->objectTypes()->get( id );
+		fetch = vaultCoreConst()->objectTypes()->get( id );
 		break;
 
 	case CacheType::PropertyDefinition :
-		fetch = m_core->propertyDefinitions()->get( id );
+		fetch = vaultCoreConst()->propertyDefinitions()->get( id );
 
 	// Unknown item, return the null we set earlier.
 	default:
@@ -186,11 +186,11 @@ ValueListFront* VaultFront::valueList(
 	qDebug( "Fetching value list from object type cache." );
 	ValueListCore* listCore = 0;
 	if( filter && filter->enabled() )
-		listCore = m_core->objectTypes()->list( id, filter );
+		listCore = vaultCore()->objectTypes()->list( id, filter );
 	else
-		listCore = m_core->objectTypes()->list( id );
-	if( listCore == 0 )
-		return 0;
+		listCore = vaultCore()->objectTypes()->list( id );
+	if( listCore == nullptr )
+		return nullptr;
 
 	// Instantiate new front.
 	qDebug( "Instantiating value list front." );
@@ -202,16 +202,16 @@ ValueListFront* VaultFront::valueList(
 	{
 	// A special handler for classes value list.
 	case 1 :
-		front = new ClassesFront( m_core, listCore, objectType );
+		front = new ClassesFront( vaultCore(), listCore, objectType );
 		break;
 
 	// Use the normal front by default.
 	default:
-		front = new ValueListFront( m_core, listCore );
+		front = new ValueListFront( vaultCore(), listCore );
 		break;
 	}
 	QQmlEngine::setObjectOwnership( front, QQmlEngine::JavaScriptOwnership );
-	QObject::connect( m_core->objectTypes(), &ObjectTypeCache::valueListAvailable, front, &ValueListFront::coreAvailable );	
+	QObject::connect( vaultCore()->objectTypes(), &ObjectTypeCache::valueListAvailable, front, &ValueListFront::coreAvailable );
 
 	// Return the front.	
 	return front;
@@ -220,42 +220,42 @@ ValueListFront* VaultFront::valueList(
 ListingFront* VaultFront::listing( const QString& path )
 {
 	// No core, no listing.
-	if( m_core == nullptr )
+	if( core() == nullptr )
 		return nullptr;
 
 	// Return the requested listing.
-	ListingFront* front = new ListingFront( m_core->listings()->listing( ListingId( path ) ) );
+	ListingFront* front = new ListingFront( vaultCore()->listings()->listing( ListingId( path ) ) );
 	return front;
 }
 
 ListingFront* VaultFront::rootListing()
 {
 	// No core, no listing.
-	if( m_core == nullptr )
+	if( core() == nullptr )
 		return nullptr;
 
 	// Return the root listing.
-	ListingFront* front = new ListingFront( m_core->listings()->root() );
+	ListingFront* front = new ListingFront( vaultCore()->listings()->root() );
 	return front;
 }
 
 bool VaultFront::authenticated() const
 {
-	return m_core != nullptr;
+	return coreConst() != nullptr;
 }
 
 //! Checks if the classes are ready.
 bool VaultFront::classesReady() const
 {
 	// The classes are ready when the cache is populated.
-	return m_core->classes()->populated();
+	return vaultCoreConst()->classes()->populated();
 }
 
 //! Checks if the property definitions are ready.
 bool VaultFront::propertyDefinitionsReady() const
 {
 	// The property definitions are ready when the cache is populated.
-	return m_core->propertyDefinitions()->populated();
+	return vaultCoreConst()->propertyDefinitions()->populated();
 }
 
 
@@ -270,8 +270,34 @@ void VaultFront::objectChanged(	const QJsonValue& objectInfo )
 ObjectFront* VaultFront::newFront( const MFiles::ObjID& objid )
 {
 	// Create a new front for the given object core.
-	QSharedPointer< ObjectCore > core = m_core->objects()->object( objid );
-	ObjectFront* front = new ObjectFront( core );
-	QObject::connect( core.data(), &ObjectCore::latestVersionChanged, front, &ObjectFront::latestVersionChanged, Qt::QueuedConnection );	
+	QSharedPointer< ObjectCore > objectCore = vaultCore()->objects()->object( objid );
+	ObjectFront* front = new ObjectFront( objectCore );
+	QObject::connect( objectCore.data(), &ObjectCore::latestVersionChanged, front, &ObjectFront::latestVersionChanged, Qt::QueuedConnection );
 	return front;
+}
+
+/**
+ * @brief Accesses the vault core.
+ * @return Vault core
+ */
+VaultCore* VaultFront::vaultCore()
+{
+	QObject* coreObject = core();
+	if( coreObject == nullptr )
+		return nullptr;
+
+	return qobject_cast< VaultCore* >( coreObject );
+}
+
+/**
+ * @brief Accesses the vault core.
+ * @return Vautl core.
+ */
+const VaultCore* VaultFront::vaultCoreConst() const
+{
+	const QObject* core = coreConst();
+	if( core == nullptr )
+		return nullptr;
+
+	return qobject_cast< const VaultCore* >( core );
 }

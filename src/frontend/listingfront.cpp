@@ -29,6 +29,8 @@ ListingFront::ListingFront( QSharedPointer< CachedListing > reference ) :
 {
 	// Connect.
 	QObject::connect( reference.data(), &CachedListing::refreshed, this, &ListingFront::refreshed );
+	QObject::connect( reference.data(), &CachedListing::statusChanged, this, &ListingFront::statusChanged );
+	QObject::connect( reference.data(), &CachedListing::emptyChanged, this, &ListingFront::emptyChanged );
 }
 
 //! Value list items.
@@ -44,6 +46,39 @@ QString ListingFront::resource() const
 	return this->cachedListingConst()->resource();
 }
 
+ListingStatus::Status ListingFront::status() const
+{
+	// Disconnected?
+	if( this->coreConst() == nullptr )
+		return ListingStatus::Disconnected;
+
+	// Convert the core's status to our status.
+	switch( this->cachedListingConst()->status() )
+	{
+	case ListResourceCacheBase::Unpopulated :
+	case ListResourceCacheBase::Refreshing :
+		return ListingStatus::Refreshing;
+
+	case ListResourceCacheBase::Ready :
+		qDebug( "ListingFront::status" );
+		return ListingStatus::Ready;
+
+	// Unexpected status.
+	default:
+		Q_ASSERT( false );
+		return ListingStatus::Disconnected;
+	}
+}
+
+bool ListingFront::empty() const
+{
+	// Empty if the core is not available.
+	if( this->coreConst() == nullptr )
+		return true;
+
+	// Return the empty status.
+	return this->cachedListingConst()->empty();
+}
 
 void ListingFront::requestRefresh()
 {

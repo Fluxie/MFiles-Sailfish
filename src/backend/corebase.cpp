@@ -52,6 +52,14 @@ CoreBase::CoreBase( VaultCore* owner, QObject* parent ) :
 		QMetaObject::invokeMethod( this, "updateParent", Q_ARG( QObject*, parent ) );
 }
 
+bool CoreBase::isPartOf( const VaultCore* vault ) const
+{
+	if( m_vault == nullptr )
+		return false;
+
+	return m_vault == vault;
+}
+
 //! A network error has occurred within the core.
 void CoreBase::reportNetworkError( QNetworkReply::NetworkError code, const QString& description )
 {

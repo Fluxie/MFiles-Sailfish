@@ -57,6 +57,7 @@ Page {
 
             MenuItem {
                 text: "Refresh"
+                enabled: page.listing.status === ListingStatus.Ready
                 onClicked: {
                     homePage.vault.rootListing.requestRefresh()
                 }
@@ -83,7 +84,7 @@ Page {
 
 		ViewPlaceholder {
 			enabled: listView.count === 0
-			text: 'No favorites'
+            text: page.listing.status === ListingStatus.Refreshing || !page.listing.empty ? 'Refreshing...' : 'No results'
 		}
 
 		delegate: ListItem {

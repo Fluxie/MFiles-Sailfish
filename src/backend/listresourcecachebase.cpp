@@ -34,33 +34,44 @@
 ListResourceCacheBase::ListResourceCacheBase( const QString& resource, VaultCore* vault, VaultCore* parent, bool immediateRefresh ) :
 	CoreBase( vault, parent ),
 	m_resource( resource ),
-	m_populated( false ),
-	m_nextCookie( 0 )
+	m_status( ListResourceCacheBase::Unpopulated ),
+	m_cookie( 0 )
 {
 	// This object might have been already transferred to other thread than the one where it has been created.
 	if( immediateRefresh )
 		QMetaObject::invokeMethod( this, "requestRefresh", Qt::AutoConnection );
 }
 
-
-bool ListResourceCacheBase::populated() const
+ListResourceCacheBase::Status ListResourceCacheBase::status() const
 {
 	QMutexLocker lock( &m_mutex );
 
-	return m_populated;
+	return m_status;
+}
+
+bool ListResourceCacheBase::empty() const
+{
+	QMutexLocker lock( &m_mutex );
+
+	// Do we have data?
+	return m_data.empty();
 }
 
 AsyncFetch* ListResourceCacheBase::list() const
 {
-	QMutexLocker lock( &m_mutex );
+	// Get cookie and prepare fetch operation.
+	int cookie;
+	{
+		QMutexLocker lock( &m_mutex );
 
-	// Construct the object for fetching.
-	int cookie = getNextCookieNts();
+		// Construct the object for fetching.
+		cookie = getNextCookieNts();
+	}
 	AsyncFetch* fetch = new AsyncFetch( cookie );
 
 	// Return items from the cache if we are populated
 	// Otherwise star refresh.
-	if( this->populatedNts() )
+	if( m_status != ListResourceCacheBase::Unpopulated )
 	{
 		// Found it, return the value.
 		fetch->itemsFetched( cookie, m_data );
@@ -106,19 +117,21 @@ void ListResourceCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 	}
 
 	// Populate the cache.
-	bool populatedStatusChanged = false;
+	bool ready = false;
+	bool emptyStatusChanged = false;
 	QJsonArray copyOfData;
 	{
 		QMutexLocker lock( &m_mutex );
 
+		Q_ASSERT( m_status == Refreshing );
+
 		// Clear previous data.
 		/*clearSatelliteDataNts();
 		m_cache.clear();*/
-		bool wasPopulated = m_populated;
-		m_populated = false;
 
 		// Parse the results.
 		// TODO: Allow subclass to define custom parsing.
+		bool wasEmpty = m_data.empty();
 		if( result.isObject() )
 		{
 			// The result is an object. Is it formatted as { Items, MoreResults }?
@@ -156,21 +169,48 @@ void ListResourceCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 
 		// Populate satellite data.
 		//populateSatelliteDataNts();
-		m_populated = true;
-		if( wasPopulated != m_populated )
-			populatedStatusChanged = true;
+
+		// This is the last refresh.
+		if( m_cookie == cookie )
+			ready = true;
+		if( wasEmpty != m_data.empty() )
+			emptyStatusChanged = true;
 
 	}  // end lock
 
 	// The list has been refreshed.
-	if( populatedStatusChanged )
-		emit populatedChanged();
-	emit refreshed();
 	emit itemsFetched( cookie, copyOfData );  // TODO: Process error.
+	emit refreshed( copyOfData );
+	if( ready )
+	{
+		{
+			QMutexLocker lock( &m_mutex );
+
+			if( m_cookie == cookie )
+				m_status = Ready;
+		}
+		emit statusChanged();
+	}
+	if( emptyStatusChanged )
+		emit emptyChanged();
 }
 
 void ListResourceCacheBase::requestRefreshWithCookie( int cookie )
 {
+	// Update the status of this resource.
+	bool startedRefresh = false;
+	{
+		QMutexLocker lock( &m_mutex );
+
+		if( m_status != ListResourceCacheBase::Refreshing )
+		{
+			m_status = ListResourceCacheBase::Refreshing;
+			startedRefresh = true;
+		}
+	}
+	if( startedRefresh )
+		emit statusChanged();
+
 	// Request the refresh.
 	QNetworkReply* reply = this->rest()->getJson( m_resource );
 	QObject::connect( reply, &QNetworkReply::finished,  [=]() {

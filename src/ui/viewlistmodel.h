@@ -26,6 +26,7 @@
 
 #include "dataaccessorsource.h"
 #include "listmodelbase.h"
+#include "../frontend/listingstatus.h"
 
 // Forward declarations.
 class ListingFront;
@@ -58,6 +59,7 @@ class ViewListModel : public ListModelBase, public DataAccessorSource
 	Q_PROPERTY( DataFilter dataFilter READ dataFilter WRITE setDataFilter NOTIFY dataFilterChanged )
 	Q_PROPERTY( VaultFront* vault READ vault WRITE setVault NOTIFY vaultChanged )
 	Q_PROPERTY( ListingFront* listing READ listing WRITE setListing NOTIFY listingChanged )
+	Q_PROPERTY( ListingStatus::Status status READ status NOTIFY statusChanged )
 public:
 
 	enum DataFilter
@@ -101,6 +103,12 @@ public:
 	 */
 	ListingFront* listing() const { return m_listing; }
 
+	/**
+	 * @brief Gets the status of the model. Not necessarily the same as the status of the underlying listing.
+	 * @return Status of the listing.
+	 */
+	ListingStatus::Status status() const;
+
 
 // Interface implementing the model.
 public:
@@ -140,6 +148,11 @@ signals:
 	 * @brief listingChanged is signaled when the listing associated with the model changes.
 	 */
 	void listingChanged();
+
+	/**
+	 * @brief statusChanged is signaled when the status of the listing changes.
+	 */
+	void statusChanged();
 
 public slots:
 
@@ -193,12 +206,13 @@ private:
 	void forType( const QModelIndex & index, QVariant& variant ) const;
 
 // Private slots.
-private slots:
+private slots:	
 
 	/**
-	 * @brief Refreshes the listing data.
+	 * @brief setListingDate
+	 * @param data New listing data.
 	 */
-	void refreshListingData();
+	void setListingData( const QJsonArray& data );
 
 // Private data:
 private:
@@ -207,7 +221,8 @@ private:
 
 	DataFilter m_filter;  //!< The type of the data modelled in this model.
 	QJsonArray m_listingData;  //!< The list contents.
-	ListingFront* m_listing;
+	bool m_listingDataSet;
+	ListingFront* m_listing;	
 	int m_listingDataUpdateCookie;
 
 	// Auxilary functions.

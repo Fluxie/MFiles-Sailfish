@@ -82,6 +82,11 @@ signals:
 	//! Signaled when the id of the value list changes. Basically never.
 	void idChanged();
 
+	/**
+	 * @brief refreshed is signaled when the contents of the value list have been refreshed.
+	 */
+	void refreshed();
+
 public slots:
 
 // Protected interface.

@@ -1,9 +1,12 @@
 #ifndef LISTINGFRONT_H
 #define LISTINGFRONT_H
 
+#include <QJsonArray>
 #include <QSharedPointer>
 
 #include "frontbase.h"
+
+#include "listingstatus.h"
 
 // Forward declarations.
 class AsyncFetch;
@@ -15,6 +18,8 @@ class CachedListing;
 class ListingFront : public FrontBase
 {
 	Q_OBJECT
+	Q_PROPERTY( ListingStatus::Status status READ status NOTIFY statusChanged )
+	Q_PROPERTY( bool empty READ empty NOTIFY emptyChanged )
 public:
 
 	/**
@@ -37,12 +42,35 @@ public:
 	 */
 	QString resource() const;
 
+	/**
+	 * @brief Gets the status of the listing.
+	 * @return Status of the listing.
+	 */
+	ListingStatus::Status status() const;
+
+	/**
+	 * @brief Checks if the listing is empty.
+	 * @return True if this listing is currently empty.
+	 */
+	bool empty() const;
+
 signals:
 
 	/**
 	 * @brief refreshed is signaled when the listing content changes.
+	 * @param values New values.
 	 */
-	void refreshed();
+	void refreshed( const QJsonArray& values );
+
+	/**
+	 * @brief statusChanged is signaled when the status of the listing changes.
+	 */
+	void statusChanged();
+
+	/**
+	 * @brief emptyChanged is signaled when the empty status of the model changes.
+	 */
+	void emptyChanged();
 
 public slots:
 

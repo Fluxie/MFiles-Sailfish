@@ -43,6 +43,16 @@ class ListResourceCacheBase : public CoreBase
 public:
 
 	/**
+	 * @brief The Status enum represents the current operational status of the list resource cache.
+	 */
+	enum Status
+	{
+		Unpopulated,
+		Refreshing,
+		Ready,
+	};
+
+	/**
 	 * @brief Initializes new StructureCacheBase object.
 	 * @param resource The resource this cache caches. E.g /structure/classes
 	 * @param parent Parent vault.
@@ -57,10 +67,16 @@ public:
 	AsyncFetch* list() const;
 
 	/**
-	 * @brief Checks if this cache is populated.
-	 * @return True if the cache is populated.
+	 * @brief Gets the status of the resource.
+	 * @return
 	 */
-	bool populated() const;
+	Status status() const;
+
+	/**
+	 * @brief Checks if the listing is empty.
+	 * @return True if this listing is currently empty.
+	 */
+	bool empty() const;
 
 signals:
 
@@ -73,13 +89,19 @@ signals:
 
 	/**
 	 * @brief This signal is emitted when cache has been refreshed.
+	 * @param values New values.
 	 */
-	void refreshed();
+	void refreshed( const QJsonArray& values );
 
 	/**
-	 * @brief This signal is emitted when the populated status has changed.
+	 * @brief This signal is emitted when that status of the resource cache has changed.
 	 */
-	void populatedChanged();
+	void statusChanged();
+
+	/**
+	 * @brief emptyChanged is signaled when the empty status of the model changes.
+	 */
+	void emptyChanged();
 
 public slots:
 
@@ -132,13 +154,7 @@ private:
 	 * @brief getNextCookie
 	 * @return Next cookie.
 	 */
-	int getNextCookieNts() const { return m_nextCookie++; }
-
-	/**
-	 * @brief Checks if this cache is populated.
-	 * @return True if the cache is populated.
-	 */
-	bool populatedNts() const { return m_populated; }
+	int getNextCookieNts() const { return ++m_cookie; }
 
 // Private slots.
 private slots:
@@ -157,9 +173,9 @@ private:
 	QString m_resource;  //!< The cached resource.
 
 	// Dynamic variables.
-	bool m_populated;  //!< Set to true when the cache has been populated.
+	Status m_status;
 	QJsonArray m_data;  //!< The actual data received via REST API.
-	mutable int m_nextCookie;  //!< Next cookie. Cookies are used to distuinginsh requests to fething individual items from each other.
+	mutable int m_cookie;  //!< Next cookie. Cookies are used to distuinginsh requests to fething individual items from each other.
 };
 
 #endif // LISTRESOURCECACHE_H

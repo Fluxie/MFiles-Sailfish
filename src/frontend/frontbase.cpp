@@ -18,7 +18,40 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
+#include "../backend/corebase.h"
+#include "../backend/vaultcore.h"
+
 #include "frontbase.h"
+#include "vaultfront.h"
+
+FrontBase::FrontBase( QObject* core, QObject* parent ) :
+	QObject( parent ),
+	m_core( core )
+{
+
+}
+
+bool FrontBase::isPartOf( const VaultFront* vault ) const
+{
+	Q_CHECK_PTR( vault );
+
+	if( m_core == nullptr )
+		return false;
+
+	// Make the check.
+	const VaultCore* vaultCore = qobject_cast< const VaultCore* >( vault->coreConst() );
+	const CoreBase* ourCore = qobject_cast< const CoreBase* >( m_core );
+	return ourCore->isPartOf( vaultCore );
+}
+
+void FrontBase::setCore( QObject* core )
+{
+	if( m_core == core )
+		return;
+
+	m_core = core;
+	emit coreChanged();
+}
 
 //! A core of the given type has become available.
 void FrontBase::coreAvailable( QObject* core, QObject* source )
@@ -36,5 +69,5 @@ void FrontBase::setCore( QObject* core, QObject* source )
 	qDebug( "Set core" );
 	m_core = core;
 	source->disconnect( this, "coreAvailable" );
-	emit refreshed();
+	emit coreChanged();
 }

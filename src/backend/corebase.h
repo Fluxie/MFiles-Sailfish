@@ -56,6 +56,13 @@ public:
 	 */
 	explicit CoreBase( VaultCore* owner, QObject* parent );
 
+	/**
+	 * @brief Checks if this core object is part of the specified vault.
+	 * @param vault
+	 * @return True if this core object is part of the specified vault.
+	 */
+	bool isPartOf( const VaultCore* vault ) const;
+
 signals:
 
 	/**

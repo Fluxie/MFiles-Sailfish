@@ -27,6 +27,8 @@
 
 #include "../backend/typedvaluefilter.h"
 
+#include "frontbase.h"
+
 // Forward declarations.
 namespace MFiles { class ObjID; }
 class ListingFront;
@@ -42,7 +44,7 @@ class AppMonitor;
  * This object is owned by the UI thread so the signals and slots can be
  * associated with QML signals and slots.
  */
-class VaultFront : public QObject
+class VaultFront : public FrontBase
 {
 	Q_OBJECT
 	Q_ENUMS( CacheType )
@@ -155,16 +157,30 @@ public slots:
 	//! Call when a new object has been changed.
 	void objectChanged(	const QJsonValue& objectInfo );
 
+// FrontBase:
+protected:
+
+	//! Does this front accept the specified core.
+	virtual bool accept( QObject* core ) const { Q_UNUSED( core ); return false; }
+
 // Private interface.
 private:
 
 	//! Gets new object front for the given object id.
 	ObjectFront* newFront( const MFiles::ObjID& objid );
-	
-// Private data
-private:
 
-	VaultCore* m_core;  //!< Vault core.
+	/**
+	 * @brief Accesses the vault core.
+	 * @return Vault core
+	 */
+	VaultCore* vaultCore();
+
+	/**
+	 * @brief Accesses the vault core.
+	 * @return Vautl core.
+	 */
+	const VaultCore* vaultCoreConst() const;
+
 };
 
 #endif // VAULTACCESS_H
