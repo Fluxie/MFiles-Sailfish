@@ -26,6 +26,7 @@
 #include "../mfiles/objectversion.h"
 #include "../mfiles/objver.h"
 #include "../mfiles/typedvalue.h"
+#include "../mfiles/view.h"
 #include "../frontend/listingfront.h"
 
 #include "viewlistmodeldataaccessor.h"
@@ -170,6 +171,58 @@ void ViewListModel::setListing( ListingFront* listing )
 	emit listingChanged();
 }
 
+QJsonArray ViewListModel::acceptBuiltInViews( const QJsonArray& input )
+{
+	// Search for built-in views among the input and select them for output.
+	QJsonArray output;
+	foreach( const MFiles::FolderContentItem& item, input )
+	{
+		if( item.type() == MFiles::Constants::FolderContentItemType::ViewFolder )
+		{
+			MFiles::View view( item.view() );
+			if( view.builtIn() )
+				output.append( item.toJsonValue() );
+		}
+	}
+	return output;
+}
+
+QJsonArray ViewListModel::acceptCommonViews( const QJsonArray& input, bool excludeBuiltInViews )
+{
+	// Search for common views among the input and select them for output.
+	QJsonArray output;
+	foreach( const MFiles::FolderContentItem& item, input )
+	{
+		if( item.type() == MFiles::Constants::FolderContentItemType::ViewFolder )
+		{
+			// Accept all common views. But don't accept built-in views if they were excluded.
+			MFiles::View view( item.view() );
+			if( view.common() && ! excludeBuiltInViews )
+				output.append( item.toJsonValue() );
+			else if( view.common() && excludeBuiltInViews && ! view.builtIn() )
+				output.append( item.toJsonValue() );
+		}
+	}
+	return output;
+}
+
+QJsonArray ViewListModel::acceptPrivateViews( const QJsonArray& input )
+{
+	// Search for private views among the input and select them for output.
+	QJsonArray output;
+	foreach( const MFiles::FolderContentItem& item, input )
+	{
+		if( item.type() == MFiles::Constants::FolderContentItemType::ViewFolder )
+		{
+			// Accept all private views. But don't accept built-in views if they were excluded.
+			MFiles::View view( item.view() );
+			if( ! view.common() )
+				output.append( item.toJsonValue() );
+		}
+	}
+	return output;
+}
+
 void ViewListModel::forDisplay( const QModelIndex & index, QVariant& variant ) const
 {	
 	// Return the display name of the item.
@@ -254,6 +307,15 @@ void ViewListModel::setListingData( const QJsonArray& data )
 	case DataFilter::AllItems :
 		filteredData = data;
 		break;
+
+	case DataFilter::BuiltInViews :
+		filteredData = acceptBuiltInViews( data );
+		break;
+
+	case DataFilter::CustomCommonViews :
+		filteredData = acceptCommonViews( data, true );
+		break;
+
 	default:
 		qCritical( "TODO: Report error." );
 		break;
@@ -271,3 +333,5 @@ void ViewListModel::setListingData( const QJsonArray& data )
 	}
 	emit statusChanged();
 }
+
+

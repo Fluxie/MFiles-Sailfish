@@ -151,5 +151,10 @@ OTHER_FILES += qml/MFiles-Sailfish.qml \
     rpm/MFiles-Sailfish.yaml \
     MFiles-Sailfish.desktop \
     qml/pages/ViewListing.qml \
-    qml/common/listings.js
+    qml/common/listings.js \
+    qml/pages/FavoritesListing.qml \
+    qml/controls/ViewListItem.qml \
+    qml/controls/View.qml \
+    qml/models/VaultHomeViewModel.qml \
+    qml/models/VaultHomeViewItem.qml
 

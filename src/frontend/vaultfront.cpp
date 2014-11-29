@@ -63,12 +63,13 @@ VaultFront::~VaultFront()
  */
 void VaultFront::initialize(
 		const QString& url,
-		const QString& authentication )
+		const QString& authentication,
+		const QString& name )
 {	
 	Q_ASSERT( core() == nullptr );
 
 	// Prepare new core.
-	this->setCore( HostCore::instance()->prepareVault( url, authentication ) );
+	this->setCore( HostCore::instance()->prepareVault( url, authentication, name ) );
 
 	// Connect events
 	VaultCore* core = vaultCore();
@@ -82,6 +83,21 @@ void VaultFront::initialize(
 	// Authenticated.
 	emit rootListingChanged();
 	emit authenticatedChanged();
+	emit nameChanged();
+}
+
+/**
+ * @brief Gets the name of the vault.
+ * @return The name of the vault.
+ */
+QString VaultFront::name() const
+{
+	// No core, no listing.
+	if( coreConst() == nullptr )
+		return "";
+
+	// Delegate.
+	return this->vaultCoreConst()->name();
 }
 
 //! Gets an item from the cache.

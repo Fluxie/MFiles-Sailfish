@@ -101,11 +101,13 @@ public slots:
 	 * @brief Prepares new VaultCore object for accessing the specified vault.
 	 * @param url http url to the vaul.
 	 * @param authentication Authentication token for accessing the vault's resources.
+	 * @param name The name of the new vault.
 	 * @return VautlCore
 	 */
 	VaultCore* prepareVault(
 		const QString& url,
-		const QString& authentication
+		const QString& authentication,
+		const QString& name
 	);
 
 	/**

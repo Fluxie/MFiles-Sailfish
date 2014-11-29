@@ -29,6 +29,7 @@
 VaultCore::VaultCore(
 	const QString& url,
 	const QString& authentication,
+	const QString& name,
 	QObject *parent ) :
 	QObject(parent),
 	m_url( url ),
@@ -36,6 +37,9 @@ VaultCore::VaultCore(
 	m_authentication( authentication ),
 	m_cachesPopulated( false )
 {
+	// Static information.
+	m_name = name;
+
 	// Metadata caches.
 	m_classes = new ClassCache( this );
 	m_objectTypes = new ObjectTypeCache( this );
@@ -67,6 +71,10 @@ VaultCore::~VaultCore()
 	qDebug( "VaultCore destroyed.");
 }
 
+QString VaultCore::name() const
+{
+	return m_name;
+}
 
 //! Authentication.
 QString VaultCore::authentication() const

@@ -39,7 +39,7 @@ namespace MFiles
  *
  * @see <a href="http://www.m-files.com/mfws/structs/foldercontentitem.html">FolderContentItem</a> in M-Files REST API documentation.
  */
-class FolderContentItem : MFilesTypeWrapper
+class FolderContentItem : public MFilesTypeWrapper
 {
 public:
 

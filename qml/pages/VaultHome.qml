@@ -22,89 +22,75 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import mohari.sailfish 1.0
 import "VaultHome.js" as Logic
+import "../controls"
+import "../models"
 import "../common/listings.js" as ListingLogic
 
 
 Page {
 
-    id: homePage
+	id: homePage
 
 	property VaultFront vault : VaultFront {}
 	property string mfwaUrl: ''
 	property string authentication: ''
-    property string vaultName: ''
+	property string vaultName: ''
 
 	function initialize() {
-        Logic.initialize( homePage, listView );
-	}	
+		Logic.initialize( homePage );
+		//favorites.vault = homePage.vault;
+	}
 
-	// To enable PullDownMenu, place our content in a SilicaFlickable
-	SilicaListView {
+	/*FavoritesListing {
+		id: favorites
 
-		id: listView
+	}*/
+	SilicaFlickable {
 
-        anchors.fill: parent
+		id: host
+
 		clip: true
+		anchors.fill: parent
 
-        header: PageHeader {
+		PullDownMenu {
+			id: pullDownMenu
 
-            id: header
-            title: homePage.vaultName
-        }
+			property var parentListing
 
-        PullDownMenu {
-            id: pullDownMenu
+			MenuItem {
+				text: "Home"
+				onClicked: {
 
-            MenuItem {
-                text: "Refresh"
-                enabled: page.listing.status === ListingStatus.Ready
-                onClicked: {
-                    homePage.vault.rootListing.requestRefresh()
-                }
-            }
-        }
-
-		property ListModel favoritesList: ListModel {}
-        model: QmlSortFilterProxyModel {
-
-            id: sorter
-
-            dynamicSortFilter: true
-
-            sourceModel : ViewListModel {
-
-                dataFilter: ViewListModel.AllItems
-                listing: homePage.vault.rootListing
-                vault: homePage.vault
-            }
-
-            // Set function for sorting the listing.
-            lessThanJS: ListingLogic.lessThanFolderItem;
-        }
-
-		ViewPlaceholder {
-			enabled: listView.count === 0
-            text: page.listing.status === ListingStatus.Refreshing || !page.listing.empty ? 'Refreshing...' : 'No results'
-		}
-
-		delegate: ListItem {
-			id: listItem
-
-			onClicked: {
-				var properties = pageStack.push(
-                        'ViewListing.qml', { view: model.data, path: model.resource, vault: homePage.vault } );
+					var homePage = pageStack.find( function( searchFor ) {
+						var found = searchFor.vaultName ? true : false;
+						return found; } );
+					pageStack.pop( homePage );
+				}
 			}
 
-			Column {
-				Label {
-					text: model.display
-					x: Theme.paddingLarge
-				}
+		}
 
-				Label {
-                    text: model.resource
-					x: Theme.paddingLarge * 2
-				}
+		SlideshowView {
+
+			id: slideShow
+
+			clip: true
+			/*anchors {
+
+				top: host.top
+				left: host.left
+				right: host.right
+				bottom: host.bottom
+			}*/
+			anchors.fill: parent
+
+			itemWidth: width
+
+			model: VaultHomeViewModel {
+
+				itemWidth: slideShow.itemWidth
+				vault: homePage.vault
+
 			}
 		}
 	}

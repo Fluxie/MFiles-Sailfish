@@ -48,12 +48,19 @@ public:
 	 * @brief Initializes new VaultCore object.
 	 * @param url URL to the M-Files REST API.
 	 * @param authentication Authentication information if available.
+	 * @param name The name of the vault.
 	 * @param parent Parent object.
 	 */
-	explicit VaultCore( const QString& url,	const QString& authentication, QObject *parent = 0 );
+	explicit VaultCore( const QString& url,	const QString& authentication, const QString& name, QObject *parent = 0 );
 
 	//! Destructor.
 	virtual ~VaultCore();
+
+	/**
+	 * @brief Gets the name of the vault.
+	 * @return Returns the name of the vault.
+	 */
+	QString name() const;
 
 	/**
 	 * @brief Gets the authentication information.
@@ -141,6 +148,7 @@ private slots:
 private:
 
 	// Static variables that do not need protection.
+	QString m_name;
 	ClassCache* m_classes;
 	ObjectTypeCache* m_objectTypes;
 	PropertyDefCache*  m_propertyDefinitions;

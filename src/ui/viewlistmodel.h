@@ -65,7 +65,10 @@ public:
 	enum DataFilter
 	{
 		Undefined,  //!< No data has been specified to be shown in the model.
-		ViewsOnly,  //!< Only views are shon
+		ViewsOnly,  //!< Only views are shown,
+		BuiltInViews,  //!< Only built-in views are shown.
+		CustomCommonViews,  //!< Common views that are not built-in
+		PrivateViews,  //!< Views that are private to the user.
 		ObjectsOnly,  //!< Only objects are shown.
 		AllItems  //!< All items are shown.
 	};
@@ -176,6 +179,28 @@ public slots:
 
 // Private interface.
 private:
+
+	/**
+	 * @brief acceptBuiltInViews
+	 * @param input Input items.
+	 * @return Built-in views included in the input.
+	 */
+	static QJsonArray acceptBuiltInViews( const QJsonArray& input );
+
+	/**
+	 * @brief acceptViews
+	 * @param input Input items.
+	 * @param excludeBuiltInViews True to exclude built-in views from the listing
+	 * @return Common views included in the input.
+	 */
+	static QJsonArray acceptCommonViews( const QJsonArray& input, bool excludeBuiltInViews );
+
+	/**
+	 * @brief acceptPrivateViews
+	 * @param input Input items.
+	 * @return Private views included in the input.
+	 */
+	static QJsonArray acceptPrivateViews( const QJsonArray& input );
 
 	/**
 	 * @brief forDisplay The display value.

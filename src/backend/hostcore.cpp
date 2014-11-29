@@ -70,19 +70,17 @@ QJSValue HostCore::toJSValue( QObject* object )
 	return converted;
 }
 
-/*!
- *Prepares vault.
- */
 VaultCore* HostCore::prepareVault(
 	const QString& url,
-	const QString& authentication
+	const QString& authentication,
+	const QString& name
 )
 {
-	// Ensure free memory before creating new vault.s
+	// Ensure free memory before creating new vaults.
 	this->qmlEngine()->collectGarbage();
 
 	// Create a new vault object and move it to this thread.
-	VaultCore* core = new VaultCore( url, authentication );
+	VaultCore* core = new VaultCore( url, authentication, name );
 	core->moveToThread( this );
 	QObject::connect( core, &VaultCore::error, this, &HostCore::reportError );
 	QQmlEngine::setObjectOwnership( core, QQmlEngine::JavaScriptOwnership );

@@ -24,37 +24,41 @@ import mohari.sailfish 1.0
 import "../controls"
 import "../common/listings.js" as ListingLogic
 
-Page {
+Item {
 
-	id: page
+    id: itemHost
 
-	property VaultFront vault
-	property var view
-	property var propertyFolder
-	property var listing : page.vault.listing( page.path )
-	property string path
+    // Properties
+    property alias title: listingHeader.title
+    property alias listing: viewListing.listing
+    property alias vault: viewListing.vault
 
-	// View control.
-	View {
+    //Positioning.
+    anchors {
 
-		id: listView
+        top: parent.top
+        bottom: parent.bottom
+    }
+    width: itemModel.itemWidth
 
-		anchors.fill: parent
 
-		// View content.
-		vault: page.vault
-		listing: page.listing
-		propertyFolder: page.propertyFolder
-		view: page.view
+    // Header for this view..
+    PageHeader {
 
-		// Header for this page.
-		header: PageHeader {
+        id: listingHeader
+    }
 
-			id: header
-			title:  page.propertyFolder ? page.propertyFolder.DisplayValue : page.view.Name
-		}
+    View {
 
-		//
+        id: viewListing
 
-	}
+
+        anchors {
+
+            top: listingHeader.bottom
+            left: itemHost.left
+            right: itemHost.right
+            bottom: itemHost.bottom
+        }
+    }
 }

@@ -47,10 +47,28 @@ public:
 	View( const QJsonValue& view );
 
 	/**
+	 * @brief Gets the id of the view.
+	 * @return The id of the view.
+	 */
+	int id() const { return this->property( "ID" ).toDouble(); }
+
+	/**
+	 * @brief Gets the common view status of this view.
+	 * @return True if this view is a common view.
+	 */
+	bool common() const { return this->property( "Common" ).toBool(); }
+
+	/**
 	 * @brief Gets information about the view location.
 	 * @return The view location.
 	 */
 	QJsonValue viewLocation() const { return this->property( "ViewLocation" ); }
+
+	/**
+	 * @brief isBuiltIn
+	 * @return True if this view is a built-in view.
+	 */
+	bool builtIn() const { return this->id() < 100; }
 };
 
 }

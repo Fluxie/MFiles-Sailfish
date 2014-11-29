@@ -48,6 +48,7 @@ class VaultFront : public FrontBase
 {
 	Q_OBJECT
 	Q_ENUMS( CacheType )
+	Q_PROPERTY( QString name READ name NOTIFY nameChanged )
 	Q_PROPERTY( bool authenticated READ authenticated NOTIFY authenticatedChanged )
 	Q_PROPERTY( bool classesReady READ classesReady NOTIFY classesReadyChanged )
 	Q_PROPERTY( bool propertyDefinitionsReady READ propertyDefinitionsReady NOTIFY propertyDefinitionsReadyChanged )
@@ -69,10 +70,22 @@ public:
 	//! Destructor.
 	virtual ~VaultFront();
 
-	//! Initializes the vault cache.
+	/**
+	 * @brief Gets the name of the vault.
+	 * @return The name of the vault.
+	 */
+	QString name() const;
+
+	/**
+	 * @brief Initializes the vault.
+	 * @param url URL of the vault
+	 * @param authentication Authentication / access information to the vault.
+	 * @param name  The name of the vault
+	 */
 	Q_INVOKABLE void initialize(
-		const QString& url,  //!< M-Files Web Access URL
-		const QString& authentication  //!< Authentication token for accessing API services.
+		const QString& url,
+		const QString& authentication,
+		const QString& name
 	);
 
 	//! Gets an item from the cache.
@@ -123,6 +136,11 @@ public:
 	bool propertyDefinitionsReady() const;
 	
 signals:
+
+	/**
+	 * @brief nameChanged is signaled when the name of the vault changes.
+	 */
+	void nameChanged();
 
 	/**
 	 * @brief authenticatedChanged is signaled when the vault gains or loses access to the vault.
