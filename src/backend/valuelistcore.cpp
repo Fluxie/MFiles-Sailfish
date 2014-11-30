@@ -50,6 +50,19 @@ ValueListCore::ValueListCore( VaultCore* vault, int valueList, int owner, const 
 	m_filter->moveToThread( this->thread() );
 }
 
+//! Constructs value list object to represent one value list accessed via the specified filter.
+ValueListCore::ValueListCore(
+		const QString& resource, const QString& fetchOne,
+		VaultCore* vault, int valueList, int owner, const TypedValueFilter* filter ) :
+	StructureCacheBase(	resource, fetchOne, vault, true ),
+	m_valueList( valueList ),
+	m_owner( owner ),
+	m_filter( new TypedValueFilter( *filter, 0 ) )  // Do not specify us as the parent as we may be called from a different thread.
+{
+	// Push the filter object to correct thread.
+	m_filter->moveToThread( this->thread() );
+}
+
 //! Destructor.
 ValueListCore::~ValueListCore()
 {
@@ -72,7 +85,6 @@ QJsonValue ValueListCore::normalizeValue( QJsonValue value )
 	return value;
 }
 
-//! Gets resource for fetching the relevant value list items.
 QString ValueListCore::getResource( bool allItems, int valueList, int owner, const TypedValueFilter* filter )
 {
 	Q_CHECK_PTR( filter );

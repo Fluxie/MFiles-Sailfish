@@ -92,6 +92,19 @@ protected:
 	 */
 	virtual QJsonValue normalizeValue( QJsonValue value );
 
+	/**
+	 * @brief Initializes new ValueListCore object to represent one value list with a filter.
+	 * @param resource Resouce for fetching all items.
+	 * @param fetchOne Resource for fetching one item.
+	 * @param vault Vault.
+	 * @param valueList  Id of the value list.
+	 * @param owner Id of the owner value list.
+	 * @param filter Filter for filtering the value list items.
+	 */
+	explicit ValueListCore(
+			const QString& resource, const QString& fetchOne,
+			VaultCore* vault, int valueList, int owner, const TypedValueFilter* filter );
+
 // Private interface.
 private:
 

@@ -23,6 +23,7 @@
 
 #include <QJsonObject>
 
+#include "mfilestypewrapper.h"
 #include "objid.h"
 
 /**
@@ -36,7 +37,7 @@ namespace MFiles
  *
  * @see <a href="http://www.m-files.com/mfws/structs/objver.html">ObjVer</a> in M-Files REST API documentation.
  */
-class ObjVer
+class ObjVer : public MFilesTypeWrapper
 {
 // Public interface.
 public:
@@ -61,25 +62,25 @@ public:
 	ObjVer( const ObjID& id, int version );
 
 	//! Object identitys as ObjID.
-	const ObjID& objId() const { return m_id; }
+	const ObjID& objId() const;
 
 	/**
 	 * @brief Gets the object type.
 	 * @return The object type.
 	 */
-	int type() const { return m_id.type(); }
+	int type() const { return this->property( "Type" ).toDouble(); }
 
 	/**
 	 * @brief Gets the object id.
 	 * @return The object id.
 	 */
-	int id() const { return m_id.id(); }
+	int id() const { return this->property( "ID" ).toDouble(); }
 
 	/**
 	 * @brief Gets the object version.
 	 * @return  The object version.
 	 */
-	int version() const { return m_version; }
+	int version() const { return this->property( "Version" ).toDouble(); }
 
 	/**
 	 * @brief Converts this ObjVer to Json object.
@@ -104,8 +105,6 @@ public:
 // Private data.
 private:
 
-	ObjID m_id;  //!< Object id.
-	int m_version;  //!< Object version.
 };
 
 /**
@@ -119,7 +118,16 @@ inline unsigned int qHash(const ObjVer &key, unsigned int seed)
 	return key.type() ^ seed ^ key.id() ^ key.version();
 }
 
+/**
+ * @brief Hash function impelemntation for ObjVer
+ * @param key
+ * @return Hash value of ObjVer.
+ */
+inline unsigned int qHash(const ObjVer &key )
+{
+	return key.type() ^ key.id() ^ key.version();
 }
 
+}
 
 #endif // OBJVER_H

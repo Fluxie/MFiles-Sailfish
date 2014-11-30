@@ -5,7 +5,9 @@ TypedValueFilter::TypedValueFilter( QObject *parent ) :
 	m_enabled( false ),
 	m_objectType( TypedValueFilter::Undefined ),
 	m_propertyDef( TypedValueFilter::Undefined ),
-	m_ownerInfo( nullptr )
+	m_ownerInfo( nullptr ),
+	m_objver(),
+	m_currentValue()
 {
 
 }
@@ -21,11 +23,17 @@ TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef )
 }
 
 //! Initializes new typed value filter for property definition.
-TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver )
+TypedValueFilter* TypedValueFilter::forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver, const QJsonValue& objver, const QJsonValue& currentValue  )
 {
+	// Must not be undefined.
+	Q_ASSERT( ! objver.isUndefined() );
+	Q_ASSERT( ! currentValue.isUndefined() );
+
 	// Create the filter and return it.
 	TypedValueFilter* filter = forPropertyDefinition( propertyDef );
 	filter->m_ownerInfo = new LazyOwnerInfo( ownerInfoResolver );
+	filter->m_objver = objver;
+	filter->m_currentValue = currentValue;
 	return filter;
 }
 

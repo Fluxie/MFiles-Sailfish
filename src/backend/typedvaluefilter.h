@@ -23,6 +23,7 @@
 
 #include <QObject>
 
+#include "../mfiles/objver.h"
 #include "../mfiles/typedvalue.h"
 #include "lazyownerinfo.h"
 
@@ -57,7 +58,9 @@ public:
 		m_enabled( other.m_enabled ),
 		m_objectType( other.m_objectType ),
 		m_propertyDef( other.m_propertyDef ),
-		m_ownerInfo( other.m_ownerInfo ? new LazyOwnerInfo( *other.m_ownerInfo, this ) : 0 )
+		m_ownerInfo( other.m_ownerInfo ? new LazyOwnerInfo( *other.m_ownerInfo, this ) : 0 ),
+		m_objver( other.m_objver ),
+		m_currentValue( other.m_currentValue )
 	 {}
 
 	/**
@@ -76,9 +79,11 @@ public:
 	 * @brief Initializes new typed value filter for property definition.
 	 * @param propertyDef Property definition.	 
 	 * @param resolver The owner resolver that will be used to determine the ownership info.
+	 * @param objver The current object version
+	 * @param currentValue The id of the currently selected item.
 	 * @return Filter for property definition with owner filter.
 	 */
-	static TypedValueFilter* forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver );
+	static TypedValueFilter* forPropertyDefinition( int propertyDef, LazyOwnerInfo::RESOLVER_T ownerInfoResolver, const QJsonValue& objver, const QJsonValue& currentValue );
 
 	/**
 	 * @brief Is this filter enabled?
@@ -103,6 +108,19 @@ public:
 	 * @return Ownership information for filtering.
 	 */
 	QJsonValue ownerInfo() const;
+
+	/**
+	 * @brief Gets the object version.
+	 * @return ObjVer that represents the current object version for which listing is displayed.
+	 */
+	QJsonValue objver() const { return m_objver; }
+
+
+	/**
+	 * @brief Gets the value that is currently selected for filtering purposes.
+	 * @return The currently selected value
+	 */
+	QJsonValue currentValue() const { return m_currentValue; }
 
 signals:
 
@@ -131,6 +149,8 @@ private:
 	int m_objectType;  //!< Object type for filtering.
 	int m_propertyDef;  //!< Property definition for filtering.
 	LazyOwnerInfo* m_ownerInfo;  //!< Owner for filtering.
+	QJsonValue m_objver;  //!< The object version of the object.
+	QJsonValue m_currentValue;  //!< The item currently selected for the property definition.
 
 };
 
@@ -147,7 +167,9 @@ inline bool operator==( const TypedValueFilter &left, const TypedValueFilter &ri
 	return left.enabled() == right.enabled()
 			&& left.objectType() == right.objectType()
 			&& left.propertyDef() == right.propertyDef()
-			&& left.ownerInfo() == right.ownerInfo();
+			&& left.ownerInfo() == right.ownerInfo()
+			&& left.objver() == right.objver()
+			&& left.currentValue() == right.currentValue();
 }
 
 /**
@@ -159,7 +181,12 @@ inline uint qHash( const TypedValueFilter* key )
 {
 	if( key == 0 )
 		return 0;
-	uint hash = key->propertyDef() ^ key->objectType() ^ qHash( MFiles::TypedValue( key->ownerInfo() ) );
+	uint hash = key->propertyDef() ^ key->objectType()
+				^ qHash( MFiles::TypedValue( key->ownerInfo() ) );
+	if( ! key->objver().isNull() )
+		hash ^= qHash( MFiles::ObjVer( key->objver() ) );
+	if( ! key->currentValue().isNull() )
+		hash ^= qHash( MFiles::TypedValue( key->currentValue() ) );
 	return key->enabled() ? hash : ~hash;
 }
 

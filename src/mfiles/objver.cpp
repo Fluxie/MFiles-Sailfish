@@ -30,14 +30,12 @@ namespace MFiles
 ObjVer::ObjVer(
 	const QJsonObject& json
 ) :
-	m_id( (int) json[ "Type" ].toDouble(), (int) json[ "ID" ].toDouble() ),
-	m_version( (int) json[ "Version" ].toDouble() )
+	MFilesTypeWrapper( json )
 {
 }
 
 ObjVer::ObjVer( const QJsonValue& value ) :
-	m_id( (int) value.toObject()[ "Type" ].toDouble(), (int) value.toObject()[ "ID" ].toDouble() ),
-	m_version( (int) value.toObject()[ "Version" ].toDouble() )
+	MFilesTypeWrapper( value )
 {
 
 }
@@ -46,13 +44,20 @@ ObjVer::ObjVer( const QJsonValue& value ) :
 ObjVer::ObjVer(
 	const ObjID& id,
 	int version
-) :
-	m_id( id ),
-	m_version( version )
+)
 {
-
+	QJsonObject& objver = this->object();
+	objver[ "Type"] = id.type();
+	objver[ "ID" ] = id.id();
+	objver[ "Version" ] = version;
 }
 
+//! Object identitys as ObjID.
+const ObjID& ObjVer::objId() const
+{
+	// Return as objid.
+	return ObjID( this->type(), this->id() );
+}
 
 //! Converts this ObjVer to Json object.
 QJsonObject ObjVer::toJsonObject() const

@@ -338,7 +338,7 @@ void PropertyValueListModel::forFilter( const QModelIndex & index, QVariant& var
 	if( m_ownerResolver->mayHaveOwner( index ) )
 		filter = TypedValueFilter::forPropertyDefinition( id, [=] () -> QJsonValue {
 			return m_ownerResolver->ownershipInfo( index );
-		} );
+		}, m_objectVersion->objver().toJsonValue(), asObject[ "TypedValue" ] );
 	else
 		filter = TypedValueFilter::forPropertyDefinition( id );
 	filter->setObjectType( m_objectVersion->objver().type() );
