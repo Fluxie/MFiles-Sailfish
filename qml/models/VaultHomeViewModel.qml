@@ -59,9 +59,18 @@ VisualItemModel {
     property VaultFront vault
     property real itemWidth
 
+	/**
+	  * Refreshes the views.
+	  */
+	function requestRefresh() {
+		rootListing.requestRefresh();
+		assignedToListing.requestRefresh();
+		favoritesListing.requestRefresh();
+	}
+
 
     // Root.
-    VaultHomeViewItem {
+	VaultHomeViewModelItem {
 
         id: rootListing
 
@@ -71,7 +80,7 @@ VisualItemModel {
     }
 
     // Assignments
-    VaultHomeViewItem {
+	VaultHomeViewModelItem {
 
         id: assignedToListing
 
@@ -91,7 +100,7 @@ VisualItemModel {
     }
 
     // Favorites
-    VaultHomeViewItem {
+	VaultHomeViewModelItem {
 
         id: favoritesListing
 

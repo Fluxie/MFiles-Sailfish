@@ -156,5 +156,5 @@ OTHER_FILES += qml/MFiles-Sailfish.qml \
     qml/controls/ViewListItem.qml \
     qml/controls/View.qml \
     qml/models/VaultHomeViewModel.qml \
-    qml/models/VaultHomeViewItem.qml
+    qml/models/VaultHomeViewModelItem.qml
 

@@ -31,7 +31,14 @@ Item {
     // Properties
     property alias title: listingHeader.title
     property alias listing: viewListing.listing
-    property alias vault: viewListing.vault
+	property alias vault: viewListing.vault
+
+	/**
+	  * Refreshes the view.
+	  */
+	function requestRefresh() {
+		itemHost.listing.requestRefresh();
+	}
 
     //Positioning.
     anchors {

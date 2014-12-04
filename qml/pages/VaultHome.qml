@@ -58,6 +58,13 @@ Page {
 			property var parentListing
 
 			MenuItem {
+				text: "Refresh"
+				onClicked: {
+					views.requestRefresh();
+				}
+			}
+
+			MenuItem {
 				text: "Home"
 				onClicked: {
 
@@ -87,6 +94,8 @@ Page {
 			itemWidth: width
 
 			model: VaultHomeViewModel {
+
+				id: views
 
 				itemWidth: slideShow.itemWidth
 				vault: homePage.vault

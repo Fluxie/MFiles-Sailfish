@@ -53,13 +53,14 @@ ListItem {
 
     Column {
         Label {
-            text: model.display
+
+			text: model.display != '' ? model.display : model.resource
             x: Theme.paddingLarge
         }
 
-        Label {
+		/*Label {
             text: model.resource
             x: Theme.paddingLarge * 2
-        }
+		}*/
     }
 }
