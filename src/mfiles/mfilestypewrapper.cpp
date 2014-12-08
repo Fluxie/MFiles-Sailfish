@@ -26,10 +26,10 @@
 namespace MFiles
 {
 
-MFilesTypeWrapper::MFilesTypeWrapper( const QJsonValue& value ) :
+MFilesTypeWrapper::MFilesTypeWrapper( const char* filename, const QJsonValue& value ) :
 	m_object( value.toObject() )
 {
-	Q_ASSERT( ! m_object.isEmpty() );
+	Q_ASSERT_X( ! m_object.isEmpty(), filename, "Object is empty." );
 }
 
 }

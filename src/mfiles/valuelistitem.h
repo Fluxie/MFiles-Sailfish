@@ -37,7 +37,7 @@ namespace MFiles
  *
  * @see <a href="http://www.m-files.com/mfws/structs/valuelistitem.html">ValueListItem</a> in M-Files REST API documentation.
  */
-class ValueListItem : MFilesTypeWrapper
+class ValueListItem : public MFilesTypeWrapper
 {
 public:
 
@@ -49,8 +49,11 @@ public:
 
 	/**
 	 * @brief Initializes empty ValueListItem.
+	 * @param valueListId The id of the value list.
+	 * @param id The id of this item..
+	 * @param name The name of this item.
 	 */
-	ValueListItem() {}
+	ValueListItem( int valueListId, int id, const QString& name );
 
 	/**
 	 * @brief Checks if the value list item is empty?
@@ -75,6 +78,18 @@ public:
 	 * @return True if this value list item has an owner.
 	 */
 	bool hasOwner() const { return this->property( "HasOwner" ).toBool(); }
+
+	/**
+	 * @brief Checks if this value list item can be selected for an object.
+	 * @return True if the user can select this value list item.
+	 */
+	bool canSelect() const { return this->property( "CanSelect" ).toBool(); }
+
+	/**
+	 * @brief Sets the CanSelect flag for this item.
+	 * @param canSelect True if this item can be selected.
+	 */
+	void setCanSelect( bool canSelect ) { this->object()[ "CanSelect" ] = canSelect; }
 
 	/**
 	 * @brief Gets the id of the possible owner.

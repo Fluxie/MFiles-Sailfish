@@ -29,7 +29,7 @@ namespace MFiles
 {
 
 PropertyDef::PropertyDef( const QJsonValue& propertyDef ) :
-	MFilesTypeWrapper( propertyDef )
+	MFilesTypeWrapper( __FILE__, propertyDef )
 {
 }
 

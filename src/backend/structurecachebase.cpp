@@ -175,7 +175,6 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 			if( asValue.isArray() )
 			{
 				m_data = asValue.toArray();
-				copyOfData = m_data;
 			}
 			else
 				qCritical( QString( "Unable to parse results. Raw dump %1." ).arg( asObject.keys().join( '; ' ) ).toLatin1() );
@@ -184,7 +183,6 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 		{
 			// The resulting data is an array.
 			m_data = result.array();
-			copyOfData = m_data;
 		}
 		else
 		{
@@ -205,6 +203,7 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 			m_cache.insert( id, i );
 
 		}  // end for
+		copyOfData = m_data;
 		qDebug( QString( "Populated cache with %1 items." ).arg( m_data.size() ).toLatin1() );
 
 		// Populate satellite data.

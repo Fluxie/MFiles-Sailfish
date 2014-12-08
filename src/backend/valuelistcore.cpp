@@ -80,7 +80,8 @@ QJsonValue ValueListCore::normalizeValue( QJsonValue value )
 	QJsonObject asObject = value.toObject();
 	if( ! asObject.contains( "HasOwner") )
 		asObject[ "HasOwner" ] = false;
-    asObject[ "_sf__CanSelect" ] = true;
+	if( ! asObject.contains( "CanSelect") )  // CanSelect is not returned by MFWS REST API. Instead it is used internally by this framework.
+		asObject[ "CanSelect" ] = true;
 	value = asObject;
 	return value;
 }

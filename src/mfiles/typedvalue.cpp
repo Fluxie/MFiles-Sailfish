@@ -35,7 +35,7 @@ namespace MFiles
 {
 
 TypedValue::TypedValue( const QJsonValue& typedValue ) :
-	MFilesTypeWrapper( typedValue )
+	MFilesTypeWrapper( __FILE__, typedValue )
 {
 }
 
@@ -88,7 +88,7 @@ TypedValue::TypedValue( const QJsonArray& lookups )
 }
 
 TypedValue::TypedValue( const TypedValue& source ) :
-	MFilesTypeWrapper( source.toJsonValue() )
+	MFilesTypeWrapper( __FILE__, source.toJsonValue() )
 {
 
 }

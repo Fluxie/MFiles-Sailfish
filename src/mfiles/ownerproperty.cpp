@@ -27,7 +27,7 @@ namespace MFiles
 {
 
 OwnerProperty::OwnerProperty( const QJsonValue& ownerProperty ) :
-	MFilesTypeWrapper( ownerProperty )
+	MFilesTypeWrapper( __FILE__, ownerProperty )
 {
 }
 

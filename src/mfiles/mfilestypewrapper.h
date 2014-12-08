@@ -48,7 +48,7 @@ public:
 	 * @brief MFilesTypeWrapper
 	 * @param value The value this capsule represents.
 	 */
-	MFilesTypeWrapper( const QJsonValue& value );
+	MFilesTypeWrapper( const char* filename, const QJsonValue& value );
 
 	/**
 	 * @brief MFilesTypeWrapper
@@ -63,6 +63,9 @@ public:
 
 	//! indexing operator.
 	QJsonValueRef operator[]( const QString& key ) { return m_object[ key ]; }
+
+	//! indexing operator.
+	const QJsonValue operator[]( const QString& key ) const { return m_object[ key ]; }
 
 	/**
 	 * @brief value

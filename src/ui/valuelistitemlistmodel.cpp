@@ -30,6 +30,8 @@ const int ValueListItemListModel::LookupRole = Qt::UserRole;
 //! The role id the id role.
 const int ValueListItemListModel::IdRole = Qt::UserRole + 1;
 
+const int ValueListItemListModel::SelectableRole = Qt::UserRole + 2;
+
 ValueListItemListModel::ValueListItemListModel() :
 	QAbstractListModel(),
 	m_valueList( 0 )
@@ -75,6 +77,9 @@ QVariant ValueListItemListModel::data( const QModelIndex& index, int role ) cons
 	case ValueListItemListModel::IdRole :
 		return forId( index );
 
+	case ValueListItemListModel::SelectableRole :
+		return forSelectable( index );
+
 	default:
 		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
 		return QVariant();
@@ -91,6 +96,7 @@ QHash< int,QByteArray > ValueListItemListModel::roleNames() const
 	roles.insert( Qt::DecorationRole, QString( "decoration" ).toLatin1() );
 	roles.insert( ValueListItemListModel::LookupRole, QString( "lookup" ).toLatin1() );
 	roles.insert( ValueListItemListModel::IdRole, QString( "id" ).toLatin1() );
+	roles.insert( ValueListItemListModel::SelectableRole, QString( "selectable" ).toLatin1() );
 	return roles;
 }
 
@@ -297,23 +303,15 @@ void ValueListItemListModel::insertLookup( int row, const QJsonValue& lookup, bo
 
 	// Construct the value list item based on the lookup.
 	MFiles::Lookup asLookup( lookup );
-	QJsonObject vlitemToInsert;
-	vlitemToInsert[ "DisplayID" ] = QString( asLookup.item() );
-	vlitemToInsert[ "HasOwner" ] = false;
-	vlitemToInsert[ "HasParent" ] = false;
-	vlitemToInsert[ "ID" ] = asLookup.item();
-	vlitemToInsert[ "Name" ] = asLookup.displayValue();
-	vlitemToInsert[ "OwnerID" ] = 0;
-	vlitemToInsert[ "ParentID" ] = 0;
-	vlitemToInsert[ "ValueListID" ] = m_valueList->id();
+	MFiles::ValueListItem vlitemToInsert( m_valueList->id(), asLookup.item(), asLookup.displayValue() );
 
 	// Make the insert if the item is not blocked.
-	int id = vlitemToInsert[ "ID" ].toDouble();
+	int id = vlitemToInsert.id();
 	if( ! m_blockedLookups.contains( id ) )
 	{
 		if( notify )
 			this->beginInsertRows( this->index( row ), row, row );
-		m_data.insert( row, QJsonValue( vlitemToInsert ) );
+		m_data.insert( row, vlitemToInsert.toJsonValue() );
 		if( notify )
 			this->endInsertRows();
 	}
@@ -369,4 +367,10 @@ QVariant ValueListItemListModel::forId( const QModelIndex & index ) const
 {
 	int id = m_data[ index.row() ].toObject()[ "ID" ].toDouble();
 	return QVariant( id );
+}
+
+QVariant ValueListItemListModel::forSelectable( const QModelIndex & index ) const
+{
+	bool selectable = m_data[ index.row() ].toObject()[ "CanSelect" ].toBool();
+	return QVariant( selectable );
 }

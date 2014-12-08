@@ -21,7 +21,7 @@
 #include "foldercontentitem.h"
 
 MFiles::FolderContentItem::FolderContentItem( const QJsonValue& item ) :
-	MFilesTypeWrapper( item )
+	MFilesTypeWrapper( __FILE__, item )
 {
 }
 

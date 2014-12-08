@@ -33,6 +33,7 @@
 namespace MFiles { class ObjID; }
 class ListingFront;
 class ObjectFront;
+class ValueListCore;
 class ValueListFront;
 class VaultCore;
 class AppMonitor;
@@ -198,6 +199,14 @@ private:
 	 * @return Vautl core.
 	 */
 	const VaultCore* vaultCoreConst() const;
+
+	/**
+	 * @brief newWorkflowStatesFront
+	 * @param statesList Workflow states value list.
+	 * @param filter Filter for searching value list items from the server.
+	 * @return Workflow states list front.
+	 */
+	ValueListFront* newWorkflowStatesFront( ValueListCore* statesList, TypedValueFilter* filter  );
 
 };
 

@@ -21,7 +21,7 @@
 #include "viewlocation.h"
 
 MFiles::ViewLocation::ViewLocation( const QJsonValue& location ) :
-	MFilesTypeWrapper( location )
+	MFilesTypeWrapper( __FILE__, location )
 {
 }
 

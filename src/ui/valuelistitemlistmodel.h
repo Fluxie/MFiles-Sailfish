@@ -41,6 +41,9 @@ class ValueListItemListModel : public QAbstractListModel
 	//! The role id the id role.
 	static const int IdRole;
 
+	//! The role id the selectable role.
+	static const int SelectableRole;
+
 	Q_OBJECT
 	Q_PROPERTY( ValueListFront* valueList READ valueList WRITE setValueList NOTIFY valueListChanged )
 	Q_PROPERTY( QJsonValue selectedLookup READ selectedLookup WRITE setSelectedLookup NOTIFY selectedLookupChanged )
@@ -140,6 +143,13 @@ private:
 
 	//! Returns data for lookup.
 	QVariant forId( const QModelIndex & index ) const;
+
+	/**
+	 * @brief Returns data for selectable role.
+	 * @param index Item index.
+	 * @return Role data
+	 */
+	QVariant forSelectable( const QModelIndex & index ) const;
 
 // Private data.
 private:

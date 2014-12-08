@@ -27,7 +27,7 @@ namespace MFiles
 {
 
 PropertyValue::PropertyValue( const QJsonValue& propertyValue ) :
-	MFilesTypeWrapper( propertyValue )
+	MFilesTypeWrapper( __FILE__, propertyValue )
 {
 	Q_ASSERT( this->object().contains( "PropertyDef" ) );
 	Q_ASSERT( this->object().contains( "TypedValue" ) );

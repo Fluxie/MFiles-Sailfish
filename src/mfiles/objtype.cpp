@@ -27,7 +27,7 @@ namespace MFiles
 {
 
 ObjType::ObjType( const QJsonValue& valueList ) :
-	MFilesTypeWrapper( valueList )
+	MFilesTypeWrapper( __FILE__, valueList )
 {
 }
 

@@ -21,6 +21,6 @@
 #include "view.h"
 
 MFiles::View::View( const QJsonValue& view ) :
-	MFilesTypeWrapper( view )
+	MFilesTypeWrapper( __FILE__, view )
 {
 }

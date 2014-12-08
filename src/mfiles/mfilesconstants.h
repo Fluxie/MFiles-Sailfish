@@ -19,9 +19,29 @@ namespace Constants
 	static const int AllObjectTypes = -2;
 
 	/**
+	 * @brief Id of the classes value list.
+	 */
+	static const int ClassesValueList = 1;
+
+	/**
+	 * @brief Id of the state value list.
+	 */
+	static const int WorkflowsValueList = 7;
+
+	/**
+	 * @brief Id of the state value list.
+	 */
+	static const int WorkflowStatesValueList = 8;
+
+	/**
 	 * @brief AutomaticFiltering is a special value for OwnerProperty that specifies when automatic filtering is used.
 	 */
 	static const int AutomaticFiltering = -106;
+
+	/**
+	 * @brief WorkflowStatesPropertyDef property definition holds the state of the object.
+	 */
+	static const int WorkflowStatesPropertyDef = 39;
 
 	/**
 	 * @brief Defines the different data types available for TypedValues.

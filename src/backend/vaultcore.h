@@ -28,6 +28,7 @@
 #include "../errors/errorinfo.h"
 
 // Forward declarations.
+class WorkflowStatesCache;
 class ClassCache;
 class ListingCache;
 class ObjectTypeCache;
@@ -103,6 +104,12 @@ public:
 	 * @return Returns reference to the listing cache.
 	 */
 	ListingCache* listings() const { return m_listingCache; }
+
+	/**
+	 * @brief Gets workflow state cache.
+	 * @return Workflwo state cache.
+	 */
+	WorkflowStatesCache* workflowStates() const { return m_states; }
 	
 signals:
 
@@ -154,6 +161,7 @@ private:
 	PropertyDefCache*  m_propertyDefinitions;
 	ObjectCache* m_objectCache;
 	ListingCache* m_listingCache;
+	WorkflowStatesCache* m_states;
 	QString m_url;
 
 	// Authentication information.

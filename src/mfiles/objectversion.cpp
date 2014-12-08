@@ -21,6 +21,6 @@
 #include "objectversion.h"
 
 MFiles::ObjectVersion::ObjectVersion( const QJsonValue& objectVersion ) :
-	MFilesTypeWrapper( objectVersion )
+	MFilesTypeWrapper( __FILE__, objectVersion )
 {
 }

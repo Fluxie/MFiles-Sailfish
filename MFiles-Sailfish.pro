@@ -69,7 +69,10 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/ui/qmlsortfilterproxymodel.cpp \
     src/ui/lazymodeldataaccessor.cpp \
     src/ui/viewlistmodeldataaccessor.cpp \
-    src/frontend/listingstatus.cpp
+    src/frontend/listingstatus.cpp \
+    src/frontend/workflowstatesfront.cpp \
+    src/backend/workflowstatescore.cpp \
+    src/backend/workflowstatescache.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -131,7 +134,11 @@ HEADERS += src/backend/objecttypecache.h \
     src/ui/lazymodeldataaccessor.h \
     src/ui/viewlistmodeldataaccessor.h \
     src/ui/dataaccessorsource.h \
-    src/frontend/listingstatus.h
+    src/frontend/listingstatus.h \
+    src/frontend/workflowstatesfront.h \
+    src/backend/workflowstatescore.h \
+    src/backend/workflowstateskey.h \
+    src/backend/workflowstatescache.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

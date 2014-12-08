@@ -40,7 +40,9 @@
 #include "../mfiles/objver.h"
 #include "../backend/propertydefcache.h"
 #include "../backend/valuelistcore.h"
+#include "../backend/workflowstatescache.h"
 #include "valuelistfront.h"
+#include "workflowstatesfront.h"
 #include "listingfront.h"
 
 VaultFront::VaultFront( QObject *parent ) :
@@ -217,8 +219,12 @@ ValueListFront* VaultFront::valueList(
 	switch( id )
 	{
 	// A special handler for classes value list.
-	case 1 :
+	case MFiles::Constants::ClassesValueList :
 		front = new ClassesFront( vaultCore(), listCore, objectType );
+		break;
+
+	case MFiles::Constants::WorkflowStatesValueList :
+		front = newWorkflowStatesFront( listCore, filter );
 		break;
 
 	// Use the normal front by default.
@@ -316,4 +322,26 @@ const VaultCore* VaultFront::vaultCoreConst() const
 		return nullptr;
 
 	return qobject_cast< const VaultCore* >( core );
+}
+
+ValueListFront* VaultFront::newWorkflowStatesFront( ValueListCore* statesList, TypedValueFilter* filter )
+{
+	// Try locating workflow states.
+	WorkflowStatesCore* states = nullptr;
+	if( filter != nullptr && filter->propertyDef() == MFiles::Constants::WorkflowStatesPropertyDef )
+	{
+		// Filter specified?
+		MFiles::TypedValue owner( filter->ownerInfo() );
+		QJsonArray owners = owner.asLookups();
+		Q_ASSERT( owners.count() == 1 );
+		MFiles::Lookup ownerLookup( owners[ 0 ] );
+		MFiles::TypedValue currentState( filter->currentValue() );
+		Q_ASSERT( currentState.dataType() == MFiles::Constants::Lookup );
+		if( ! owner.isUndefined() && ! currentState.isUndefined() )
+			states = vaultCoreConst()->workflowStates()->getStates( ownerLookup.item(), currentState.lookup().item() );
+
+	}  // end if.
+
+	// Return.
+	return new WorkflowStatesFront( vaultCore(), statesList, states );
 }

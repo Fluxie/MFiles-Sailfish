@@ -25,6 +25,7 @@
 #include "objectcache.h"
 #include "objecttypecache.h"
 #include "propertydefcache.h"
+#include "workflowstatescache.h"
 
 VaultCore::VaultCore(
 	const QString& url,
@@ -46,6 +47,7 @@ VaultCore::VaultCore(
 	m_propertyDefinitions = new PropertyDefCache( this );
 	m_objectCache = new ObjectCache( this );
 	m_listingCache = new ListingCache( this );
+	m_states = new WorkflowStatesCache( this );
 
 	// Connect events.
 	QObject::connect( m_classes, &ClassCache::error, this, &VaultCore::reportError );
@@ -62,6 +64,9 @@ VaultCore::VaultCore(
 	QObject::connect( this, &VaultCore::authenticationChanged, m_propertyDefinitions, &PropertyDefCache::requestRefresh, Qt::QueuedConnection );
 	QObject::connect( m_propertyDefinitions, &PropertyDefCache::refreshed, this, &VaultCore::cacheRefreshed );
 	QObject::connect( m_propertyDefinitions, &PropertyDefCache::error, this, &VaultCore::reportError );
+
+	QObject::connect( this, &VaultCore::authenticationChanged, m_states, &WorkflowStatesCache::clear, Qt::QueuedConnection );
+	QObject::connect( m_states, &WorkflowStatesCache::error, this, &VaultCore::reportError );
 
 	qDebug( "VaultCore instantiated." );
 }

@@ -30,12 +30,12 @@ namespace MFiles
 ObjVer::ObjVer(
 	const QJsonObject& json
 ) :
-	MFilesTypeWrapper( json )
+	MFilesTypeWrapper( __FILE__, json )
 {
 }
 
 ObjVer::ObjVer( const QJsonValue& value ) :
-	MFilesTypeWrapper( value )
+	MFilesTypeWrapper( __FILE__, value )
 {
 
 }

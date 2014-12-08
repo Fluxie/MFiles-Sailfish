@@ -69,7 +69,7 @@ public:
 	AsyncFetch* availableItems( const QSet< int > ids );
 
 	//! Status.
-	Status status();
+	virtual Status status();
 
 	//! The id of the value list.
 	int id() const { return m_id; }
@@ -97,6 +97,12 @@ protected:
 
 	//! Accesses the vault.
 	VaultCore* vault() const { return m_vault; }
+
+	/**
+	 * @brief Processes the items for output.
+	 * @return Processed items.
+	 */
+	virtual QJsonArray processItems( const QJsonArray& input ) const { return input; }
 
 // Private interface.
 private:

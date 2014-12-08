@@ -27,7 +27,7 @@ namespace MFiles
 {
 
 Lookup::Lookup( const QJsonValue& lookup  ) :
-	MFilesTypeWrapper( lookup )
+	MFilesTypeWrapper( __FILE__, lookup )
 {
 }
 

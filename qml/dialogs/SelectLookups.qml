@@ -60,6 +60,7 @@ Dialog {
 			// Set highlight if presser or if selected.
 			highlighted: down || ( valueListItemListModel.selectedLookup ? model.id === valueListItemListModel.selectedLookup.Item : false )
 			height: Theme.itemSizeExtraSmall
+			enabled: model.selectable
 
 			Label {
 
@@ -68,6 +69,7 @@ Dialog {
 
 				verticalAlignment: Text.AlignVCenter
 				text: model.display
+				color: model.selectable ? Theme.primaryColor : Theme.secondaryColor
 			}
 
 			// Select the clicked lookup

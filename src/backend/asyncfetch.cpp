@@ -25,7 +25,7 @@ AsyncFetch::AsyncFetch( int cookie ) :
 	QObject( 0 ),
 	m_state( AsyncFetch::Fetching ),
 	m_cookie( cookie ),
-	m_filteringUpToDate( false )
+	m_processedValuesUpToDate( false )
 {
 }
 
@@ -35,12 +35,9 @@ AsyncFetch::AsyncFetch( int cookie ) :
  */
 QJsonValue AsyncFetch::value() const
 {
-	// Filter if not done.
-	if( ! m_filteringUpToDate )
-	{
-		m_filteredValues = this->applyFilter( m_values );
-		m_filteringUpToDate = true;
-	}
+	// Process values if needed.
+	if( ! m_processedValuesUpToDate )
+		processValues();
 
 	// Return the value.
 	Q_ASSERT( m_values.size() <= 1 );
@@ -58,14 +55,11 @@ QJsonValue AsyncFetch::value() const
 
 QJsonArray AsyncFetch::values() const
 {
-	// Filter if not done.
-	if( ! m_filteringUpToDate )
-	{
-		m_filteredValues = this->applyFilter( m_values );
-		m_filteringUpToDate = true;
-	}
+	// Process values if needed.
+	if( ! m_processedValuesUpToDate )
+		processValues();
 
-	return m_filteredValues;
+	return m_processedValues;
 }
 
 void AsyncFetch::itemFetched( int cookie, const QJsonValue& value )
@@ -76,7 +70,7 @@ void AsyncFetch::itemFetched( int cookie, const QJsonValue& value )
 	{
 		// Store the value.
 		m_values.append( value );
-		m_filteringUpToDate = false;
+		m_processedValuesUpToDate = false;
 
 		// Fetch completed.
 		m_state = AsyncFetch::Finished;
@@ -98,7 +92,7 @@ void AsyncFetch::itemsFetched( int cookie, const QJsonArray& values )
 	{
 		// Store the value.
 		m_values = values;
-		m_filteringUpToDate = false;
+		m_processedValuesUpToDate = false;
 
 		// Fetch completed.
 		m_state = AsyncFetch::Finished;
@@ -181,4 +175,15 @@ QJsonArray AsyncFetch::applyFilter( const QJsonArray& values ) const
 
 	}  // end foreach.
 	return filtered;
+}
+
+void AsyncFetch::processValues() const
+{
+	m_processedValues = this->applyFilter( m_values );
+
+	// Additional processing.
+	if( m_resultConverter != nullptr )
+		m_processedValues = m_resultConverter( m_processedValues );
+
+	m_processedValuesUpToDate = true;
 }

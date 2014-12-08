@@ -27,8 +27,23 @@ namespace MFiles
 {
 
 ValueListItem::ValueListItem( const QJsonValue& valueListItem ) :
-	MFilesTypeWrapper( valueListItem.toObject() )
+	MFilesTypeWrapper( __FILE__, valueListItem.toObject() )
 {
+}
+
+ValueListItem::ValueListItem( int valueListId, int id, const QString& name )
+{
+	// Setup this item.
+	QJsonObject& vlitem = this->object();
+	vlitem[ "DisplayID" ] = QString( id );
+	vlitem[ "HasOwner" ] = false;
+	vlitem[ "HasParent" ] = false;
+	vlitem[ "ID" ] = id;
+	vlitem[ "Name" ] = name;
+	vlitem[ "OwnerID" ] = 0;
+	vlitem[ "ParentID" ] = 0;
+	vlitem[ "ValueListID" ] = valueListId;
+	vlitem[ "CanSelect" ] = true;
 }
 
 QJsonValue ValueListItem::toLookup() const

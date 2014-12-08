@@ -44,6 +44,11 @@ public:
 	typedef std::function< bool( const QJsonValue& ) > FILTER_T;
 
 	/**
+	  * @brief Type definition for a result converter function.
+	  */
+	typedef std::function< QJsonArray( const QJsonArray& ) > RESULTCONVERTER_T;
+
+	/**
 	 * @brief The State enum identifying the current state of the fetch operation.
 	 */
 	enum State
@@ -82,7 +87,13 @@ public:
 	 * @brief Appends new filter to the filters.
 	 * @param filter Filter to append to the list of existing filters.
 	 */	
-	void appendFilter( FILTER_T filter ) { m_filters.push_back( FILTER_T( filter ) ); m_filteringUpToDate = false; }
+	void appendFilter( FILTER_T filter ) { m_filters.push_back( FILTER_T( filter ) ); m_processedValuesUpToDate = false; }
+
+	/**
+	 * @brief Sets new converter function.
+	 * @param converter The new converter function.
+	 */
+	void setResultConverter( RESULTCONVERTER_T converter ) { m_resultConverter = converter; m_processedValuesUpToDate = false; }
 
 signals:
 
@@ -137,6 +148,11 @@ private:
 	 */
 	QJsonArray applyFilter( const QJsonArray& values ) const;
 
+	/**
+	 * @brief Applies the filter and performs the possible result conversion.
+	 */
+	void processValues() const;
+
 // Private data.
 private:
 
@@ -144,10 +160,11 @@ private:
 	int m_cookie;  //!< The cookie that identifies the fetch request.
 	QJsonArray m_values;  //!< The fetched value.
 
-	mutable bool m_filteringUpToDate;  //!< True when filtering of the values is up-to-date.
-	mutable QJsonArray m_filteredValues;  //!< Filtered values.
+	mutable bool m_processedValuesUpToDate;  //!< True when filtering and processing of the values is up-to-date.
+	mutable QJsonArray m_processedValues;  //!< Filtered and processed values.
 
 	QVector< FILTER_T > m_filters;  //!< Filter function for filttering the accepted values.
+	RESULTCONVERTER_T m_resultConverter;  //!< Converter function for processing the accepted values.
 
 };
 
