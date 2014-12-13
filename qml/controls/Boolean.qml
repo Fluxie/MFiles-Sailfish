@@ -4,20 +4,37 @@ import mohari.sailfish 1.0
 
 import "Boolean.js" as Logic
 
-ComboBox {
+Column {
 
-	id: comboBox
+	property alias label: propertyLabel.label
 
-	label: ''
-	valueColor: Theme.primaryColor
+	ComboBox {
 
-	// Select the value.
-	currentIndex: propertyValue.TypedValue.HasValue ? ( propertyValue.TypedValue.Value ? 1 : 2 ) : 0
+		id: comboBox
 
-	menu: ContextMenu {
+		valueColor: Theme.primaryColor
 
-		MenuItem { text: qsTr( "" ) }
-		MenuItem { text: qsTr( "Yes" ) }
-		MenuItem { text: qsTr( "No" ) }
+		// Select the value.
+		currentIndex: propertyValue.TypedValue.HasValue ? ( propertyValue.TypedValue.Value ? 1 : 2 ) : 0
+
+		menu: ContextMenu {
+
+			MenuItem { text: qsTr( "" ) }
+			MenuItem { text: qsTr( "Yes" ) }
+			MenuItem { text: qsTr( "No" ) }
+		}
+	}
+
+	PropertyLabel {
+		id: propertyLabel
+
+		// Position.
+		anchors {
+			left: parent.left
+			right: parent.right
+			leftMargin: Theme.paddingLarge;
+		}
 	}
 }
+
+

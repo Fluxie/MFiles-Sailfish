@@ -4,33 +4,54 @@ import mohari.sailfish 1.0
 
 import "Date.js" as Logic
 
-BackgroundItem {
+Column {
 
-	id: date
+	property alias label: propertyLabel.label
 
-	Label {
-
-		id: dateLabel
-
-		// Position.
-		anchors.fill: parent
-		anchors.leftMargin: Theme.paddingLarge
-
-		// Text.
-		verticalAlignment: Text.AlignVCenter
-		text: Logic.getLabelText( propertyValue )
+	// Position
+	anchors {
+		fill: parent
+		leftMargin: Theme.paddingLarge;
 	}
 
-	// Action
-	onClicked: {
-		var dt = new Date( propertyValue.TypedValue.Value );
-		var dialog = pageStack.push("Sailfish.Silica.DatePickerDialog", {
-										date: dt
-									})
-		dialog.accepted.connect(function () {
+	BackgroundItem {
 
-			// Submit.
-			typedValue.submit( dialog.date );
-		} )
+		id: date
+
+		Label {
+
+			id: dateLabel
+
+			// Position.
+			anchors.fill: parent
+
+			// Text.
+			verticalAlignment: Text.AlignVCenter
+			text: Logic.getLabelText( propertyValue )
+		}
+
+		// Action
+		onClicked: {
+			var dt = new Date( propertyValue.TypedValue.Value );
+			var dialog = pageStack.push("Sailfish.Silica.DatePickerDialog", {
+											date: dt
+										})
+			dialog.accepted.connect(function () {
+
+				// Submit.
+				typedValue.submit( dialog.date );
+			} )
+		}
+	}
+
+	PropertyLabel {
+
+		id: propertyLabel
+
+		// Position.
+		anchors {
+			left: parent.left
+			right: parent.right
+		}
 	}
 }

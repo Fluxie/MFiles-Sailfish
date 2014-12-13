@@ -94,25 +94,34 @@ function selectControl( typedValue ) {
 function selectImplicitHeight( typedValue ) {
 
 	// Implicit height based on the data type.
+	var itemHeight;
 	switch( typedValue.DataType ) {
 
 	// Single-line text
 	case 1:
-		return Silica.Theme.itemSizeExtraSmall;
+		itemHeight = Silica.Theme.itemSizeExtraSmall;
+		break;
 
 	// Multi-select lookup
 	case 10:
 		var lookups = typedValue.Lookups
-		return selectImplicitHeightForMSLookup( lookups );
+		itemHeight = selectImplicitHeightForMSLookup( lookups );
+		break;
 
+	// Multi-line text
 	case 13:
-		return Silica.Theme.itemSizeExtraLarge;
+		itemHeight = Silica.Theme.itemSizeExtraLarge;
+		break;
 
 	// We return simple read-only control for types we do not recognize.
 	default:
-		return Silica.Theme.itemSizeExtraSmall;
+		itemHeight = Silica.Theme.itemSizeExtraSmall;
+		break;
 	}
 
+	// Include the size of the label.
+	var totalHeight = itemHeight + Silica.Theme.itemSizeExtraSmall;
+	return totalHeight;
 }
 
 /**
@@ -198,10 +207,11 @@ function selectImplicitHeightForMSLookup( lookups )
 {
 	// Exit if empty.
 	if( ! lookups || lookups.length === 0 )
-		return Silica.Theme.itemSizeExtraSmall;
+		return Silica.Theme.itemSizeExtraSmall * 2;
 
 	var itemsShown = lookups.length;
 	if( itemsShown > 2 )
 		itemsShown = 3;
-	return itemsShown * Silica.Theme.itemSizeExtraSmall;
+	var itemHeight = itemsShown * Silica.Theme.itemSizeExtraSmall;
+	return itemHeight;
 }

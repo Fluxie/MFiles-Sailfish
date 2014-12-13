@@ -2,43 +2,64 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import mohari.sailfish 1.0
 
-BackgroundItem {
+Column {
 
-	id: time
+	property alias label: propertyLabel.label
 
-	Label {
-
-		id: timeLabel
-
-		// Position.
-		anchors.fill: parent
-		anchors.leftMargin: Theme.paddingLarge
-
-		// Text.
-		verticalAlignment: Text.AlignVCenter
-		text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+	// Position
+	anchors {
+		fill: parent
+		leftMargin: Theme.paddingLarge;
 	}
 
-	// Action
-	onClicked: {
+	BackgroundItem {
 
-		// // This is available in all editors.
-		var dt = new Date(propertyValue.TypedValue.Value)
-		var dialog = pageStack.push("../dialogs/AccurateTimePickerDialog.qml", {
-										hour: dt.getUTCHours(),
-										minute: dt.getUTCMinutes(),
-										second: dt.getUTCSeconds()
-									})
-		dialog.accepted.connect(function () {
+		id: time
 
-			// Construct the date object based on the previous value.
-			var dt = new Date( propertyValue.TypedValue.Value );
-			dt.setUTCHours( dialog.hour );
-			dt.setUTCMinutes( dialog.minute );
-			dt.setUTCSeconds( dialog.second );
+		Label {
 
-			// Submit the value.
-			typedValue.submit( dt );
-		})
+			id: timeLabel
+
+			// Position.
+			anchors.fill: parent
+
+			// Text.
+			verticalAlignment: Text.AlignVCenter
+			text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+		}
+
+		// Action
+		onClicked: {
+
+			// // This is available in all editors.
+			var dt = new Date(propertyValue.TypedValue.Value)
+			var dialog = pageStack.push("../dialogs/AccurateTimePickerDialog.qml", {
+											hour: dt.getUTCHours(),
+											minute: dt.getUTCMinutes(),
+											second: dt.getUTCSeconds()
+										})
+			dialog.accepted.connect(function () {
+
+				// Construct the date object based on the previous value.
+				var dt = new Date( propertyValue.TypedValue.Value );
+				dt.setUTCHours( dialog.hour );
+				dt.setUTCMinutes( dialog.minute );
+				dt.setUTCSeconds( dialog.second );
+
+				// Submit the value.
+				typedValue.submit( dt );
+			})
+		}
+	}
+
+	PropertyLabel {
+
+		id: propertyLabel
+
+		// Position.
+		anchors {
+			left: parent.left
+			right: parent.right
+		}
 	}
 }

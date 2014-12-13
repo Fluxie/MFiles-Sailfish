@@ -11,7 +11,13 @@ Column {
 	id: lookups
 
 	// Position
-	anchors.fill: parent
+	anchors {
+		fill: parent
+		leftMargin: Theme.paddingLarge;
+	}
+
+	// Properties
+	property alias label: propertyLabel.label
 
 	// Lookup values
 	Repeater {
@@ -33,8 +39,7 @@ Column {
 			Label {
 
 				// Position.
-				anchors.fill: parent
-				anchors.leftMargin: Theme.paddingLarge
+				anchors.fill: parent				
 
 				// Content
 				verticalAlignment: Text.AlignVCenter
@@ -102,6 +107,16 @@ Column {
 			} );
 		}
 
+	}
+
+	PropertyLabel {
+
+		id: propertyLabel
+
+		anchors {
+			left: parent.left
+			right: parent.right
+		}
 	}
 
 	// Button for opening lookup listing.

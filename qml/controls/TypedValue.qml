@@ -18,6 +18,8 @@ Loader {
 	property TypedValueFilter filter
 	property real minimumHeight: Theme.itemSizeMedium
 
+	onPropertyDefinitionNameChanged: if( item ) item.label = propertyDefinitionName;
+
 	// Signals
 	// Signaled when the property value selection as been submitted/accepted.
 	signal accepted( variant updatedPropertyValue )
@@ -38,6 +40,8 @@ Loader {
 			source = ""
 		}
 	}
+
+	onLoaded: if( item ) item.label = propertyDefinitionName;
 
 	// Submits a new value to the typed value.
 	// The actual controls should call this function to update the property value.

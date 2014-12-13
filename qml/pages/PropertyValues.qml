@@ -47,8 +47,7 @@ Page {
 		}
 
 		// Position
-		anchors.fill: parent
-		anchors.leftMargin: Theme.paddingLarge
+		anchors.fill: parent		
 
 		// Header for the page.
 		header: PageHeader {
@@ -85,32 +84,17 @@ Page {
 			// Position.
 			anchors.left: parent.left
 			anchors.right: parent.right
-			height: label.height + Math.max( typedValue.minimumHeight, typedValue.height ) + Theme.paddingMedium
-
-			// Label.
-			Label {
-
-				id: label
-
-				// Position
-				anchors.top: parent.top
-				anchors.left: parent.left
-				anchors.right: parent.right
-
-				// Content
-                text: propertyDefinition ? propertyDefinition.Name : ""
-				color: Theme.secondaryColor
-			}
+			height: Math.max( typedValue.minimumHeight, typedValue.height )
 
 			TypedValue {
 
 				id: typedValue
 
 				// Position
-				anchors.top: label.bottom
+				//anchors.top: parent.bottom
 				//anchors.bottom: parent.bottom
 				anchors.left: parent.left
-				anchors.right: parent.right
+				anchors.right: parent.right							
 
 				// Content
 				propertyDefinitionName: propertyDefinition ? propertyDefinition.Name : ""

@@ -10,6 +10,11 @@ Column {
 	// Internal properties
 	property bool _extended: false
 	property int _maximumHeightAdjustment: _extended ? 4 : 2
+	property alias label: textEditor.label
+
+	anchors {
+		leftMargin: Theme.paddingLarge;
+	}
 
 	// The actual control for editing the text.
 	Row {
@@ -29,22 +34,17 @@ Column {
 
 			id: textEditor
 
-			// Fill the flickable
-			anchors.top: parent.top
+			// Position to bottom.
 			anchors.bottom: parent.bottom
 
 			// The height equals the dynamic height, but is then capped.
 			height: Math.min( Theme.itemSizeExtraLarge * _maximumHeightAdjustment, implicitHeight )
 			width: multilineText.width - 20
 
-			// Hide the background separator.
-			// This separator overlaps with the text in the text area and makes it more difficult
-			// to actually read the text.
-			background: Item {}
-
 			// Text.
 			color: Theme.primaryColor
 			text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
+			placeholderText: textEditor.label
 
 			// Submit the changes when the active focus is lost.
 			onActiveFocusChanged: {
@@ -69,20 +69,6 @@ Column {
 			// Color.
 			color: Theme.primaryColor
 		}
-	}
-
-	// This separator replaces the original background separator of the TextArea control.
-	Separator {
-
-		id: separator
-
-		// Position.
-		anchors.left: parent.left
-		anchors.leftMargin: Theme.paddingLarge
-		anchors.right: parent.right
-
-		// Color
-		color: Theme.primaryColor
 	}
 
 	// Button for displaying larger area.

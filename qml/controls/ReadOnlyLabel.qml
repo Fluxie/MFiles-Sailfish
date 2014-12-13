@@ -5,19 +5,48 @@ import mohari.sailfish 1.0
 SilicaFlickable {
 
 	id: extendedText
-	contentHeight: Theme.itemSizeExtraSmall
+	contentHeight: Theme.itemSizeExtraSmall * 2
 	contentWidth: parent.width
 	flickableDirection: Flickable.HorizontalFlick
+	property alias label: propertyLabel.label
+
+	// Position
+	anchors {
+		fill: parent
+		leftMargin: Theme.paddingLarge;
+	}
 
 	Label {
 
+		id: labelText
+
+		height: Theme.itemSizeExtraSmall
+
 		// Position.
-		anchors.fill: parent
-		anchors.leftMargin: Theme.paddingLarge
+		// Position.
+		anchors {
+			top: parent.top
+			left: parent.left
+			right: parent.right
+			bottom: propertyLabel.top
+		}
 
 		// Text.
 		verticalAlignment: Text.AlignVCenter
 		text: propertyValue ? propertyValue.TypedValue.DisplayValue : ""
+	}
+
+	PropertyLabel {
+
+		id: propertyLabel
+
+		// Position.
+		anchors {
+			top: labelText.bottom
+			left: parent.left
+			right: parent.right
+			bottom: parent.bottom
+		}
 	}
 
 	HorizontalScrollDecorator {

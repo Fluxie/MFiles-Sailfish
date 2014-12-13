@@ -10,7 +10,8 @@ TextField {
 
 	// Text
 	color: Theme.primaryColor
-	text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''
+	text: propertyValue ? propertyValue.TypedValue.DisplayValue : ''	
+	placeholderText: field.label
 
 	// Submit the changes when the active focus is lost.
 	onActiveFocusChanged: {
