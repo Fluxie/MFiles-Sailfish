@@ -41,6 +41,8 @@ Page {
 		//favorites.vault = homePage.vault;
 	}
 
+	allowedOrientations: Orientation.All
+
 	/*FavoritesListing {
 		id: favorites
 

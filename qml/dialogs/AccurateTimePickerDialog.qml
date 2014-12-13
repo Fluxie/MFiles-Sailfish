@@ -16,6 +16,8 @@ Dialog {
 	property string timeText: ''
 	property string timeFormat: Utils.getTimeFormat()
 
+	allowedOrientations: Orientation.All
+
 	onHourChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
 	onMinuteChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )
 	onSecondChanged: Logic.synchronizeDialogToSatelliteData( accurateTimePicker )

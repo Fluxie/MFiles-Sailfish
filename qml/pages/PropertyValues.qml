@@ -34,6 +34,8 @@ Page {
 	property variant objectData: vault.object( objectVersion )
 	property int latestVersion: objectData.latestVersion
 
+	allowedOrientations: Orientation.All
+
 	// Declare list view that displays the property values.
 	SilicaListView {
 

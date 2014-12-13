@@ -6,7 +6,9 @@ Page {
 
     id: errorDetails
 
-    property ErrorModel error
+	property ErrorModel error
+
+	allowedOrientations: Orientation.All
 
     // Declare list view that displays the property values.
     SilicaListView {

@@ -26,8 +26,11 @@ import "../common/structs.js" as Structs
 Page {
 
 	id: page
+
 	property int textAlignment: Text.AlignLeft
 	property Column newVaultInfo: null
+
+	allowedOrientations: Orientation.All
 
 	Component.onCompleted: {
 		Logic.initialize( listView.listModel, newVaultInfo, addNewVaultButton );

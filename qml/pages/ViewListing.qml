@@ -34,6 +34,8 @@ Page {
 	property var listing : page.vault.listing( page.path )
 	property string path
 
+	allowedOrientations: Orientation.All
+
 	// View control.
 	View {
 

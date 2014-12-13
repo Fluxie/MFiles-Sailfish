@@ -15,6 +15,8 @@ Dialog {
 	property alias blockedLookups: valueListItemListModel.blockedLookups
 	property alias selectedLookup: valueListItemListModel.selectedLookup
 
+	allowedOrientations: Orientation.All
+
 	DialogHeader {
 
 		id: header

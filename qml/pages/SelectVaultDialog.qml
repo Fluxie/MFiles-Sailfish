@@ -33,6 +33,8 @@ Page {
 	signal accepted
 	signal rejected
 
+	allowedOrientations: Orientation.All
+
 	SilicaListView {
 		id: listView
 		anchors.fill: parent

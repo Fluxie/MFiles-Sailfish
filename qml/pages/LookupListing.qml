@@ -12,6 +12,8 @@ Page {
 	property VaultFront vault
 	property alias propertyValue: lookupListModel.propertyValue
 
+	allowedOrientations: Orientation.All
+
 	// Declare list view that displays the property values.
 	SilicaListView {
 

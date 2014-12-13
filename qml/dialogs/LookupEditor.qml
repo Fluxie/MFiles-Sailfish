@@ -13,6 +13,8 @@ Dialog {
 	property alias propertyValue: lookupListModel.propertyValue
 	property TypedValueFilter filter
 
+	allowedOrientations: Orientation.All
+
 	DialogHeader {
 
 		id: lookupHeader
