@@ -40,7 +40,8 @@ ViewListModel::ViewListModel( QObject *parent ) :
 	m_filter( Undefined ),
 	m_listing( nullptr ),
 	m_listingDataSet( false ),
-	m_listingDataUpdateCookie( 0 )
+	m_listingDataUpdateCookie( 0 ),
+	m_vault( nullptr )
 {
 }
 
