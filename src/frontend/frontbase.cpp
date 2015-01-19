@@ -28,14 +28,13 @@ FrontBase::FrontBase( QObject* core, QObject* parent ) :
 	QObject( parent ),
 	m_core( core )
 {
-
 }
 
 bool FrontBase::isPartOf( const VaultFront* vault ) const
 {
 	Q_CHECK_PTR( vault );
 
-	if( m_core == nullptr )
+	if( m_core == nullptr || vault->coreConst() == nullptr )
 		return false;
 
 	// Make the check.
