@@ -20,6 +20,7 @@
 
 #include "lookuplistmodel.h"
 
+#include <QDebug>
 #include <QJsonObject>
 
 //! The role id of the lookup role.
@@ -63,7 +64,7 @@ QVariant LookupListModel::data( const QModelIndex& index, int role ) const
 		break;
 
 	default:
-		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
+		qDebug() << QString( "Unknown role %1").arg( role );
 	}
 	return data;
 }
@@ -95,7 +96,7 @@ bool LookupListModel::setData( const QModelIndex &index, const QVariant &value, 
 	if( value.type() != QVariant::Map )
 	{
 		// TODO: Report error.
-		qCritical( value.typeName() );
+		qCritical() << value.typeName();
 		return false;
 	}
 
@@ -241,6 +242,8 @@ void LookupListModel::forDisplay( const QModelIndex & index, QVariant& variant )
 void LookupListModel::forDecoration( const QModelIndex & index, QVariant& variant ) const
 {
 	// Nothing.
+	Q_UNUSED( index )
+	Q_UNUSED( variant )
 }
 
 //! Returns data for lookup.

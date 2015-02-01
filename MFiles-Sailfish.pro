@@ -10,6 +10,7 @@ TARGET = MFiles-Sailfish
 
 CONFIG += sailfishapp
 CONFIG += c++11
+CONFIG += warn_on
 
 SOURCES += src/MFiles-Sailfish.cpp \
     src/backend/objecttypecache.cpp \

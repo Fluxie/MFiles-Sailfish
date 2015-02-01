@@ -57,7 +57,7 @@ public:
 	 * @param vault Vault of the
 	 * @param id The object id of the object this object represents.
 	 */
-	explicit ObjectCore( VaultCore* vault, MFiles::ObjID id );
+	explicit ObjectCore( VaultCore* vault, const MFiles::ObjID& id );
 
 	/**
 	 * @brief Gets the latest known version of the obect.

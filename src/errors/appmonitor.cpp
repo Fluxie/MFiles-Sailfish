@@ -18,6 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  */
 
+#include <QDebug>
+
 #include "appmonitor.h"
 
 #include "errormodel.h"
@@ -54,7 +56,7 @@ void AppMonitor::hideErrors()
 void AppMonitor::reportError( const ErrorInfo& error )
 {
 	// Store the error.
-	qDebug( error.message().toLatin1() );
+	qDebug() << error.message();
 	m_errors.push_back( error );
 	refreshLastError();
 }

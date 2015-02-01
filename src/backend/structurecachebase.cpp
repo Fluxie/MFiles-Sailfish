@@ -177,7 +177,7 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 				m_data = asValue.toArray();
 			}
 			else
-				qCritical( QString( "Unable to parse results. Raw dump %1." ).arg( asObject.keys().join( '; ' ) ).toLatin1() );
+				qCritical() << QString( "Unable to parse results. Raw dump %1." ).arg( asObject.keys().join( "; " ) );
 		}
 		else if( result.isArray() )
 		{
@@ -187,7 +187,7 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 		else
 		{
 			// Error.
-			qCritical( QString( "Unable to parse results. Raw dump %1." ).arg( result.toVariant().toString() ).toLatin1() );
+			qCritical() << QString( "Unable to parse results. Raw dump %1." ).arg( result.toVariant().toString() );
 
 		}  // end if.
 
@@ -204,7 +204,7 @@ void StructureCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 
 		}  // end for
 		copyOfData = m_data;
-		qDebug( QString( "Populated cache with %1 items." ).arg( m_data.size() ).toLatin1() );
+		qDebug() << QString( "Populated cache with %1 items." ).arg( m_data.size() );
 
 		// Populate satellite data.
 		populateSatelliteDataNts();
@@ -237,7 +237,7 @@ void StructureCacheBase::fetchOneItem( int cookie, int id )
 		qDebug( "fetchOneItem Reply" );
 		if( reply->error() != QNetworkReply::NoError )
 		{
-			qDebug( reply->errorString().toLatin1() );
+			qDebug() << reply->errorString();
 			return;  // We are using the automatic reporting of MfwsRest object. TODO.
 		}
 
@@ -245,7 +245,7 @@ void StructureCacheBase::fetchOneItem( int cookie, int id )
 		QJsonValue value( result.object() );
 		value = this->normalizeValue( value );
 		QJsonObject asObject = value.toObject();
-		qDebug( QString( "Item %1 fetched." ).arg( asObject[ "ID" ].toDouble() ).toLatin1() );
+		qDebug() << QString( "Item %1 fetched." ).arg( asObject[ "ID" ].toDouble() );
 		emit itemFetched( cookie, value );
 
 	} );

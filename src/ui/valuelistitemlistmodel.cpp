@@ -55,6 +55,8 @@ QJsonArray ValueListItemListModel::blockedLookups() const
 //! Returns the number of rows under the given parent.
 int ValueListItemListModel::rowCount( const QModelIndex& parent ) const
 {
+	Q_UNUSED( parent )
+
 	// Report the row count.
 	int rowCount = m_data.size();
 	return rowCount;
@@ -81,7 +83,7 @@ QVariant ValueListItemListModel::data( const QModelIndex& index, int role ) cons
 		return forSelectable( index );
 
 	default:
-		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
+		qDebug() << QString( "Unknown role %1").arg( role );
 		return QVariant();
 	}
 }
@@ -236,11 +238,11 @@ void ValueListItemListModel::includeSelectedLookupIfMissing( bool notify )
 	if( m_valueList == 0 )
 		return;
 
-	// Add the lookup as value list item if the current listing does not include it.
-	MFiles::Lookup lookup( m_selectedLookup );
-	if( ! lookup.isUndefined() )
+	// Add the lookup as value list item if the current listing does not include it.	
+	if( MFiles::MFilesTypeWrapper::isValid( m_selectedLookup ) )
 	{
 		// Add.
+		MFiles::Lookup lookup( m_selectedLookup );
 		int lookupId = lookup.item();
 		int index = this->indexOf( lookupId );
 		if( index == -1 )
@@ -342,6 +344,8 @@ QVariant ValueListItemListModel::forDisplay( const QModelIndex & index ) const
 //! Returns data for decoration.
 QVariant ValueListItemListModel::forDecoration( const QModelIndex & index ) const
 {
+	Q_UNUSED( index )
+
 	qDebug( "Decoration role" );
 	return QVariant();
 }

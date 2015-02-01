@@ -114,11 +114,11 @@ QString ValueListCore::getResource( bool allItems, int valueList, int owner, con
 
 		}  // end foreach.
 		Q_ASSERT( ! items.isEmpty() );
-		qDebug( items.toLatin1() );
+		qDebug() << items;
 
 		// Append the item list to create the final filter query parameters.
 		resource.append( QString( "&filterItem=%1:%2" ).arg( owner ).arg( items ) );
 	}
-	qDebug( resource.toLatin1() );
+	qDebug() << resource;
 	return resource;
 }

@@ -32,4 +32,11 @@ MFilesTypeWrapper::MFilesTypeWrapper( const char* filename, const QJsonValue& va
 	Q_ASSERT_X( ! m_object.isEmpty(), filename, "Object is empty." );
 }
 
+bool MFilesTypeWrapper::isValid( const QJsonValue& value )
+{
+	// Must be a non-empty object.
+	bool valid = value.isObject() && ! value.isNull() &&  value.isUndefined();
+	return valid;
+}
+
 }

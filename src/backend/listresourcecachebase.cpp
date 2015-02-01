@@ -143,7 +143,7 @@ void ListResourceCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 				copyOfData = m_data;
 			}
 			else
-				qCritical( QString( "Unable to parse results. Raw dump %1." ).arg( asObject.keys().join( '; ' ) ).toLatin1() );
+				qCritical() << QString( "Unable to parse results. Raw dump %1." ).arg( asObject.keys().join( "; " ) );
 		}
 		else if( result.isArray() )
 		{
@@ -154,7 +154,7 @@ void ListResourceCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 		else
 		{
 			// Error.
-			qCritical( QString( "Unable to parse results. Raw dump %1." ).arg( result.toVariant().toString() ).toLatin1() );
+			qCritical() << QString( "Unable to parse results. Raw dump %1." ).arg( result.toVariant().toString() );
 
 		}  // end if.
 
@@ -165,7 +165,7 @@ void ListResourceCacheBase::setContentFrom( int cookie, QNetworkReply* reply )
 			m_data[ i ] = this->normalizeValue( m_data[ i ] );
 
 		}  // end for
-		qDebug( QString( "Populated cache with %1 items." ).arg( m_data.size() ).toLatin1() );
+		qDebug() << QString( "Populated cache with %1 items." ).arg( m_data.size() );
 
 		// Populate satellite data.
 		//populateSatelliteDataNts();

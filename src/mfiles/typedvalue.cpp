@@ -153,7 +153,7 @@ void TypedValue::setMultiSelectLookup( const QJsonArray& lookups )
 	QJsonObject& typedValue = this->object();
 	typedValue[ "DataType" ] = MFiles::Constants::MultiSelectLookup;
 	typedValue[ "HasValue" ] = lookups.size() != 0;
-	typedValue[ "DisplayValue" ] = QString( "Demo" );
+	typedValue[ "DisplayValue" ] = QString( "Demo" );  // TODO.
 	typedValue[ "Lookups" ] = lookups;
 	typedValue[ "Value" ] = lookups;
 	Q_ASSERT( this->hasValue() || lookups.count() == 0 );

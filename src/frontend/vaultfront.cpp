@@ -284,7 +284,7 @@ bool VaultFront::propertyDefinitionsReady() const
 //! Call when a new object has been changed.
 void VaultFront::objectChanged(	const QJsonValue& objectInfo )
 {
-
+	Q_UNUSED( objectInfo ) // TODO
 }
 
 

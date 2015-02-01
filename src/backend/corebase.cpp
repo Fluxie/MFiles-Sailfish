@@ -63,6 +63,8 @@ bool CoreBase::isPartOf( const VaultCore* vault ) const
 //! A network error has occurred within the core.
 void CoreBase::reportNetworkError( QNetworkReply::NetworkError code, const QString& description )
 {
+	Q_UNUSED( code ) // TODO.
+
 	// Convert to our error object and emit.
 	ErrorInfo errorinfo( description );
 	PUSH_ERROR_LAYER( errorinfo );

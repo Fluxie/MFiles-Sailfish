@@ -60,8 +60,8 @@ ValueListCore* ObjectTypeCache::list( int id, const TypedValueFilter* filter )
 		VALUELISTS::iterator itrPlain = m_valueLists.find(  ValueListKey( id, 0 ) );
 		if( itrPlain == m_valueLists.end() )
 		{
-			qDebug( QString( "Requested value list %1 was not found. %2 value lists available." )
-					.arg( id ).arg( m_valueLists.size() ).toLatin1() );
+			qDebug() << QString( "Requested value list %1 was not found. %2 value lists available." )
+					  .arg( id ).arg( m_valueLists.size() );
 			return 0;
 		}
 

@@ -29,7 +29,7 @@
 #include "../mfwsrest.h"
 #include "vaultcore.h"
 
-ObjectCore::ObjectCore( VaultCore* vault, MFiles::ObjID id ) :
+ObjectCore::ObjectCore( VaultCore* vault, const MFiles::ObjID& id ) :
 	CoreBase( vault, 0 ),
 	m_id( id ),
 	m_latestKnownVersion( -1 ),
@@ -99,14 +99,14 @@ ObjectVersionCore* ObjectCore::version(
 		versionNumber = asString.toInt( &conversionOk );
 		if( !conversionOk )
 		{
-			qCritical( QString( "Unexpected version %1." ).arg( asString ).toLatin1() );
+			qCritical() << QString( "Unexpected version %1." ).arg( asString );
 			return 0;
 		}
 	}
 	else
 	{
 		// Unexpected version.
-		qCritical( QString( "Unexpected version %1." ).arg( version.toString() ).toLatin1() );
+		qCritical() << QString( "Unexpected version %1." ).arg( version.toString() );
 		return 0;
 
 	}  // end if

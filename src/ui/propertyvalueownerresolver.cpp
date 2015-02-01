@@ -258,7 +258,7 @@ void PropertyValueOwnerResolver::refreshOwnershipInfo()
 		// Get the owner list.
 		int sublist = itr.key();
 		int owner = itr.value();
-		qDebug( QString( "Processing sublist %1 and owner %2." ).arg( sublist ).arg( owner ).toLatin1() );
+		qDebug() << QString( "Processing sublist %1 and owner %2." ).arg( sublist ).arg( owner );
 
 		// TODO: Karteesinen tulo.
 		QList< int > subListLocations = rowsOfValueList.values( sublist );

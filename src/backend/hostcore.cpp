@@ -102,4 +102,5 @@ void HostCore::run()
     // Start event loop.
     QEventLoop loop;
     int exitCode = loop.exec();
+	Q_UNUSED( exitCode )
 }

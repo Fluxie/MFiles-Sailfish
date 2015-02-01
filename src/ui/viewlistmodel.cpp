@@ -20,6 +20,8 @@
 
 #include "viewlistmodel.h"
 
+#include <QDebug>
+
 #include "resetmodel.h"
 #include "../backend/asyncfetch.h"
 #include "../mfiles/foldercontentitem.h"
@@ -38,8 +40,9 @@ const int ViewListModel::TypeRole = Qt::UserRole + 2;
 ViewListModel::ViewListModel( QObject *parent ) :
 	ListModelBase( parent ),
 	m_filter( Undefined ),
-	m_listing( nullptr ),
+	m_listingData(),
 	m_listingDataSet( false ),
+	m_listing( nullptr ),
 	m_listingDataUpdateCookie( 0 ),
 	m_vault( nullptr )
 {
@@ -76,7 +79,7 @@ QVariant ViewListModel::data( const QModelIndex& index, int role ) const
 		break;
 
 	default:
-		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
+		qDebug() << QString( "Unknown role %1").arg( role );
 	}
 	return data;
 }

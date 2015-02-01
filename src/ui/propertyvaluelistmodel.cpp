@@ -90,7 +90,7 @@ QVariant PropertyValueListModel::data( const QModelIndex& index, int role ) cons
 		break;
 
 	default:
-		qDebug( QString( "Unknown role %1").arg( role ).toStdString().c_str() );
+		qDebug() << QString( "Unknown role %1").arg( role );
 	}
 	return data;
 }
@@ -133,7 +133,7 @@ bool PropertyValueListModel::setData( const QModelIndex &index, const QVariant &
 	{
 		// TODO: Report error.
 		Q_ASSERT( false );
-		qCritical( value.typeName() );
+		qCritical() << value.typeName();
 		return false;
 	}
 
@@ -147,7 +147,7 @@ bool PropertyValueListModel::setData( const QModelIndex &index, const QVariant &
 
 	// The value denoted by the index has changed. Update it with the new value and signal the change.
 	MFiles::PropertyValue asPropertyValue( newValue );
-	qDebug( QString( "Update property value, Has value %1" ).arg( asPropertyValue.typedValue().hasValue() ).toLatin1() );
+	qDebug() << QString( "Update property value, Has value %1" ).arg( asPropertyValue.typedValue().hasValue() );
 	m_propertyValues[ index.row() ] = newValue;
 	QVector< int > changedRoles;
 	changedRoles.push_back( PropertyValueListModel::PropertyValueRole );
@@ -308,6 +308,9 @@ void PropertyValueListModel::forDisplay( const QModelIndex & index, QVariant& va
 //! Returns data for decoration.
 void PropertyValueListModel::forDecoration( const QModelIndex & index, QVariant& variant ) const
 {
+	Q_UNUSED( index )
+	Q_UNUSED( variant )
+
 	qDebug( "Decoration role" );
 }
 

@@ -37,7 +37,7 @@ namespace MFiles
  *
  * @see <a href="http://www.m-files.com/mfws/structs/objver.html">ObjVer</a> in M-Files REST API documentation.
  */
-class ObjVer : public MFilesTypeWrapper
+class ObjVer
 {
 // Public interface.
 public:
@@ -62,31 +62,37 @@ public:
 	ObjVer( const ObjID& id, int version );
 
 	//! Object identitys as ObjID.
-	const ObjID& objId() const;
+	ObjID objId() const;
 
 	/**
 	 * @brief Gets the object type.
 	 * @return The object type.
 	 */
-	int type() const { return this->property( "Type" ).toDouble(); }
+	int type() const { return m_type; }
 
 	/**
 	 * @brief Gets the object id.
 	 * @return The object id.
 	 */
-	int id() const { return this->property( "ID" ).toDouble(); }
+	int id() const { return m_id; }
 
 	/**
 	 * @brief Gets the object version.
 	 * @return  The object version.
 	 */
-	int version() const { return this->property( "Version" ).toDouble(); }
+	int version() const { return m_version; }
 
 	/**
 	 * @brief Converts this ObjVer to Json object.
 	 * @return This object converted QJsonObject.
 	 */
 	QJsonObject toJsonObject() const;
+
+	/**
+	 * @brief value
+	 * @return The object as JSON value.
+	 */
+	QJsonValue toJsonValue() const { return QJsonValue( this->toJsonObject() ); }
 
 	/**
 	 * @brief Checks if this object is less than rightSide.
@@ -104,6 +110,10 @@ public:
 
 // Private data.
 private:
+
+	int m_type;
+	int m_id;
+	int m_version;
 
 };
 

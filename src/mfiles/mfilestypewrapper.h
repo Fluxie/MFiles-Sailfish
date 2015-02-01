@@ -73,6 +73,13 @@ public:
 	 */
 	QJsonValue toJsonValue() const { return QJsonValue( m_object ); }
 
+	/**
+	 * @brief Check if value can be a valid M-Files type.
+	 * @param value The value to check.
+	 * @return True if the value is null or epmty.
+	 */
+	static bool isValid( const QJsonValue& value );
+
 // Protected interface.
 protected:
 
