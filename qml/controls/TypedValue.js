@@ -172,15 +172,15 @@ function setTypedValue( typedValue, value ) {
 
 	// Single-select lookup
 	case 9 :
-		typedValue.Value = value;
-		typedValue.Lookup = value;
+		typedValue.Value = Utils.deepCopy( value );
+		typedValue.Lookup = Utils.deepCopy( value );
 		typedValue.DisplayValue = value.DisplayValue;
 		break;
 
 	// Multi-select lookup
 	case 10 :
-		typedValue.Value = value;
-		typedValue.Lookups = value;
+		typedValue.Value = Utils.deepCopy( value );
+		typedValue.Lookups = Utils.deepCopy( value);
 		break;
 
 	// For now, no-op. TODO Make this an error.
