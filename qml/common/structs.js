@@ -45,6 +45,6 @@ function Vault( props ) {
 	this.username = props.username;
 
 	this.id = props.id;
-	this.authentication = props.authentication || null;
+	this.password = props.password || null;
 }
 

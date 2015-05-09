@@ -68,8 +68,23 @@ signals:
 	void error( QNetworkReply::NetworkError code, const QString& description ) const;
 	
 public slots:
-	
-	//! Sets the authentication information.
+
+	/**
+	 * @brief Sets the username..
+	 * @param New username.
+	 */
+	void setUsername( const QString& username ) { m_username = username; }
+
+	/**
+	 * @brief Sets the password-
+	 * @param New password.
+	 */
+	void setPassword( const QString& password ) { m_password = password; }
+		
+	/**
+	 * @brief Sets the authentication information.
+	 * @param authentication
+	 */
 	void setAuthentication( const QString& authentication ) { m_authentication = authentication; }
 
 // Private interface.
@@ -77,6 +92,13 @@ private:
 
 	//! Prepares request.
 	QNetworkRequest prepareRequest( const QString& resource ) const;
+
+	/**
+	 * @brief Fills authentication information to the given request.
+	 * @param The request to set the authentication information.
+	 * @return True if the authentication information was available.
+	 */
+	bool fillAuthentication( QNetworkRequest& request ) const;
 
 private slots:
 
@@ -90,6 +112,8 @@ private slots:
 private:
 
 	QString m_url;
+	QString m_username;
+	QString m_password;
 	QString m_authentication;
 	QNetworkAccessManager* m_network;
 };

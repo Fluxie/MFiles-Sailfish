@@ -203,10 +203,11 @@ function _selectVault( vaults, done ) {
  * @param {function} done Receives the list of vaults
  */
 function _getVaults( url, username, password, done ) {
+
+	// Get the vault listing.
 	var client = new Http.HttpClient();
 	client.headers[ 'X-Username' ] = username;
 	client.headers[ 'X-Password' ] = password;
-
 	client.get( url + '/REST/server/vaults', done );
 }
 

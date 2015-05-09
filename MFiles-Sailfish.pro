@@ -73,7 +73,9 @@ SOURCES += src/MFiles-Sailfish.cpp \
     src/frontend/listingstatus.cpp \
     src/frontend/workflowstatesfront.cpp \
     src/backend/workflowstatescore.cpp \
-    src/backend/workflowstatescache.cpp
+    src/backend/workflowstatescache.cpp \
+    src/ui/vaultlistmodel.cpp \
+    src/mfiles/vaultlisting.cpp
 HEADERS += src/backend/objecttypecache.h \
     src/backend/hostcore.h \
     src/backend/vaultcore.h \
@@ -139,7 +141,9 @@ HEADERS += src/backend/objecttypecache.h \
     src/frontend/workflowstatesfront.h \
     src/backend/workflowstatescore.h \
     src/backend/workflowstateskey.h \
-    src/backend/workflowstatescache.h
+    src/backend/workflowstatescache.h \
+    src/ui/vaultlistmodel.h \
+    src/mfiles/vaultlisting.h
 
 # QML files and folders
 qml.files = *.qml common controls dialogs pages cover

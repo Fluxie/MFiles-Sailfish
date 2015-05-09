@@ -143,13 +143,35 @@ QNetworkRequest MfwsRest::prepareRequest( const QString& resource ) const
 {
 	// Prepare and return the request.
 	QNetworkRequest request;
-	if( m_authentication.size() == 0 )
+	if( ! fillAuthentication( request ) )
 		qCritical( "Authentication information is not available." );
-	request.setRawHeader( "X-Authentication", m_authentication.toLatin1() );
 	request.setRawHeader("Accept", "application/json");
 	request.setRawHeader("Content-Type", "application/json; charset=utf-8");
 	QString finalUrl = QString("%1/REST%2").arg( m_url, resource );
 	request.setUrl( QUrl( finalUrl ) );
 	qDebug() << finalUrl;
 	return request;
+}
+
+bool MfwsRest::fillAuthentication( QNetworkRequest& request ) const
+{
+	// Set the authentication fino.
+	if( ! m_authentication.isEmpty() )
+	{
+		// Authentication token was available. Prefer the token.
+		request.setRawHeader( "X-Authentication", m_authentication.toLatin1() );
+	}
+	else if( ! m_username.isEmpty() && ! m_password.isEmpty() )
+	{
+		request.setRawHeader( "X-Username", m_username.toLatin1() );
+		request.setRawHeader( "X-Password", m_password.toLatin1() );
+	}
+	else
+	{
+		// Authentication information was not available.
+		return false;
+	}
+
+	// Authentication information was succesfully set.
+	return true;
 }

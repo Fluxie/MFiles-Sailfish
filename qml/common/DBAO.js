@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013 Mikko Rantanen
+ *  Copyright 2015 Mikko Rantanen, Juha Lepola
  *
  *  This file is part of M-Files for Sailfish.
  *
@@ -33,23 +33,25 @@ var _j = function( arr ) { return arr.join(' '); }
 var upgradeFunctions = [
 	function( tx ) {
 
+		// Storage for settings.
 		tx.executeSql(
-			"CREATE TABLE settings( name TEXT, value TEXT )" );
+			"CREATE TABLE Settings( name TEXT, value TEXT )" );
 
+		// Storage for vaults.
 		tx.executeSql( _j([
-			"CREATE TABLE previousVaults(",
+			"CREATE TABLE Vaults(",
 				"id INTEGER PRIMARY KEY,",
 				"name TEXT,",
 				"guid TEXT,",
 				"url TEXT,",
 				"username TEXT,",
-				"authentication TEXT",
+				"password TEXT",
 				")" ]));
 	}
 ]
 
 // List of all possible tables so we can reset the DB easily
-var _tables = [ 'dbVersion', 'settings', 'previousVaults' ];
+var _tables = [ 'DbVersion', 'Settings', 'Vaults' ];
 
 /**
  * Open the database
@@ -72,11 +74,11 @@ function initialize() {
 	var dbVersion = 0;
 	db.transaction( function( tx ) {
 
-		tx.executeSql( "CREATE TABLE IF NOT EXISTS dbVersion( version INT )" );
-		var results = tx.executeSql( "SELECT version FROM dbVersion" );
+		tx.executeSql( "CREATE TABLE IF NOT EXISTS DbVersion( version INT )" );
+		var results = tx.executeSql( "SELECT version FROM DbVersion" );
 
 		if( results.rows.length === 0 ) {
-			tx.executeSql( "INSERT INTO dbVersion VALUES(0)" );
+			tx.executeSql( "INSERT INTO DbVersion VALUES( 1 )" );
 		} else {
 			dbVersion = results.rows.item(0).version;
 		}
@@ -87,13 +89,16 @@ function initialize() {
 	while( dbVersion < upgradeFunctions.length ) {
 		db.transaction( function( tx ) {
 			upgradeFunctions[ dbVersion ]( tx );
-			tx.executeSql( "UPDATE dbVersion SET version = ?", dbVersion + 1 );
+			tx.executeSql( "UPDATE DbVersion SET version = ?", dbVersion + 1 );
 		});
 
 		dbVersion++;
 	}
 };
 
+/**
+ * Drops all tables from the database.
+ */
 function dropDatabase() {
 	var db = _getDatabase();
 
@@ -113,12 +118,12 @@ function dropDatabase() {
  *
  * @returns {Vault[]} Array of vaults
  */
-function getPreviousVaults() {
+function getRegisteredVaults() {
 	var db = _getDatabase();
 
 	var results;
 	db.transaction( function( tx ) {
-		results = tx.executeSql( "SELECT id, name, guid, url, username, authentication FROM previousVaults ORDER BY name" );
+		results = tx.executeSql( "SELECT id, name, guid, url, username, pasword FROM Vaults ORDER BY name" );
 	});
 
 	// Copy the SQL result objects into an array of plain objects.
@@ -132,7 +137,7 @@ function getPreviousVaults() {
 };
 
 /**
- * Saves a vault in the list of previous vaults
+ * Saves a vault in the vault list.
  *
  * @param {object} vault Vault information
  */
@@ -141,17 +146,18 @@ function saveVault( vault ) {
 
 	db.transaction( function( tx ) {
 
+		// New or existing?
 		if( vault.id === null || vault.id === undefined ) {
 			var insertResult = tx.executeSql(
-				"INSERT INTO previousVaults( name, guid, url, username, authentication ) " +
+				"INSERT INTO Vaults( name, guid, url, username, password ) " +
 				"VALUES ( ?, ?, ?, ?, ? )",
-				[ vault.name, vault.guid, vault.url, vault.username, vault.authentication ]);
+				[ vault.name, vault.guid, vault.url, vault.username, vault.password ]);
 
 			vault.id = Number( insertResult.insertId );
 		} else {
 			tx.executeSql(
-				"UPDATE previousVaults SET name=?, username=?, authentication=? WHERE id=?",
-				[ vault.name, vault.username, vault.authentication, vault.id ]);
+				"UPDATE previousVaults SET name=?, username=?, password=? WHERE id=?",
+				[ vault.name, vault.username, vault.password, vault.id ]);
 		}
 	});
 };
